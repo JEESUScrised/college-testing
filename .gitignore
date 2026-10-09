@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+
+# Editors / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Local runtimes and heavyweight artifacts
+node_modules/
+.gradle/
+build/
+dist/
+*.apk
+*.aab
+*.jar
+*.log
+allure-results/
+allure-report/
+output.xml
+log.html
+report.html
+selenium/artifacts/
+mobile/artifacts/
+grpc/generated/
+
+# Keep reviewed report evidence in reports/ and screenshots/ on purpose.
+# Do not commit tokens, passwords or personal data.
