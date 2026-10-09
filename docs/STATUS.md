@@ -4,7 +4,7 @@
 
 | КТ | Статус | Тесты | Отчёт | Примечания |
 |---|---|---|---|---|
-| 01 | TODO | NOT RUN | TODO | Selenium Chrome + ya.ru |
+| 01 | DONE | PASS | DONE | Selenium Chrome + ya.ru; повторный прогон после `pytest.ini`: `1 passed in 4.99s`, без warnings; скриншот `screenshots/kt01/ya_ru_opened.png`; отчёт `reports/KT01.docx` |
 | 02 | TODO | NOT RUN | TODO | Окна и iframe |
 | 03 | TODO | NOT RUN | TODO | Page Object |
 | 04 | TODO | NOT RUN | TODO | Баг-репорты / трекер |
@@ -18,3 +18,12 @@
 | 12 | TODO | NOT RUN | TODO | 10 gRPC тестов |
 
 Значения: TODO — не начато, IN PROGRESS — в процессе, DONE — выполнено с реальными доказательствами, BLOCKED — есть препятствие. Тесты: PASS / FAIL / SKIP / NOT RUN.
+
+## КТ 01 — факт прогона
+
+- Среда: Windows 11 (10.0.26100), Python 3.13.9, Selenium 4.50.0, pytest 8.4.2, Google Chrome 154.0.8037.98.
+- Команда: `pytest selenium\tests\test_kt01_ya_ru.py -v --browser=chrome`
+- Результат повторного прогона (после `pytest.ini`): `1 passed in 4.99s`, warnings: нет, exit code: 0.
+- Доказательство: `screenshots/kt01/ya_ru_opened.png`
+- Отчёт: `reports/KT01.docx` (скриншот встроен, проверен через python-docx).
+- Генератор отчёта: `reports/build_kt01_docx.py`
