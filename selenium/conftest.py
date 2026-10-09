@@ -8,12 +8,23 @@ import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.support.ui import WebDriverWait
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 SCREENSHOTS_ROOT = PROJECT_ROOT / "screenshots"
+FIXTURES_ROOT = Path(__file__).resolve().parent / "fixtures"
 DEFAULT_PAGE_LOAD_TIMEOUT = 30
 DEFAULT_IMPLICIT_WAIT = 5
 DEFAULT_SCRIPT_TIMEOUT = 30
+DEFAULT_EXPLICIT_WAIT = 10
+
+
+def fixture_file_url(*parts: str) -> str:
+    """Return a file:// URL for an HTML fixture under selenium/fixtures/."""
+    path = FIXTURES_ROOT.joinpath(*parts).resolve()
+    if not path.is_file():
+        raise FileNotFoundError(f"Fixture not found: {path}")
+    return path.as_uri()
 
 
 def pytest_addoption(parser: pytest.Parser) -> None:
@@ -55,6 +66,22 @@ def driver(browser_name: str):
         yield drv
     finally:
         drv.quit()
+
+
+@pytest.fixture
+def wait(driver) -> WebDriverWait:
+    """Explicit wait helper shared by Selenium tests."""
+    return WebDriverWait(driver, DEFAULT_EXPLICIT_WAIT)
+
+
+@pytest.fixture
+def fixture_url():
+    """Build file:// URLs for HTML fixtures under selenium/fixtures/."""
+
+    def _url(*parts: str) -> str:
+        return fixture_file_url(*parts)
+
+    return _url
 
 
 @pytest.fixture

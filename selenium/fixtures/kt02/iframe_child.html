@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>KT02 IFrame Child</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 1rem; background: #fff8e7; }
+  </style>
+</head>
+<body>
+  <h2 id="frame-heading">Документ внутри iframe</h2>
+  <label for="frame-input">Текст:</label>
+  <input id="frame-input" type="text" placeholder="Введите значение">
+  <button id="frame-submit" type="button">Применить</button>
+  <p id="frame-result">Результат: пусто</p>
+  <script>
+    document.getElementById("frame-submit").addEventListener("click", function () {
+      var value = document.getElementById("frame-input").value.trim();
+      document.getElementById("frame-result").textContent =
+        value ? "Результат: " + value : "Результат: пусто";
+    });
+  </script>
+</body>
+</html>
