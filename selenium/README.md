@@ -70,6 +70,20 @@ pytest -m kt03 -v --browser=chrome
 
 Скриншоты: `screenshots/kt03/`.
 
+## КТ 05: функциональные тесты VDNH
+
+Сайт: `https://vdnh.ru/news/`. Page Object: `selenium/pages/vdnh_pages.py`.  
+Документация: `docs/kt05/`. Offline-запуск: `scripts/KT05_OFFLINE_GUIDE.md`.
+
+```powershell
+# полный suite (предпочтительно без VPN)
+.\scripts\run_kt05_no_vpn.ps1
+# только show_more после правки
+.\scripts\run_kt05_show_more_only.ps1
+```
+
+Зачётный прогон 2026-10-09: **9 PASS / 1 FAIL** (`test_show_more_loads_additional_cards`).
+
 ## КТ 04: дефекты и баг-трекинг
 
 Учебное приложение: `selenium/fixtures/kt04/` (Campus Portal Demo, seeded bugs).

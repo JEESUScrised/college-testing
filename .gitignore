@@ -32,6 +32,8 @@ output.xml
 log.html
 report.html
 selenium/artifacts/
+selenium/drivers/*.exe
+selenium/drivers/*.zip
 mobile/artifacts/
 grpc/generated/
 
