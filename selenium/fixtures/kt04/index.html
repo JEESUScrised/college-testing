@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Campus Portal Demo — Вход</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 480px; margin: 2rem auto; background: #f4f6f8; }
+    .card { background: #fff; padding: 1.5rem; border: 1px solid #d0d7de; border-radius: 8px; }
+    label { display: block; margin-top: 0.8rem; font-weight: 600; }
+    input { width: 100%; padding: 0.5rem; box-sizing: border-box; }
+    button { margin-top: 1rem; padding: 0.6rem 1rem; }
+    .error { color: #b42318; margin-top: 0.8rem; display: none; }
+    .hint { color: #57606a; font-size: 0.9rem; }
+    a { color: #0969da; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1 id="login-heading">Campus Portal Demo</h1>
+    <p class="hint">Учебное приложение для КТ 04 (seeded defects).</p>
+    <p class="hint">Валидные данные: student / student123</p>
+    <form id="login-form">
+      <label for="username">Логин</label>
+      <input id="username" name="username" type="text" autocomplete="username">
+      <label for="password">Пароль</label>
+      <input id="password" name="password" type="password" autocomplete="current-password">
+      <button id="login-submit" type="submit">Войти</button>
+    </form>
+    <p id="login-error" class="error" role="alert">Неверный логин или пароль</p>
+    <p><a id="go-register" href="register.html">Регистрация</a></p>
+  </div>
+  <script>
+    // Expected: empty password must be rejected.
+    // SEED-001: accepts login when username is non-empty even if password is empty.
+    document.getElementById("login-form").addEventListener("submit", function (event) {
+      event.preventDefault();
+      var user = document.getElementById("username").value.trim();
+      var pass = document.getElementById("password").value;
+      var error = document.getElementById("login-error");
+      error.style.display = "none";
+
+      var validCombo = user === "student" && pass === "student123";
+      var seedBypass = user.length > 0 && pass.length === 0; // SEED-001
+
+      if (validCombo || seedBypass) {
+        sessionStorage.setItem("campusUser", user);
+        window.location.href = "dashboard.html";
+        return;
+      }
+      error.style.display = "block";
+    });
+  </script>
+</body>
+</html>

@@ -4,10 +4,10 @@
 
 | КТ | Статус | Тесты | Отчёт | Примечания |
 |---|---|---|---|---|
-| 01 | DONE | PASS | DONE | Selenium Chrome + ya.ru; регрессия при КТ 03: PASS; отчёт `reports/KT01.docx` |
-| 02 | DONE | PASS | DONE | Окна/iframe; регрессия при КТ 03: 6 PASS; отчёт `reports/KT02.docx` |
-| 03 | DONE | PASS | DONE | Page Object; `4 passed in 14.90s`; скриншоты `screenshots/kt03/`; отчёт `reports/KT03.docx` |
-| 04 | TODO | NOT RUN | TODO | Баг-репорты / трекер |
+| 01 | DONE | PASS | DONE | Регрессия при КТ 04: PASS; `reports/KT01.docx` |
+| 02 | DONE | PASS | DONE | Регрессия при КТ 04: PASS; `reports/KT02.docx` |
+| 03 | DONE | PASS | DONE | Регрессия при КТ 04: PASS; `reports/KT03.docx` |
+| 04 | DONE | MIXED | DONE | Campus Portal Demo; `2 passed, 3 failed` (seeded); Issues #1–#3 Open; `reports/KT04.docx` |
 | 05 | TODO | NOT RUN | TODO | Функциональные тесты |
 | 06 | TODO | NOT RUN | TODO | Appium |
 | 07 | TODO | NOT RUN | TODO | Grid |
@@ -17,33 +17,27 @@
 | 11 | TODO | NOT RUN | TODO | 10 Robot тестов |
 | 12 | TODO | NOT RUN | TODO | 10 gRPC тестов |
 
-Значения: TODO — не начато, IN PROGRESS — в процессе, DONE — выполнено с реальными доказательствами, BLOCKED — есть препятствие. Тесты: PASS / FAIL / SKIP / NOT RUN.
+Значения: TODO — не начато, IN PROGRESS — в процессе, DONE — выполнено с реальными доказательствами, BLOCKED — есть препятствие. Тесты: PASS / FAIL / SKIP / NOT RUN / MIXED.
 
-## КТ 01 — факт прогона
+## КТ 04 — факт прогона
 
-- Среда: Windows 11 (10.0.26100), Python 3.13.9, Selenium 4.50.0, pytest 8.4.2, Google Chrome 154.0.8037.98.
-- Команда: `pytest selenium\tests\test_kt01_ya_ru.py -v --browser=chrome`
-- Результат: PASS (исторический прогон и регрессии).
-- Доказательство: `screenshots/kt01/ya_ru_opened.png`
-- Отчёт: `reports/KT01.docx`
+- Приложение: `selenium/fixtures/kt04/` (Campus Portal Demo, учебные seeded-баги).
+- Команда: `pytest selenium\tests\test_kt04_defects.py -v --browser=chrome`
+- Результат: `3 failed, 2 passed in 18.08s`, exit code: 1, warnings: нет (после регистрации маркера kt04).
+  - TC-01 valid login — PASS
+  - TC-02 empty password — FAIL (SEED-001)
+  - TC-03 invalid email — FAIL (SEED-002)
+  - TC-04 zero quantity — FAIL (SEED-003)
+  - TC-05 valid order — PASS
+- Регрессия КТ 01–03: `11 passed in 53.55s`, exit code: 0.
+- Скриншоты: `screenshots/kt04/tc01_*.png` … `tc05_*.png`
+- Документы: `bug-reports/test-plan.md`, `test-cases.md`, `bug-reports.md`, `defect-summary.md`
+- GitHub Issues (Open):
+  - https://github.com/JEESUScrised/college-testing/issues/1
+  - https://github.com/JEESUScrised/college-testing/issues/2
+  - https://github.com/JEESUScrised/college-testing/issues/3
+- Отчёт: `reports/KT04.docx`
 
-## КТ 02 — факт прогона
+## КТ 01–03 (кратко)
 
-- Команда: `pytest selenium\tests\test_kt02_windows.py selenium\tests\test_kt02_iframe.py -v --browser=chrome`
-- Результат: `6 passed`; регрессия при КТ 03 подтверждена в общем прогоне 7 tests (KT01+KT02).
-- Скриншоты: `screenshots/kt02/`
-- Отчёт: `reports/KT02.docx`
-
-## КТ 03 — факт прогона
-
-- Среда: Windows 11, Python 3.13.9, Selenium 4.50.0, pytest 8.4.2, Chrome 154.0.8037.98.
-- Классы: `selenium/pages/base_page.py`, `windows_page.py` (`WindowsPage`/`WindowsMainPage`, `WindowsSecondaryPage`), `iframe_page.py`.
-- Команда: `pytest selenium\tests\test_kt03_page_object.py -v --browser=chrome`
-- Результат: `4 passed in 14.90s`, warnings: нет, exit code: 0.
-  - `test_po_open_secondary_window` PASS
-  - `test_po_switch_and_verify_secondary_content` PASS
-  - `test_po_close_secondary_and_return` PASS
-  - `test_po_iframe_interact_and_return_to_default` PASS
-- Регрессия КТ 01+02: `7 passed in 29.05s`, exit code: 0.
-- Скриншоты: `screenshots/kt03/01_*.png` … `09_*.png`
-- Отчёт: `reports/KT03.docx` (генератор `reports/build_kt03_docx.py`)
+См. предыдущие разделы и отчёты `reports/KT01.docx` … `KT03.docx`. Регрессия при сдаче КТ 04 подтверждена.

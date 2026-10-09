@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Campus Portal Demo — Регистрация</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 480px; margin: 2rem auto; background: #f4f6f8; }
+    .card { background: #fff; padding: 1.5rem; border: 1px solid #d0d7de; border-radius: 8px; }
+    label { display: block; margin-top: 0.8rem; font-weight: 600; }
+    input { width: 100%; padding: 0.5rem; box-sizing: border-box; }
+    button { margin-top: 1rem; padding: 0.6rem 1rem; }
+    .error { color: #b42318; margin-top: 0.8rem; display: none; }
+    .success { color: #1a7f37; margin-top: 0.8rem; display: none; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1 id="register-heading">Регистрация</h1>
+    <form id="register-form">
+      <label for="reg-name">Имя</label>
+      <input id="reg-name" type="text">
+      <label for="reg-email">Email</label>
+      <input id="reg-email" type="text">
+      <label for="reg-password">Пароль</label>
+      <input id="reg-password" type="password">
+      <button id="register-submit" type="submit">Зарегистрироваться</button>
+    </form>
+    <p id="register-error" class="error" role="alert">Некорректный email</p>
+    <p id="register-success" class="success" role="status">Регистрация успешна</p>
+    <p><a id="back-login" href="index.html">Назад ко входу</a></p>
+  </div>
+  <script>
+    // Expected: email must match simple pattern local@domain.tld
+    // SEED-002: treats any string containing "@" as valid (e.g. user@mail).
+    function isEmailValidSeeded(email) {
+      return email.indexOf("@") !== -1; // intentionally weak
+    }
+    function isEmailValidExpected(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+    document.getElementById("register-form").addEventListener("submit", function (event) {
+      event.preventDefault();
+      var name = document.getElementById("reg-name").value.trim();
+      var email = document.getElementById("reg-email").value.trim();
+      var password = document.getElementById("reg-password").value;
+      var error = document.getElementById("register-error");
+      var success = document.getElementById("register-success");
+      error.style.display = "none";
+      success.style.display = "none";
+
+      if (!name || !password) {
+        error.textContent = "Заполните имя и пароль";
+        error.style.display = "block";
+        return;
+      }
+      // SEED-002 path:
+      if (!isEmailValidSeeded(email)) {
+        error.textContent = "Некорректный email";
+        error.style.display = "block";
+        return;
+      }
+      // For documentation helpers only — expected check would reject user@mail.
+      window.__expectedEmailValid = isEmailValidExpected(email);
+      success.style.display = "block";
+    });
+  </script>
+</body>
+</html>

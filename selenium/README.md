@@ -69,3 +69,16 @@ pytest -m kt03 -v --browser=chrome
 ```
 
 Скриншоты: `screenshots/kt03/`.
+
+## КТ 04: дефекты и баг-трекинг
+
+Учебное приложение: `selenium/fixtures/kt04/` (Campus Portal Demo, seeded bugs).
+Документация: `bug-reports/`.
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+pytest selenium\tests\test_kt04_defects.py -v --browser=chrome
+```
+
+Ожидаемо: 2 PASS + 3 FAIL (тесты проверяют корректное поведение против seeded-дефектов).
+Скриншоты: `screenshots/kt04/`.
