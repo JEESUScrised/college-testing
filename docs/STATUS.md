@@ -11,13 +11,22 @@
 | 05 | DONE | MIXED | DONE | VDNH; полный прогон **9 PASS / 1 FAIL** (98.63 с); целевой show_more **PASS** (11.60 с) — отдельно; **не** один прогон 10/10; `reports/KT05.docx` |
 | 06 | DONE | PASS | DONE | AVD `Medium_Phone_API_36.1` (API 36); suite **7 PASS** (44.63 с); `reports/KT06.docx` |
 | 07 | DONE | PASS | DONE | Grid 4.50 Standalone **5 PASS** (4.88 с); Hub+Node verified; `reports/KT07.docx` |
-| 08 | TODO | NOT RUN | TODO | Визуальное сравнение |
+| 08 | DONE | PASS | DONE | Pillow visual regression; suite **5 PASS** (13.71 с); `reports/KT08.docx` |
 | 09 | TODO | NOT RUN | TODO | Свайпы |
 | 10 | TODO | NOT RUN | TODO | Браузеры + отчеты |
 | 11 | TODO | NOT RUN | TODO | 10 Robot тестов |
 | 12 | TODO | NOT RUN | TODO | 10 gRPC тестов |
 
 Значения: TODO / IN PROGRESS / DONE / BLOCKED. Тесты: PASS / FAIL / SKIP / NOT RUN / MIXED.
+
+## КТ 08 — Visual regression (Selenium + Pillow)
+
+- Утилита: `selenium/visual/compare.py` (tolerance, diff%, mask/overlay, без auto-resize/auto-baseline).
+- Baseline: `selenium/baselines/kt08/home_baseline.png` (Chrome, 1384×849).
+- Фикстуры: `selenium/fixtures/kt08/*.html` (локальные, без VDNH).
+- Suite: **5 passed in 13.71s** — match 0%; text/color 1.11%; layout 5.06%; significant 99.85%; dimension mismatch 1384×849 vs 884×549.
+- Артефакты: `screenshots/kt08/`, `selenium/artifacts/kt08/`; отчёт `reports/KT08.docx`.
+- Презентация cloud.ithub.ru недоступна без логина — соответствие скрытым слайдам не утверждается.
 
 ## КТ 07 — Selenium Grid 4
 

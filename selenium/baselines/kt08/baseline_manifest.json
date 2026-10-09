@@ -1,0 +1,16 @@
+{
+  "file": "home_baseline.png",
+  "source_fixture": "selenium/fixtures/kt08/home.html",
+  "captured_at": "2026-10-09T19:23:27.323143+00:00",
+  "browser": "chrome",
+  "window_size": [
+    1400,
+    1000
+  ],
+  "image_size": [
+    1384,
+    849
+  ],
+  "tool": "selenium/visual/generate_kt08_baselines.py",
+  "note": "Approved baseline for KT08 visual regression. Do not overwrite on test failure."
+}
