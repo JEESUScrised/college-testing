@@ -55,3 +55,17 @@ pytest -m kt02 -v --browser=chrome
 ```powershell
 pytest selenium\tests -v --browser=chrome
 ```
+
+## КТ 03: Page Object
+
+Классы страниц: `selenium/pages/` (`BasePage`, `WindowsMainPage`/`WindowsSecondaryPage`, `IframePage`).
+Тесты используют те же локальные HTML-фикстуры КТ 02.
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+pytest selenium\tests\test_kt03_page_object.py -v --browser=chrome
+# или
+pytest -m kt03 -v --browser=chrome
+```
+
+Скриншоты: `screenshots/kt03/`.
