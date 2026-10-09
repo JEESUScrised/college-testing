@@ -34,6 +34,8 @@ report.html
 selenium/artifacts/
 selenium/drivers/*.exe
 selenium/drivers/*.zip
+selenium/grid/runtime/
+selenium/grid/server.meta
 mobile/artifacts/
 grpc/generated/
 

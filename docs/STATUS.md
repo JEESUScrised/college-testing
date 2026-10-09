@@ -10,7 +10,7 @@
 | 04 | DONE | MIXED | DONE | seeded FAIL; Issues #1–#3; `reports/KT04.docx` |
 | 05 | DONE | MIXED | DONE | VDNH; полный прогон **9 PASS / 1 FAIL** (98.63 с); целевой show_more **PASS** (11.60 с) — отдельно; **не** один прогон 10/10; `reports/KT05.docx` |
 | 06 | DONE | PASS | DONE | AVD `Medium_Phone_API_36.1` (API 36); suite **7 PASS** (44.63 с); `reports/KT06.docx` |
-| 07 | TODO | NOT RUN | TODO | Grid |
+| 07 | DONE | PASS | DONE | Grid 4.50 Standalone **5 PASS** (4.88 с); Hub+Node verified; `reports/KT07.docx` |
 | 08 | TODO | NOT RUN | TODO | Визуальное сравнение |
 | 09 | TODO | NOT RUN | TODO | Свайпы |
 | 10 | TODO | NOT RUN | TODO | Браузеры + отчеты |
@@ -18,6 +18,17 @@
 | 12 | TODO | NOT RUN | TODO | 10 gRPC тестов |
 
 Значения: TODO / IN PROGRESS / DONE / BLOCKED. Тесты: PASS / FAIL / SKIP / NOT RUN / MIXED.
+
+## КТ 07 — Selenium Grid 4
+
+- JAR: `selenium-server-4.50.0` (SeleniumHQ release; вне Git).
+- Скрипты: `selenium/grid/start_standalone.ps1`, `start_hub_node.ps1`, `stop_grid.ps1`, `health_check.ps1`.
+- Bind: `127.0.0.1`; Node port **5556** (5555 занят qemu/emulator).
+- Event Bus принудительно `tcp://127.0.0.1:4442/4443` (иначе VPN 26.x ломал регистрацию Node).
+- Фикстура `grid_driver` (RemoteWebDriver); локальный `driver` KT01–KT05 не изменён.
+- Standalone suite: **5 passed in 4.88s**; Hub+Node: node `http://127.0.0.1:5556`, 2 PASS proof.
+- Документы: `docs/kt07/`, `selenium/grid/README.md`; отчёт `reports/KT07.docx`.
+- Кросс-машинный Grid не разворачивался (честно задокументировано).
 
 ## КТ 06 — Appium Android
 
