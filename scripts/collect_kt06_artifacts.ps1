@@ -1,4 +1,4 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
 <#
 .SYNOPSIS
   Сбор логов и результатов KT06 в mobile/artifacts/summary_*.md

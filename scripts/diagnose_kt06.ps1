@@ -1,4 +1,4 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
 <#
 .SYNOPSIS
   Диагностика среды KT06 (Android / Appium). Обновляет mobile/environment-report.md.

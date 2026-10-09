@@ -1,4 +1,4 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
 <#
 .SYNOPSIS
   Однократный прогон KT06 Appium-тестов. Требует готовое устройство/эмулятор и Appium :4723.

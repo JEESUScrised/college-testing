@@ -1,4 +1,4 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
 <#
 .SYNOPSIS
   Запуск локальных сервисов KT06: эмулятор (если есть AVD) + Appium 3 на :4723.
@@ -41,8 +41,8 @@ if ($devices.Count -gt 0) {
     }
     Write-Step "Запуск эмулятора $AvdName (один раз)"
     Start-Process -FilePath $emu -ArgumentList @("-avd", $AvdName, "-netdelay", "none", "-netspeed", "full") -WindowStyle Normal
-    Write-Host "Ожидание boot completed..."
-    $deadline = (Get-Date).AddMinutes(3)
+    Write-Host "Ожидание boot completed (до 8 минут)..."
+    $deadline = (Get-Date).AddMinutes(8)
     do {
         Start-Sleep -Seconds 5
         $devices = Get-ReadyAndroidDevices -AdbPath $adb
@@ -53,7 +53,7 @@ if ($devices.Count -gt 0) {
         }
     } while (-not $booted -and (Get-Date) -lt $deadline)
     if (-not $booted) {
-        Fail "Эмулятор не загрузился за 3 минуты. Проверьте AVD вручную."
+        Fail "Эмулятор не загрузился за 8 минут. Проверьте AVD вручную."
     }
     Write-Ok ("Эмулятор готов: " + $devices[0])
 } else {
@@ -68,16 +68,19 @@ if (Test-AppiumListening) {
         Fail "Appium не найден. cd mobile; npm ci; npx appium driver install uiautomator2"
     }
     New-Item -ItemType Directory -Force -Path $paths.Artifacts | Out-Null
-    $log = Join-Path $paths.Artifacts ("appium_" + (Get-Date -Format "yyyyMMdd_HHmmss") + ".log")
+    $stamp = Get-Date -Format "yyyyMMdd_HHmmss"
+    # Separate stdout/stderr: PowerShell Start-Process cannot redirect both to the same file
+    $logOut = Join-Path $paths.Artifacts ("appium_${stamp}_stdout.log")
+    $logErr = Join-Path $paths.Artifacts ("appium_${stamp}_stderr.log")
     $proc = Start-Process -FilePath $paths.AppiumCmd -ArgumentList @("--address", "127.0.0.1", "--port", "4723") `
-        -WorkingDirectory $paths.Mobile -RedirectStandardOutput $log -RedirectStandardError $log -PassThru -WindowStyle Hidden
-    Write-Host "Appium PID=$($proc.Id), log=$log"
+        -WorkingDirectory $paths.Mobile -RedirectStandardOutput $logOut -RedirectStandardError $logErr -PassThru -WindowStyle Hidden
+    Write-Host "Appium PID=$($proc.Id), stdout=$logOut, stderr=$logErr"
     $ok = $false
     for ($i = 0; $i -lt 30; $i++) {
         Start-Sleep -Seconds 1
         if (Test-AppiumListening) { $ok = $true; break }
     }
-    if (-not $ok) { Fail "Appium не ответил на /status за 30 с. См. $log" }
+    if (-not $ok) { Fail "Appium не ответил на /status за 30 с. См. $logOut / $logErr" }
     Write-Ok "Appium запущен"
 }
 

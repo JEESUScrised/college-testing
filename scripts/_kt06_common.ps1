@@ -1,4 +1,4 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
 # Shared helpers for KT06 / future KT09 Appium scripts. Dot-source from sibling scripts.
 
 $ErrorActionPreference = "Stop"
@@ -41,8 +41,39 @@ function Initialize-AndroidEnv {
     }
 
     if (-not $env:JAVA_HOME -or -not (Test-Path $env:JAVA_HOME)) {
-        $jdk = "C:\Program Files\Eclipse Adoptium\jdk-17.0.1.12-hotspot"
-        if (Test-Path $jdk) { $env:JAVA_HOME = $jdk }
+        $jdkCandidates = @(
+            "C:\Program Files\Android\Android Studio\jbr",
+            "C:\Program Files\Java\jdk-22",
+            "C:\Program Files\Java\jdk-21",
+            "C:\Program Files\Eclipse Adoptium\jdk-17.0.1.12-hotspot"
+        )
+        # Prefer any installed Temurin/Microsoft JDK under common roots
+        foreach ($root in @(
+            "C:\Program Files\Eclipse Adoptium",
+            "C:\Program Files\Microsoft",
+            "C:\Program Files\Java"
+        )) {
+            if (Test-Path $root) {
+                Get-ChildItem $root -Directory -ErrorAction SilentlyContinue |
+                    Where-Object { $_.Name -match '^(jdk|jbr)' } |
+                    Sort-Object Name -Descending |
+                    ForEach-Object { $jdkCandidates += $_.FullName }
+            }
+        }
+        foreach ($jdk in ($jdkCandidates | Select-Object -Unique)) {
+            $javaExe = Join-Path $jdk "bin\java.exe"
+            if ((Test-Path $jdk) -and (Test-Path $javaExe)) {
+                $env:JAVA_HOME = $jdk
+                break
+            }
+        }
+    }
+
+    if ($env:JAVA_HOME -and (Test-Path (Join-Path $env:JAVA_HOME "bin"))) {
+        $javaBin = Join-Path $env:JAVA_HOME "bin"
+        if (($env:Path -split ";") -notcontains $javaBin) {
+            $env:Path = "$javaBin;$env:Path"
+        }
     }
 
     return $sdk
@@ -57,8 +88,14 @@ function Get-AdbPath {
 
 function Get-ReadyAndroidDevices {
     param([string]$AdbPath)
-    $lines = & $AdbPath devices | Where-Object { $_ -match "\tdevice$" }
-    return @($lines | ForEach-Object { ($_ -split "\s+")[0] })
+    # Force array: a single matching line must not be enumerated as characters
+    $lines = @(& $AdbPath devices | Where-Object { $_ -match "\tdevice$" })
+    return @(
+        $lines | ForEach-Object {
+            $id = ($_ -split "\s+")[0]
+            if ($id) { $id }
+        }
+    )
 }
 
 function Test-AppiumListening {

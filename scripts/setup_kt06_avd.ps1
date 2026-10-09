@@ -1,4 +1,4 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
 <#
 .SYNOPSIS
   Установка system image API 33 + создание AVD KT06_API33 (для KT06/KT09).

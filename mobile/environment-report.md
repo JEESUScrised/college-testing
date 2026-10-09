@@ -1,21 +1,21 @@
 # KT06 — отчёт аудита среды (Android / Appium)
 
-Дата аудита: **2026-10-09 13:32** (локальный Windows).
+Дата аудита: **2026-10-09 21:15** (новый Windows ПК после миграции).
 
 ## Итог
 
 | Компонент | Статус |
 |---|---|
-| Node.js / npm | OK (совместимо с Appium 3) |
-| Java JDK + JAVA_HOME | OK |
-| Android SDK + adb + emulator binary | OK |
+| Node.js / npm | OK (v22.14.0 / 10.9.2) |
+| Java JDK + JAVA_HOME | OK (Android Studio JBR 21) |
+| Android SDK + adb + emulator | OK |
 | Appium 3 + UiAutomator2 | OK (doctor: 0 required fixes) |
-| ApiDemos APK | OK (скачан, SHA-256 совпадает) |
-| System images / AVD | **ОТСУТСТВУЮТ** |
-| Физическое Android-устройство | **НЕ ПОДКЛЮЧЕНО** |
-| Готовность к запуску UI-тестов | **BLOCKED** |
+| ApiDemos APK | OK (SHA-256 совпадает) |
+| System images / AVD | OK — `Medium_Phone_API_36.1` (API 36) |
+| Физическое Android-устройство | не использовалось |
+| Готовность к запуску UI-тестов | **READY** |
 
-**Вывод:** проект KT06 подготовлен, но **реальный прогон Appium невозможен** без AVD (нужен system image, несколько ГБ) или подключённого устройства с USB debugging. Автоматическая загрузка образов эмулятора **не выполнялась**.
+**Вывод:** блокер снят. Прогон выполнен на существующем AVD `Medium_Phone_API_36.1`. Image API 33 / AVD `KT06_API33` **не** устанавливались (вариант B).
 
 ---
 
@@ -23,24 +23,27 @@
 
 | Компонент | Версия / путь |
 |---|---|
-| OS | Windows 10.0.26100 |
-| Node.js | v25.0.0 (`^20.19.0 \|\| ^22.12.0 \|\| >=24.0.0` — OK для Appium 3) |
-| npm | 11.6.2 (≥10 — OK) |
-| Java | OpenJDK Temurin **17.0.1** |
-| JAVA_HOME | `C:\Program Files\Eclipse Adoptium\jdk-17.0.1.12-hotspot\` |
-| Python | 3.13.9 |
+| OS | Windows 10.0.19045 (AMD64) |
+| CPU | AMD Ryzen 5 5600; VirtualizationFirmwareEnabled=True |
+| Acceleration | AEHD 2.2 installed and usable |
+| RAM | ~16 ГБ |
+| Node.js | v22.14.0 |
+| npm | 10.9.2 |
+| Java | OpenJDK **21.0.9** (Android Studio JBR) |
+| JAVA_HOME | `C:\Program Files\Android\Android Studio\jbr` |
+| Python | 3.13.2 |
 | pytest | 8.4.2 |
 | Appium (local `mobile/`) | **3.8.0** |
 | Driver | **uiautomator2@8.7.0** |
 | Appium-Python-Client | 5.3.1 (venv) |
-| ANDROID_HOME / ANDROID_SDK_ROOT | `C:\Users\admnp\AppData\Local\Android\Sdk` |
-| adb | 1.0.41 / **37.0.0-14910828** |
-| emulator.exe | присутствует |
-| platforms | android-33, android-36, android-36.1 |
-| system-images | **НЕ УСТАНОВЛЕНЫ** |
-| AVD (`emulator -list-avds`) | **пусто** |
-| `adb devices` | список пуст (нет устройств/эмуляторов) |
-| Android Studio | не найден в типичных путях |
+| ANDROID_HOME | `C:\Users\user\AppData\Local\Android\Sdk` |
+| adb | 1.0.41 / **36.0.2-14143358** |
+| emulator | 36.4.9.0 |
+| platforms | android-34, android-36, android-36.1 |
+| system-images | `android-36.1;google_apis_playstore;x86_64` |
+| AVD | **Medium_Phone_API_36.1** |
+| `adb devices` | `emulator-5554 device` (API 36 / Android 16) |
+| Android Studio | установлена (использован только JBR + уже имеющийся SDK) |
 | ApiDemos APK | `mobile/apps/ApiDemos-debug.apk`, 6521217 bytes |
 | SHA-256 APK | `A9EECF37B26CD084855C530DB81C2BB1B91F4C1B095A04F47AA7C20E2791F686` |
 
@@ -61,59 +64,11 @@ Running 7 doctor checks for the "uiautomator2" driver
 Diagnostic completed, 0 required fixes needed, 3 optional fixes possible.
 ```
 
-Опциональные предупреждения не блокируют базовые UiAutomator2 UI-тесты.
-
 ---
 
-## Приложение под тест
+## Фактический прогон
 
-- Источник: https://github.com/appium/android-apidemos
-- Релиз: v6.0.18
-- Package: `io.appium.android.apis`
-- Activity: `.ApiDemos`
-- Подробности: `mobile/apps/README.md`
-
----
-
-## Что нужно для снятия BLOCKED
-
-### Вариант A — эмулятор (рекомендуется для учёбы)
-
-1. Установить **Android Studio** или SDK Command-line Tools.
-2. Через SDK Manager скачать **system image** (например `system-images;android-34;google_apis;x86_64`) — **несколько гигабайт**.
-3. Создать AVD:
-
-```powershell
-$env:ANDROID_HOME = "$env:LOCALAPPDATA\Android\Sdk"
-& "$env:ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat" "system-images;android-34;google_apis;x86_64"
-& "$env:ANDROID_HOME\cmdline-tools\latest\bin\avdmanager.bat" create avd -n Pixel_API_34 -k "system-images;android-34;google_apis;x86_64" -d pixel
-```
-
-4. Запустить эмулятор один раз, затем:
-
-```powershell
-.\scripts\diagnose_kt06.ps1
-.\scripts\start_kt06_services.ps1
-.\scripts\run_kt06.ps1
-```
-
-### Вариант B — физическое устройство
-
-1. Включить «Для разработчиков» → USB debugging.
-2. Подключить USB, разрешить отладку.
-3. Проверить: `adb devices` показывает `device`.
-4. Запустить те же скрипты KT06.
-
----
-
-## Совместимость с KT09
-
-Среда спроектирована для повторного использования:
-
-- тот же Appium 3 + uiautomator2 (`mobile/package.json`);
-- те же Python-зависимости (`mobile/requirements.txt`);
-- тот же APK / package;
-- session-scoped driver в `mobile/conftest.py` (один эмулятор на suite);
-- скрипты сервисов и диагностики в `scripts/`.
-
-KT09 **не реализован** в этом коммите.
+- Диагностика: `test_app_starts_and_shows_home` — **PASS** (14.94 с).
+- Suite №1: **6 PASS / 1 FAIL** (56.33 с) — FAIL `test_views_textfields_input` (нужен scroll).
+- После фикса scroll: точечный PASS + suite №2 **7 PASS** (44.63 с).
+- Отчёт: `reports/KT06.docx`.

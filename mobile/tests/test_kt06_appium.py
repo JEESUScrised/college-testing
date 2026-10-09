@@ -10,10 +10,10 @@ from pages.api_demos_pages import AlertDialogsPage, ApiDemosHomePage, ViewsTextF
 
 
 def _open_path(driver, wait, *labels: str) -> None:
-    """Open nested ApiDemos menu items by accessibility id."""
+    """Open nested ApiDemos menu items by accessibility id (scroll if off-screen)."""
+    page = ApiDemosHomePage(driver)
     for label in labels:
-        locator = (AppiumBy.ACCESSIBILITY_ID, label)
-        wait.until(EC.element_to_be_clickable(locator)).click()
+        page.click_menu_item(label)
 
 
 @pytest.mark.kt06

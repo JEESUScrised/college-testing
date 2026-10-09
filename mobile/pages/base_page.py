@@ -37,6 +37,29 @@ class BaseMobilePage:
     def press_back(self) -> None:
         self.driver.back()
 
+    def scroll_into_view_by_description(self, description: str) -> WebElement:
+        """Scroll a scrollable list until accessibility/content-desc is visible."""
+        # Escape double quotes for UiSelector string literal
+        safe = description.replace("\\", "\\\\").replace('"', '\\"')
+        locator = (
+            AppiumBy.ANDROID_UIAUTOMATOR,
+            "new UiScrollable(new UiSelector().scrollable(true))"
+            f'.scrollIntoView(new UiSelector().description("{safe}"))',
+        )
+        return self.find(locator)
+
+    def click_menu_item(self, name: str) -> None:
+        """Open ApiDemos list item by accessibility id, scrolling if needed."""
+        locator = self.by_accessibility_id(name)
+        self.driver.implicitly_wait(0)
+        try:
+            visible = self.driver.find_elements(*locator)
+            if not visible or not visible[0].is_displayed():
+                self.scroll_into_view_by_description(name)
+        finally:
+            self.driver.implicitly_wait(0)
+        self.click(locator)
+
     def by_accessibility_id(self, value: str) -> tuple[str, str]:
         return (AppiumBy.ACCESSIBILITY_ID, value)
 
