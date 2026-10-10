@@ -36,6 +36,9 @@ def pytest_configure(config: pytest.Config) -> None:
     config.addinivalue_line(
         "markers", "kt10_failure_demo: intentional failure for screenshot-on-failure demo"
     )
+    config.addinivalue_line(
+        "markers", "kt10_responsive: KT10 responsive Sauce Demo viewport matrix"
+    )
     ARTIFACTS.mkdir(parents=True, exist_ok=True)
     SCREENSHOTS.mkdir(parents=True, exist_ok=True)
 

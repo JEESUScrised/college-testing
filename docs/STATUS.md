@@ -13,7 +13,7 @@
 | 07 | DONE | PASS | DONE | Grid 4.50 Standalone **5 PASS** (4.88 с); Hub+Node verified; `reports/KT07.docx` |
 | 08 | DONE | PASS | DONE | Public Sauce Demo + Allure; Full **9 PASS** (34.64 с); Pillow history 5/13.71с; `reports/KT08.docx` |
 | 09 | DONE | PASS | DONE | Appium gestures Android; suite **5 PASS** (54.93 с); iOS NOT RUN; `reports/KT09.docx` |
-| 10 | DONE | PASS | DONE | Chrome×Firefox 5×2 **10 PASS** (52.92 с); listeners+HTML/JUnit; `reports/KT10.docx` |
+| 10 | DONE | PASS | DONE | Functional 10/52.92с + responsive Sauce **6 PASS** (42.73 с, 36 rows); `reports/KT10.docx` |
 | 11 | DONE | PASS | DONE | Robot Framework 7.5 + SeleniumLibrary; **10 PASS** (28.39 с); `reports/KT11.docx` |
 | 12 | DONE | PASS | DONE | Inventory gRPC; **10 PASS** (2.34 с); `reports/KT12.docx` |
 
@@ -44,14 +44,12 @@
 - Артефакты: `robot/artifacts/kt11/` (gitignore); скриншоты `screenshots/kt11/`; отчёт `reports/KT11.docx`.
 - Презентация cloud.ithub.ru недоступна без логина — соответствие скрытым слайдам не утверждается.
 
-## КТ 10 — Кроссбраузерность, отчёты, listeners
+## КТ 10 — Кроссбраузерность + responsive (remediation 2026-10-10)
 
-- Матрица: Chrome 155.0.8059.39 × Firefox 157.0.1; 5 сценариев × 2 = **10 PASS / 52.92 с**.
-- Инфра: `selenium/crossbrowser/` (`EventFiringWebDriver` + `Kt10EventListener`, отдельный `kt10_driver`).
-- Отчёты: pytest-html + JUnit; `events.jsonl`, `run_summary.jsonl`, `browser_comparison.json`.
-- Failure demo: намеренный FAIL → `FAIL_chrome_….png` (screenshot-on-failure).
-- Скриншоты: `screenshots/kt10/`; документы: `docs/kt10/`; отчёт `reports/KT10.docx`.
-- Презентация cloud.ithub.ru недоступна без логина — соответствие скрытым слайдам не утверждается.
+- Исторический functional: Chrome×Firefox 5×2 = **10 PASS / 52.92 с** + listener (сохранён).
+- Новое: Sauce Demo responsive **6 PASS / 42.73 с** (36 matrix rows; overflow не найден).
+- CDP Chrome tablet/phone; Firefox = window resize (не Android/iOS).
+- `screenshots/kt10/responsive/`; `reports/KT10.docx` обновлён.
 
 ## КТ 09 — Жесты Appium (Android; iOS не выполнялся)
 

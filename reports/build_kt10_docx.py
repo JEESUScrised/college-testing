@@ -1,4 +1,4 @@
-"""Generate reports/KT10.docx from verified cross-browser evidence (Russian)."""
+"""Generate reports/KT10.docx — historical functional + responsive remediation."""
 
 from __future__ import annotations
 
@@ -11,36 +11,34 @@ from docx.shared import Cm, Pt
 
 ROOT = Path(__file__).resolve().parents[1]
 SHOTS = ROOT / "screenshots" / "kt10"
+RESP = SHOTS / "responsive"
 OUTPUT = Path(__file__).resolve().parent / "KT10.docx"
 
-RESULTS = [
-    ("TC-10-01", "title + URL + capabilities", "chrome", "PASS"),
-    ("TC-10-01", "title + URL + capabilities", "firefox", "PASS"),
-    ("TC-10-02", "DOM click", "chrome", "PASS"),
-    ("TC-10-02", "DOM click", "firefox", "PASS"),
-    ("TC-10-03", "form validation", "chrome", "PASS"),
-    ("TC-10-03", "form validation", "firefox", "PASS"),
-    ("TC-10-04", "window switch", "chrome", "PASS"),
-    ("TC-10-04", "window switch", "firefox", "PASS"),
-    ("TC-10-05", "iframe switch", "chrome", "PASS"),
-    ("TC-10-05", "iframe switch", "firefox", "PASS"),
+HIST = [
+    ("TC-10-01", "title/URL", "chrome/firefox", "PASS"),
+    ("TC-10-02", "DOM click", "chrome/firefox", "PASS"),
+    ("TC-10-03", "form validation", "chrome/firefox", "PASS"),
+    ("TC-10-04", "window switch", "chrome/firefox", "PASS"),
+    ("TC-10-05", "iframe switch", "chrome/firefox", "PASS"),
 ]
 
-IMAGES = [
-    ("chrome_01_home_title.png", "Рисунок 1 — Chrome: home / title"),
-    ("firefox_01_home_title.png", "Рисунок 2 — Firefox: home / title"),
-    ("chrome_02_dom_click.png", "Рисунок 3 — Chrome: DOM click"),
-    ("firefox_02_dom_click.png", "Рисунок 4 — Firefox: DOM click"),
-    ("chrome_04_form_valid.png", "Рисунок 5 — Chrome: форма OK"),
-    ("firefox_04_form_valid.png", "Рисунок 6 — Firefox: форма OK"),
-    ("chrome_05_secondary_window.png", "Рисунок 7 — Chrome: второе окно"),
-    ("firefox_05_secondary_window.png", "Рисунок 8 — Firefox: второе окно"),
-    ("chrome_07_inside_iframe.png", "Рисунок 9 — Chrome: iframe"),
-    ("firefox_07_inside_iframe.png", "Рисунок 10 — Firefox: iframe"),
-    (
-        "FAIL_chrome_test_intentional_failure_for_screenshot_hook[chrome].png",
-        "Рисунок 11 — Controlled FAIL: screenshot-on-failure",
-    ),
+RESP_CASES = [
+    ("TC10-R01", "layout / overflow"),
+    ("TC10-R02", "login form"),
+    ("TC10-R03", "inventory"),
+    ("TC10-R04", "burger menu"),
+    ("TC10-R05", "cart"),
+    ("TC10-R06", "checkout form"),
+]
+
+COMPLIANCE = [
+    ("Публичное адаптивное приложение", "Sauce Demo", "PASS"),
+    ("Разные браузеры", "Chrome + Firefox", "PASS"),
+    ("Desktop/tablet/phone", "1440×900 / 768×1024 / 390×844", "PASS"),
+    ("Меню/кнопки/формы", "R02–R06", "PASS"),
+    ("Адаптация размеров", "viewport JSONL + screenshots", "PASS"),
+    ("Документирование проблем", "overflow: none observed", "PASS"),
+    ("Отчёт с рекомендациями", "KT10.docx + docs/kt10/", "PASS"),
 ]
 
 
@@ -74,132 +72,81 @@ def add_code(doc, code):
         p.paragraph_format.space_after = Pt(0)
 
 
-def add_shot(doc, filename, caption):
-    path = SHOTS / filename
+def add_shot(doc, path: Path, caption: str, w=9.0):
     if not path.is_file():
-        add_para(doc, f"[Нет файла: {filename}]")
+        add_para(doc, f"[Нет файла: {path.name}]")
         return
-    doc.add_picture(str(path), width=Cm(7.5))
+    doc.add_picture(str(path), width=Cm(w))
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     run = p.add_run(caption)
-    set_run_font(run, size_pt=11)
+    set_run_font(run, size_pt=10)
+
+
+def add_table(doc, headers, rows):
+    t = doc.add_table(rows=1, cols=len(headers))
+    t.style = "Table Grid"
+    for i, h in enumerate(headers):
+        t.rows[0].cells[i].text = h
+    for row in rows:
+        cells = t.add_row().cells
+        for i, v in enumerate(row):
+            cells[i].text = v
+    add_para(doc, "")
 
 
 def build() -> Path:
     doc = Document()
-    section = doc.sections[0]
-    section.top_margin = Cm(2)
-    section.bottom_margin = Cm(2)
-    section.left_margin = Cm(2.5)
-    section.right_margin = Cm(1.5)
+    for s in doc.sections:
+        s.top_margin = Cm(2)
+        s.bottom_margin = Cm(2)
+        s.left_margin = Cm(2.5)
+        s.right_margin = Cm(1.5)
 
     add_para(doc, "Дисциплина: Модульное тестирование веб-приложений", center=True)
-    add_para(doc, "Студент: _______________________________________", center=True)
-    add_para(doc, "")
-    add_para(
-        doc,
-        "КТ №10. Кроссбраузерное тестирование, отчёты и listeners",
-        bold=True,
-        center=True,
-    )
-    add_para(doc, "Отчёт по контрольной точке", center=True)
-    add_para(doc, "Дата: 2026-10-10", center=True)
+    add_para(doc, "КТ №10. Кроссбраузерное / адаптивное тестирование", bold=True, center=True)
+    add_para(doc, "Дата remediation: 2026-10-10", center=True)
 
-    add_heading(doc, "1. Цель")
+    add_heading(doc, "1. Цель (оригинал презентации)")
     add_para(
         doc,
-        "Реализовать матрицу Chrome × Firefox (5 сценариев × 2 браузера), "
-        "подключить Selenium WebDriver Event Listener и pytest-отчёты "
-        "(HTML, JUnit, screenshot-on-failure).",
-    )
-    add_para(
-        doc,
-        "Презентация cloud.ithub.ru (КТ10) без авторизации недоступна; "
-        "полное соответствие скрытым слайдам не утверждается.",
-        bold=True,
+        "Протестировать публичное адаптивное веб-приложение в разных браузерах "
+        "с эмуляцией desktop/tablet/smartphone, проверить меню/формы/раскладку, "
+        "зафиксировать проблемы и подготовить отчёт.",
     )
 
-    add_heading(doc, "2. Среда")
+    add_heading(doc, "2. Публичный сайт")
+    add_para(doc, "https://www.saucedemo.com/ — login, inventory, menu, cart, checkout.")
+
+    add_heading(doc, "3. Responsive матрица (новое)")
+    add_para(doc, "Chrome CDP (tablet/phone) + window resize; Firefox — только resize.")
+    add_table(doc, ["ID", "Сценарий"], RESP_CASES)
+    add_code(doc, "============================= 6 passed in 42.73s ==============================")
+    add_para(doc, "36 evidence rows; horizontal overflow: none observed.")
+    for name, cap in [
+        ("chrome_phone_r02_login_form.png", "Chrome phone — login"),
+        ("firefox_phone_r03_inventory.png", "Firefox phone — inventory"),
+        ("chrome_tablet_r04_menu_open.png", "Chrome tablet — menu"),
+        ("chrome_desktop_r06_checkout.png", "Chrome desktop — checkout validation"),
+    ]:
+        add_shot(doc, RESP / name, cap)
+
+    add_heading(doc, "4. Исторический functional suite (сохранён)")
+    add_para(doc, "Локальные фикстуры + EventFiringWebDriver listener. Не перезапускался в remediation.")
+    add_table(doc, ["ID", "Сценарий", "Browsers", "Status"], HIST)
+    add_code(doc, "============================= 10 passed in 52.92s ==============================")
+    add_shot(doc, SHOTS / "chrome_01_home_title.png", "Исторический Chrome home", 8)
+    add_shot(doc, SHOTS / "firefox_01_home_title.png", "Исторический Firefox home", 8)
+
+    add_heading(doc, "5. Compliance")
+    add_table(doc, ["Требование", "Реализация", "Статус"], COMPLIANCE)
+
+    add_heading(doc, "6. Заключение")
     add_para(
         doc,
-        "Windows 10; Python 3.13.2; Selenium 4.50.0; pytest 8.4.2; "
-        "pytest-html 4.2.0; Chrome 155.0.8059.39; Firefox 157.0.1.",
+        "Добавлена responsive матрица Sauce Demo (6/6 PASS, 42.73 с). "
+        "Критичных проблем раскладки не обнаружено. Listener/functional suite сохранены.",
     )
-    add_para(
-        doc,
-        "Код: selenium/crossbrowser/ (отдельный kt10_driver на EventFiringWebDriver; "
-        "корневой driver KT01–08 не изменён).",
-    )
-
-    add_heading(doc, "3. Listener vs pytest hook")
-    add_para(
-        doc,
-        "Kt10EventListener (AbstractEventListener): before/after navigate и click, "
-        "on_exception → selenium/artifacts/kt10/events.jsonl.",
-    )
-    add_para(
-        doc,
-        "pytest_runtest_makereport: run_summary.jsonl, PNG при FAIL, extras в HTML-отчёте.",
-    )
-
-    add_heading(doc, "4. Команды")
-    add_code(
-        doc,
-        r""".\scripts\diagnose_kt10.ps1
-.\scripts\run_kt10.ps1""",
-    )
-
-    add_heading(doc, "5. Результаты матрицы 5×2")
-    add_para(doc, "Диагностика: DIAGNOSE_PASS. Suite: 10 passed in 52.92s, exit 0.")
-    table = doc.add_table(rows=1, cols=4)
-    table.style = "Table Grid"
-    hdr = table.rows[0].cells
-    hdr[0].text, hdr[1].text, hdr[2].text, hdr[3].text = (
-        "ID",
-        "Сценарий",
-        "Браузер",
-        "Статус",
-    )
-    for row in RESULTS:
-        cells = table.add_row().cells
-        for i, val in enumerate(row):
-            cells[i].text = val
-    add_para(doc, "")
-    add_code(doc, "============================= 10 passed in 52.92s =============================")
-    add_para(
-        doc,
-        "browser_comparison.json: chrome 5 passed / firefox 5 passed "
-        "(версии 155.0.8059.39 и 157.0.1).",
-    )
-
-    add_heading(doc, "6. Controlled failure demo")
-    add_para(
-        doc,
-        "Отдельный прогон test_kt10_failure_demo.py: 1 failed (ожидаемо). "
-        "Создан FAIL_chrome_….png и запись в failures.jsonl — доказательство "
-        "screenshot-on-failure hook.",
-    )
-
-    add_heading(doc, "7. Скриншоты")
-    for path, caption in IMAGES:
-        add_shot(doc, path, caption)
-
-    add_heading(doc, "8. Ограничения")
-    add_para(
-        doc,
-        "Локальные HTML-фикстуры (без публичных сайтов). Edge/Safari не входили "
-        "в выбранную матрицу A. Размеры viewport Chrome/Firefox слегка отличаются "
-        "(1384×849 vs 1384×907).",
-    )
-
-    add_heading(doc, "9. Заключение")
-    add_para(
-        doc,
-        "КТ 10 выполнена: EventFiringWebDriver + listener, pytest HTML/JUnit, "
-        "матрица 10/10 PASS, failure demo с скриншотом, отчёт. KT11/KT12 не начинались.",
-    )
-
     doc.save(OUTPUT)
     return OUTPUT
 
@@ -207,21 +154,11 @@ def build() -> Path:
 def verify(path: Path) -> None:
     doc = Document(str(path))
     text = "\n".join(p.text for p in doc.paragraphs if p.text.strip())
-    required = [
-        "КТ №10. Кроссбраузерное тестирование, отчёты и listeners",
-        "10 passed in 52.92s",
-        "Event Listener",
-        "Заключение",
-    ]
-    missing = [r for r in required if r not in text]
-    if missing:
-        raise SystemExit(f"DOCX missing: {missing}")
-    n_pics = sum(1 for r in doc.part.rels.values() if "image" in r.reltype)
-    if n_pics < 10:
-        raise SystemExit(f"Expected >=10 images, got {n_pics}")
-    print(f"OK {path} images={n_pics} chars={len(text)}")
+    for req in ["6 passed in 42.73s", "10 passed in 52.92s", "saucedemo", "Compliance"]:
+        if req not in text:
+            raise SystemExit(f"missing {req}")
+    print(f"OK {path} size={path.stat().st_size}")
 
 
 if __name__ == "__main__":
-    out = build()
-    verify(out)
+    verify(build())
