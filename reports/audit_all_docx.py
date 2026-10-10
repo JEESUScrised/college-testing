@@ -52,7 +52,13 @@ def audit_one(path: Path) -> dict:
         info["title_guess"] = paras[min(5, len(paras) - 1)][:120]
     joined = "\n".join(paras)
     info["has_conclusion"] = "Заключение" in joined or "заключение" in joined
-    info["placeholder_fields"] = "____" in joined or "Студент:" in joined
+    info["placeholder_fields"] = (
+        "____" in joined
+        or "Преподаватель" in joined
+        or "ФИО преподавателя" in joined
+        or "Проверил:" in joined
+        or "Проверил :" in joined
+    )
     info["missing_image_markers"] = joined.count("Скриншот отсутствует") + joined.count("Нет файла:")
     if info["pictures"] == 0 and "KT12" not in path.name:
         # KT12 may be lighter on screenshots

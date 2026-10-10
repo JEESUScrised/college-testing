@@ -1,8 +1,6 @@
 {
   "discipline": "Модульное тестирование веб-приложений",
-  "institution": "",
-  "student": "",
-  "teacher": "",
-  "group": "",
-  "note": "Fill non-empty strings before final personalization. Empty values render as underscore placeholders. Do not invent names."
+  "student": "Прилепов Никита Алексеевич",
+  "group": "4P1.23",
+  "note": "Institution omitted (not verified). Teacher field removed from all reports."
 }
