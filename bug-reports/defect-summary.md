@@ -11,7 +11,7 @@
 | Jira Bugs | **3** (KAN-4, KAN-5, KAN-6) |
 | Jira Done | **3** |
 | Lifecycle retest PASS | **3** (8.74 с) |
-| Native Components | **0** (labels substitute — PARTIAL) |
+| Native Components | **UNAVAILABLE** on team-managed (POST 405); labels substitute |
 
 ## Связь
 
@@ -26,7 +26,7 @@
 | View | URL |
 |---|---|
 | Saved filter | https://collegeqakt04.atlassian.net/issues/?filter=10002 |
-| Dashboard | https://collegeqakt04.atlassian.net/jira/dashboards/10001 |
+| Dashboard (configured charts) | https://collegeqakt04.atlassian.net/jira/dashboards/10001 |
 | Summary | https://collegeqakt04.atlassian.net/jira/software/projects/KAN/summary |
 
 See `docs/kt04/jira-reporting.md` and `docs/kt04/jira-remote-verification.json`.

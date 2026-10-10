@@ -1,19 +1,76 @@
 ﻿{
-  "verified_at": "2026-10-11T01:50:00+03:00",
+  "verified_at": "2026-10-11T02:14:00+03:00",
   "site": "https://collegeqakt04.atlassian.net",
-  "project": {"key": "KAN", "name": "College QA Defect Lifecycle", "style": "next-gen", "simplified": true},
-  "issues": [
-    {"key": "KAN-4", "type": "Баг", "priority": "High", "status": "Готово", "assignee": "JEESUS", "labels": ["authentication","educational","kt04","seed-001"], "components": [], "comments": 3},
-    {"key": "KAN-5", "type": "Баг", "priority": "High", "status": "Готово", "assignee": "JEESUS", "labels": ["educational","kt04","registration","seed-002"], "components": [], "comments": 3},
-    {"key": "KAN-6", "type": "Баг", "priority": "Medium", "status": "Готово", "assignee": "JEESUS", "labels": ["educational","kt04","order-processing","seed-003"], "components": [], "comments": 3}
-  ],
-  "kan4_status_history": ["Open→In Progress", "In Progress→Ready for Testing", "Ready for Testing→Done"],
-  "counts": {"totalBugs": 3, "openBugs": 0, "closedBugs": 3, "high": 2, "medium": 1},
-  "native_reporting": {
-    "saved_filter": {"id": "10002", "name": "KT04 KAN Bugs Done", "url": "https://collegeqakt04.atlassian.net/issues/?filter=10002"},
-    "dashboard": {"id": "10001", "name": "KT04 Defect Reports", "url": "https://collegeqakt04.atlassian.net/jira/dashboards/10001", "gadgets_configured": false},
-    "summary": "https://collegeqakt04.atlassian.net/jira/software/projects/KAN/summary",
-    "board_reports_url": "404 not-found on team-managed board"
+  "project": {
+    "key": "KAN",
+    "name": "College QA Defect Lifecycle",
+    "style": "next-gen",
+    "simplified": true,
+    "id": "10001"
   },
-  "components": {"native_field_on_issues": false, "api_list": [], "substitute": "labels", "status": "PARTIAL"}
+  "issues": [
+    {
+      "key": "KAN-4",
+      "type": "Баг",
+      "priority": "High",
+      "status": "Готово",
+      "assignee": "JEESUS",
+      "labels": ["authentication", "educational", "kt04", "seed-001"],
+      "components": []
+    },
+    {
+      "key": "KAN-5",
+      "type": "Баг",
+      "priority": "High",
+      "status": "Готово",
+      "assignee": "JEESUS",
+      "labels": ["educational", "kt04", "registration", "seed-002"],
+      "components": []
+    },
+    {
+      "key": "KAN-6",
+      "type": "Баг",
+      "priority": "Medium",
+      "status": "Готово",
+      "assignee": "JEESUS",
+      "labels": ["educational", "kt04", "order-processing", "seed-003"],
+      "components": []
+    }
+  ],
+  "counts": {
+    "totalBugs": 3,
+    "openBugs": 0,
+    "closedBugs": 3,
+    "high": 2,
+    "medium": 1
+  },
+  "components": {
+    "status": "UNAVAILABLE",
+    "rest_list": [],
+    "post_create": "405 Method Not Allowed on /rest/api/3/project/KAN/components",
+    "editmeta_components_field": null,
+    "settings_sidebar": "no Components admin entry (team-managed)",
+    "substitute": "labels authentication / registration / order-processing",
+    "note": "Native Components cannot be created on this team-managed project; do not migrate project solely for Components."
+  },
+  "native_reporting": {
+    "saved_filter": {
+      "id": "10002",
+      "name": "KT04 KAN Bugs Done",
+      "url": "https://collegeqakt04.atlassian.net/issues/?filter=10002"
+    },
+    "dashboard": {
+      "id": "10001",
+      "name": "KT04 Defect Reports",
+      "url": "https://collegeqakt04.atlassian.net/jira/dashboards/10001",
+      "gadgets_configured": true,
+      "gadgets": [
+        "Bugs by Status: ГОТОВО=3 (100%)",
+        "Bugs by Priority: High=2 (67%), Medium=1 (33%)",
+        "Priority x Status: Done×High=2, Done×Medium=1",
+        "KAN Bugs filter results: KAN-4/5/6"
+      ]
+    },
+    "summary": "https://collegeqakt04.atlassian.net/jira/software/projects/KAN/summary"
+  }
 }

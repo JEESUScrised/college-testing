@@ -18,8 +18,8 @@ Status values: PASS | PARTIAL | FAIL | BLOCKED | NOT RUN | PENDING
 | 04 | R04-03 | Workflow transitions | yes | changelog KAN-4 | Open→IP→RFT→Done | KT04.docx | PASS | Localized status names |
 | 04 | R04-04 | Assignment / comments | yes | JEESUS + 3 comments/issue | REST verified | KT04.docx | PASS | Single-account educational roles |
 | 04 | R04-05 | Fixes + retests | lifecycle copy | `kt04_lifecycle/` | **3 PASS / 8.74s** | KT04.docx | PASS | Seeded suite kept 2P/3F |
-| 04 | R04-06 | Native Components | labels only | jira-project.md | `components=[]` | KT04.docx | **PARTIAL** | Propose native comps; need approval |
-| 04 | R04-07 | Jira statistics/reports | filter+summary+dashboard | filter 10002; dash 10001 | screenshots/kt04/jira/final/ | KT04.docx | **PARTIAL** | Gadgets need UI filter; board Reports 404 |
+| 04 | R04-06 | Native Components | unavailable on team-managed | POST /components → **405** | labels substitute | KT04.docx | **PARTIAL** | Do not migrate project for Components |
+| 04 | R04-07 | Jira statistics/reports | filter+configured dashboard | filter 10002; dash 10001 | `08_dashboard_configured_stats.png` | KT04.docx | **PASS** | Charts live: Done=3, High=2, Medium=1 |
 | 05 | R05-01 | Choose/justify website | VDNH | website-selection.md | — | KT05.docx | PASS | — |
 | 05 | R05-02 | Black/gray/white strategy | documented | test-plan.md | — | KT05.docx | PASS | White-box N/A backend |
 | 05 | R05-03 | Scope + entry/exit | yes | test-plan.md | — | KT05.docx | PASS | — |
@@ -48,11 +48,10 @@ Status values: PASS | PARTIAL | FAIL | BLOCKED | NOT RUN | PENDING
 ## Prominent open items
 
 1. **KT09 manual** — `PENDING HUMAN VERIFICATION` (`mobile/docs/kt09-manual-execution-guide.md`).
-2. **KT04 Components** — **PARTIAL** (labels substitute on team-managed project; native Components not created without approval).
-3. **KT04 dashboard gadgets** — dashboard exists; charts need UI filter selection.
-4. **Personal DOCX fields** — fill `reports/report_metadata.json` (do not invent).
-5. **KT09 iOS** — NOT RUN.
-6. **KT07** — multi-node on one host (not multi-machine).
+2. **KT04 Components** — **PARTIAL / UNAVAILABLE** on team-managed KAN (POST 405); labels substitute; project not migrated.
+3. **Personal DOCX fields** — fill `reports/report_metadata.json` (do not invent).
+4. **KT09 iOS** — NOT RUN.
+5. **KT07** — multi-node on one host (not multi-machine).
 
 ## Title-page personal metadata
 

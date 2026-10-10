@@ -38,7 +38,7 @@ JIRA_SHOTS = [
     (JIRA_FINAL / "02_KAN-4_issue_comments.png", "Рисунок 10 — KAN-4 Done + 3 comments (remote verify)"),
     (JIRA_FINAL / "07_saved_filter_bugs_done.png", "Рисунок 11 — Saved filter KT04 KAN Bugs Done"),
     (JIRA_FINAL / "04_project_summary.png", "Рисунок 12 — Project Summary: Выполнено 3"),
-    (JIRA_FINAL / "05_dashboard_kt04_reports.png", "Рисунок 13 — Dashboard KT04 Defect Reports"),
+    (JIRA_FINAL / "08_dashboard_configured_stats.png", "Рисунок 13 — Dashboard: status/priority charts (configured)"),
 ]
 
 
@@ -119,9 +119,10 @@ def build() -> Path:
     add_para(doc, "Workflow: Open → In Progress → Ready for Testing → Done.")
     add_para(
         doc,
-        "Components: PARTIAL — native Components field empty on team-managed project; "
-        "labels authentication / registration / order-processing used as substitute "
-        "(not claimed as native Components).",
+        "Components: UNAVAILABLE on team-managed KAN — POST /components returns 405; "
+        "editmeta has no components field. Labels authentication / registration / "
+        "order-processing used as substitute (not claimed as native Components). "
+        "Project not migrated solely for Components.",
     )
 
     add_heading(doc, "3. Три реальных Jira Bug (REST verified)")
@@ -164,12 +165,13 @@ def build() -> Path:
     add_para(doc, "Saved filter: https://collegeqakt04.atlassian.net/issues/?filter=10002")
     add_para(doc, "Dashboard: https://collegeqakt04.atlassian.net/jira/dashboards/10001")
     add_para(doc, "Summary: https://collegeqakt04.atlassian.net/jira/software/projects/KAN/summary")
-    add_para(doc, "Totals: Bugs=3, Open=0, Done=3, High=2, Medium=1.")
+    add_para(doc, "Totals (re-verified): Bugs=3, Open=0, Done=3, High=2, Medium=1.")
     add_para(
         doc,
-        "Limitation: classic board Reports URL 404 on team-managed; "
-        "dashboard gadgets exist but need UI filter selection; Components breakdown N/A.",
+        "Dashboard gadgets configured on filter 10002: Bugs by Status (ГОТОВО=3), "
+        "Bugs by Priority (High=2 / Medium=1), Priority×Status, KAN Bugs list.",
     )
+    add_para(doc, "Limitation: native Components unavailable (405); Components breakdown N/A.")
 
     add_heading(doc, "10. Матрица соответствия")
     table = doc.add_table(rows=1, cols=3)
@@ -185,8 +187,8 @@ def build() -> Path:
         ("Переходы workflow", "PASS", "changelog → Done"),
         ("Исправление + retest", "PASS", "kt04_lifecycle 3/3"),
         ("Закрытие в Jira", "PASS", "Готово"),
-        ("Native Components", "PARTIAL", "labels substitute; field empty"),
-        ("Статистика / reports", "PARTIAL", "filter+summary PASS; gadgets UI pending"),
+        ("Native Components", "PARTIAL", "UNAVAILABLE on team-managed; labels substitute"),
+        ("Статистика / reports", "PASS", "filter + configured dashboard charts"),
     ]:
         cells = table.add_row().cells
         for i, val in enumerate(row):
@@ -199,7 +201,7 @@ def build() -> Path:
         "КТ 04: реальный Jira проект KAN с тремя Bugs (KAN-4/5/6), полный lifecycle до Done, "
         "локальные lifecycle-фиксы и Selenium retest 3/3 PASS. "
         "Исторический seeded 2/3 FAIL и GitHub #1–#3 сохранены. "
-        "Ограничения: ключ KAN; Components = labels (PARTIAL); dashboard gadgets need UI config.",
+        "Ограничения: ключ KAN; native Components UNAVAILABLE on team-managed (labels substitute).",
     )
 
     doc.save(OUTPUT)
@@ -209,6 +211,10 @@ def build() -> Path:
 def verify(path: Path) -> None:
     doc = Document(str(path))
     text = "\n".join(p.text for p in doc.paragraphs if p.text.strip())
+    for table in doc.tables:
+        for row in table.rows:
+            for cell in row.cells:
+                text += "\n" + cell.text
     required = [
         "работа с баг-трекером Jira",
         "collegeqakt04.atlassian.net",
@@ -217,7 +223,7 @@ def verify(path: Path) -> None:
         "KAN-6",
         "3 passed in 8.74s",
         "3 failed, 2 passed",
-        "PARTIAL",
+        "UNAVAILABLE",
         "Заключение",
     ]
     missing = [r for r in required if r not in text]
