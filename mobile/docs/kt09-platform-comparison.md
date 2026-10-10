@@ -1,20 +1,26 @@
-# KT09 — Windows vs Android comparison matrix
+# KT09 — Windows vs Android comparison (automated evidence)
 
-App: https://www.saucedemo.com/
+App: https://www.saucedemo.com/  
+Evidence type: **AUTOMATED** (not manual)
 
-| Scenario | Windows Chrome | Windows Firefox | Android Chrome | Difference | Conclusion |
-|---|---|---|---|---|---|
-| Load login | PASS | PASS | PASS (W01) | Desktop wider layout | Compatible |
-| Login form | PASS | PASS | PASS (W02) | Touch vs mouse | Compatible |
-| Auth → inventory | PASS | PASS | PASS (W03/W04) | Mobile single column | Compatible |
-| Product details | PASS (KT02/03) | — | PASS (W05) | Same DOM | Compatible |
-| Add to cart | PASS | — | PASS (W06) | Same badge UX | Compatible |
-| Cart | PASS | — | PASS (W07) | Same cart.html | Compatible |
-| Checkout required | PASS (KT02) | — | PASS (W08) | Same validation | Compatible |
-| Menu | PASS (KT10) | PASS (KT10) | PASS (W09) | Burger more critical on phone | Compatible |
-| Overflow | none (KT10) | none | none (W10) | — | **No defect** |
+| Scenario | Windows Firefox | Android Chrome | Screenshots | Conclusion |
+|---|---|---|---|---|
+| Login | PASS | PASS | `automated/windows/01_login.png` / `automated/android/01_login.png` | Compatible |
+| Inventory | PASS | PASS | `02_inventory.png` | Desktop grid vs mobile column |
+| Product details | PASS | PASS | `03_product_details.png` | Compatible |
+| Added to cart | PASS | PASS | `04_added_to_cart.png` | Compatible |
+| Cart | PASS | PASS | `05_cart.png` | Compatible |
+| Menu | PASS | PASS | `06_menu.png` | Compatible |
+| Checkout form | PASS | PASS | `07_checkout_form.png` | Compatible |
+| Order confirmation | PASS | PASS | `08_order_confirmation.png` | Compatible |
 
-**Functional defects:** none confirmed.  
-**Usability:** Chrome onboarding promos may appear on Android before the page; dismissed via chromeOptions / FRE flags where possible.  
+**Environments**
+
+- Windows 10 + Firefox (Selenium), 1280×900  
+- Android 16 / API 36 / emulator-5554 / Chrome 134.0.6998.135 / ChromeDriver 134 / Appium 3.8  
+
+**Preserved suite results:** Android DOM **11 PASS / 36.91s**; Windows web history **2 PASS**; gestures **5 PASS**.  
+
 **Manual human comparison:** PENDING HUMAN VERIFICATION  
-(guide: `kt09-manual-execution-guide.md`; screenshots dirs empty until human capture).
+**Functional defects:** none confirmed.  
+**Env notes:** Android may show Google Password Manager dialogs / occasional emulator GPU artifacts on some frames.

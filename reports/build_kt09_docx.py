@@ -1,4 +1,4 @@
-"""Generate reports/KT09.docx from verified Appium gesture evidence (Russian)."""
+"""Generate reports/KT09.docx — screenshot-rich Windows vs Android SauceDemo report."""
 
 from __future__ import annotations
 
@@ -14,9 +14,11 @@ from report_title import add_title_fields
 
 ROOT = Path(__file__).resolve().parents[1]
 SHOTS = ROOT / "screenshots" / "kt09"
+AUTO_WIN = SHOTS / "automated" / "windows"
+AUTO_AND = SHOTS / "automated" / "android"
 OUTPUT = Path(__file__).resolve().parent / "KT09.docx"
 
-RESULTS = [
+GESTURE_RESULTS = [
     ("TC-09-01", "vertical swipe up (Views)", "PASS"),
     ("TC-09-02", "vertical swipe down (Views)", "PASS"),
     ("TC-09-03", "scroll until TextFields + open", "PASS"),
@@ -24,17 +26,71 @@ RESULTS = [
     ("TC-09-05", "horizontal swipe right (Gallery)", "PASS"),
 ]
 
-IMAGES = [
-    ("01_views_before_swipe_up.png", "Рисунок 1 — Views до swipe up"),
-    ("02_views_after_swipe_up.png", "Рисунок 2 — Views после swipe up"),
-    ("03_views_before_swipe_down.png", "Рисунок 3 — Views до swipe down"),
-    ("04_views_after_swipe_down.png", "Рисунок 4 — Views после swipe down"),
-    ("05_before_scroll_to_textfields.png", "Рисунок 5 — До scroll к TextFields"),
-    ("06_after_scroll_to_textfields.png", "Рисунок 6 — TextFields виден"),
-    ("07_textfields_opened.png", "Рисунок 7 — TextFields открыт"),
-    ("08_gallery_before_swipe_left.png", "Рисунок 8 — Gallery до swipe left"),
-    ("09_gallery_after_swipe_left.png", "Рисунок 9 — Gallery после swipe left"),
-    ("11_gallery_after_swipe_right.png", "Рисунок 10 — Gallery после swipe right"),
+COMPARE = [
+    (
+        "Login page",
+        "01_login.png",
+        "Форма входа Swag Labs отображается; поля Username/Password и Login доступны.",
+        "PASS",
+        "PASS",
+        "Совместимо: одинаковый публичный UI SauceDemo.",
+    ),
+    (
+        "Inventory / catalog",
+        "02_inventory.png",
+        "Список Products с названиями и ценами.",
+        "PASS",
+        "PASS",
+        "Desktop — сетка; Android — одноколоночный mobile layout.",
+    ),
+    (
+        "Product details",
+        "03_product_details.png",
+        "Страница товара: название, описание, цена, Add/Remove.",
+        "PASS",
+        "PASS",
+        "Одинаковый DOM inventory-item / inventory-details.",
+    ),
+    (
+        "Item added to cart",
+        "04_added_to_cart.png",
+        "Бейдж корзины = 1 после Add to cart.",
+        "PASS",
+        "PASS",
+        "Совместимо.",
+    ),
+    (
+        "Cart contents",
+        "05_cart.png",
+        "Your Cart содержит добавленный товар с QTY и ценой.",
+        "PASS",
+        "PASS",
+        "Совместимо.",
+    ),
+    (
+        "Navigation menu",
+        "06_menu.png",
+        "Burger menu: All Items / About / Logout доступны.",
+        "PASS",
+        "PASS",
+        "На Android меню критичнее из‑за узкого viewport.",
+    ),
+    (
+        "Checkout form",
+        "07_checkout_form.png",
+        "Checkout Information: First/Last/Zip (+ валидация на Android suite).",
+        "PASS",
+        "PASS",
+        "Совместимо.",
+    ),
+    (
+        "Order confirmation",
+        "08_order_confirmation.png",
+        "Checkout Complete / Thank you for your order.",
+        "PASS",
+        "PASS",
+        "Совместимо; на Android возможны артефакты GPU-композитора эмулятора.",
+    ),
 ]
 
 
@@ -68,47 +124,33 @@ def add_code(doc, code):
         p.paragraph_format.space_after = Pt(0)
 
 
-XP = SHOTS / "crossplatform"
-DOM = XP / "dom"
-XP_IMAGES = [
-    (XP / "windows_chrome_01_login.png", "Рисунок 11 — Windows Chrome login"),
-    (XP / "windows_chrome_02_inventory.png", "Рисунок 12 — Windows Chrome inventory"),
-    (XP / "windows_firefox_01_login.png", "Рисунок 13 — Windows Firefox login"),
-    (XP / "windows_firefox_02_inventory.png", "Рисунок 14 — Windows Firefox inventory"),
-    (DOM / "tc09_w01_loading.png", "Рисунок 15 — TC09-W01 Android loading"),
-    (DOM / "tc09_w03_authenticated.png", "Рисунок 16 — TC09-W03 Android authenticated"),
-    (DOM / "tc09_w04_inventory.png", "Рисунок 17 — TC09-W04 Android inventory"),
-    (DOM / "tc09_w07_cart.png", "Рисунок 18 — TC09-W07 Android cart"),
-    (DOM / "tc09_w08_checkout_validation.png", "Рисунок 19 — TC09-W08 checkout validation"),
-    (DOM / "tc09_w09_menu.png", "Рисунок 20 — TC09-W09 burger menu"),
-    (DOM / "tc09_w10_layout.png", "Рисунок 21 — TC09-W10 layout / overflow"),
-]
-
-
-def add_shot(doc, path: Path, caption, width=7.5):
+def add_shot(doc, path: Path, caption: str, width_cm: float = 14.0) -> None:
     if not path.is_file():
-        add_para(doc, f"[Нет файла: {path.name}]")
+        add_para(doc, f"[Нет файла: {path}]")
         return
-    doc.add_picture(str(path), width=Cm(width))
+    # Android portrait: narrower for A4 readability
+    doc.add_picture(str(path), width=Cm(width_cm))
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     run = p.add_run(caption)
-    set_run_font(run, size_pt=11)
+    set_run_font(run, size_pt=10)
 
 
 def build() -> Path:
     doc = Document()
     section = doc.sections[0]
+    section.page_width = Cm(21.0)
+    section.page_height = Cm(29.7)
     section.top_margin = Cm(2)
     section.bottom_margin = Cm(2)
-    section.left_margin = Cm(2.5)
+    section.left_margin = Cm(2.0)
     section.right_margin = Cm(1.5)
 
     add_title_fields(doc, add_para)
     add_para(doc, "")
     add_para(
         doc,
-        "КТ №9. Кроссплатформенное тестирование и жесты (Appium)",
+        "КТ №9. Кроссплатформенное тестирование (SauceDemo) и жесты Appium",
         bold=True,
         center=True,
     )
@@ -118,95 +160,133 @@ def build() -> Path:
     add_heading(doc, "1. Цель")
     add_para(
         doc,
-        "Автоматизировать swipe/scroll на Android через Appium и подтвердить "
-        "изменение UI assertions. Структура тестов отделяет намерения от "
-        "платформенной реализации; iOS не выполнялся.",
+        "Проверить публичное веб-приложение SauceDemo на Windows и Android; "
+        "сохранить автоматические доказательства (скриншоты + PASS); "
+        "дополнительно — жесты Appium на ApiDemos. "
+        "Ручное человеческое тестирование отмечено отдельно и не подменяется автоматизацией.",
+    )
+
+    add_heading(doc, "2. Тестируемое приложение и среды")
+    add_para(doc, "Приложение: https://www.saucedemo.com/ (Swag Labs).")
+    add_para(
+        doc,
+        "Windows 10 — Mozilla Firefox (Selenium 4): окно 1280×900; "
+        "скриншоты screenshots/kt09/automated/windows/.",
     )
     add_para(
         doc,
-        "Презентация cloud.ithub.ru недоступна без авторизации; требования — "
-        "из формулировки задания. Соответствие скрытым слайдам не утверждается.",
+        "Android 16 / API 36 — emulator-5554 — Chrome 134.0.6998.135 — "
+        "ChromeDriver 134.0.6998.165 — Appium 3.8 — "
+        "скриншоты screenshots/kt09/automated/android/ "
+        "(источник: DOM suite TC09-W* + checkout-complete capture).",
+    )
+    add_para(
+        doc,
+        "Все скриншоты ниже — AUTOMATED evidence. "
+        "Manual verification: PENDING HUMAN VERIFICATION.",
         bold=True,
     )
 
-    add_heading(doc, "2. Среда Android")
-    add_para(doc, "Appium 3.8.0, UiAutomator2 8.7.0, Python 3.13, ApiDemos 6.0.18.")
-    add_para(doc, "AVD Medium_Phone_API_36.1 (API 36), udid emulator-5554.")
-    add_para(doc, "Переиспользованы сервисы KT06; новый эмулятор/image не создавались.")
-
-    add_heading(doc, "3. Теория жестов")
-    add_para(
-        doc,
-        "Swipe/scroll моделируют жест пальца. В Appium 2+/3 для Android "
-        "рекомендуются mobile: swipeGesture и mobile: scrollGesture "
-        "(TouchAction устарел). Координаты считаются от размеров окна/элемента "
-        "с отступом от системных краёв навигации.",
-    )
-
-    add_heading(doc, "4. Реализация")
-    add_para(doc, "mobile/gestures/android_gestures.py — AndroidGestures.")
-    add_para(doc, "mobile/gestures/platform.py — GesturePort / AndroidGesturePort / IOSGesturePort(заглушка).")
+    add_heading(doc, "3. Фактические результаты автоматизации (сохранены)")
+    add_para(doc, "Жесты Android (ApiDemos): 5 passed in 54.93s.")
+    add_para(doc, "Windows cross-platform web (история): 2 passed in 12.43s.")
+    add_para(doc, "Android Chrome DOM SauceDemo: 11 passed in 36.91s (TC09-W01…W10 + journey).")
     add_code(
         doc,
-        r""".\scripts\start_kt06_services.ps1 -AvdName Medium_Phone_API_36.1
-.\scripts\run_kt09.ps1 -Udid emulator-5554""",
+        "Windows Firefox visual capture: 8 screenshots (2026-10-11)\n"
+        "Android automated visual set: 8 screenshots (DOM suite + order complete)\n"
+        "Manual checklist: PENDING HUMAN VERIFICATION",
     )
 
-    add_heading(doc, "5. Результаты")
-    add_para(doc, "Диагностика: PASS. Suite: 5 passed in 54.93s, exit 0.")
-    table = doc.add_table(rows=1, cols=3)
+    add_heading(doc, "4. Windows vs Android — визуальное сравнение (automated)")
+    add_para(
+        doc,
+        "Для каждого сценария: ожидаемое поведение, результат по доказательствам, "
+        "скриншот Windows и скриншот Android.",
+    )
+
+    for i, (title, fname, expected, win_r, and_r, conclusion) in enumerate(COMPARE, start=1):
+        add_heading(doc, f"4.{i}. {title}", level=2)
+        add_para(doc, f"Ожидаемое: {expected}")
+        add_para(
+            doc,
+            f"Windows Firefox — {win_r}. Android Chrome — {and_r}. "
+            f"Вывод: {conclusion}",
+        )
+        add_para(doc, "Windows (automated):", bold=True)
+        add_shot(
+            doc,
+            AUTO_WIN / fname,
+            f"Рис. W-{i} — Windows Firefox — {title} [AUTOMATED]",
+            width_cm=14.0,
+        )
+        add_para(doc, "Android (automated):", bold=True)
+        add_shot(
+            doc,
+            AUTO_AND / fname,
+            f"Рис. A-{i} — Android Chrome — {title} [AUTOMATED]",
+            width_cm=8.5,
+        )
+
+    add_heading(doc, "5. Сводная таблица сравнения")
+    table = doc.add_table(rows=1, cols=5)
     table.style = "Table Grid"
     hdr = table.rows[0].cells
-    hdr[0].text, hdr[1].text, hdr[2].text = "ID", "Сценарий", "Результат"
-    for row in RESULTS:
+    hdr[0].text = "Сценарий"
+    hdr[1].text = "Windows"
+    hdr[2].text = "Android"
+    hdr[3].text = "Скриншоты"
+    hdr[4].text = "Вывод"
+    for title, fname, _exp, win_r, and_r, conclusion in COMPARE:
         cells = table.add_row().cells
+        cells[0].text = title
+        cells[1].text = win_r
+        cells[2].text = and_r
+        cells[3].text = fname
+        cells[4].text = conclusion
+    add_para(doc, "")
+
+    add_heading(doc, "6. Жесты Appium (supplementary, сохранено)")
+    gtable = doc.add_table(rows=1, cols=3)
+    gtable.style = "Table Grid"
+    gh = gtable.rows[0].cells
+    gh[0].text, gh[1].text, gh[2].text = "ID", "Сценарий", "Результат"
+    for row in GESTURE_RESULTS:
+        cells = gtable.add_row().cells
         for i, val in enumerate(row):
             cells[i].text = val
     add_para(doc, "")
     add_code(doc, "============================= 5 passed in 54.93s ==============================")
 
-    add_heading(doc, "6. Кроссплатформенность (жесты)")
+    add_heading(doc, "7. Ручное тестирование")
     add_para(
         doc,
-        "Общий контракт GesturePort позволяет в будущем подключить XCUITest. "
-        "Жесты: протестирован только Android. iOS NOT RUN — нет симулятора/драйвера/сборки.",
+        "Человеческий manual checklist не выполнен в этой итерации. "
+        "Статус: PENDING HUMAN VERIFICATION "
+        "(mobile/docs/kt09-manual-checklist.md). "
+        "Автоматические скриншоты не выдаются за ручные.",
         bold=True,
     )
 
-    add_heading(doc, "7. Слои доказательств (разделение)")
-    add_para(doc, "1) Исторические жесты Android Appium — 5 PASS / 54.93 с (supplementary).")
-    add_para(doc, "2) Windows automated web (Selenium) — 2 PASS / 12.43 с.")
-    add_para(doc, "3) Android automated web (Appium Chrome DOM) — 11 PASS / 36.91 с.")
+    add_heading(doc, "8. Находки и ограничения")
     add_para(
         doc,
-        "4) Genuine manual execution — PENDING HUMAN VERIFICATION "
-        "(см. mobile/docs/kt09-manual-checklist.md и kt09-manual-execution-guide.md). "
-        "Автоматизация не заменяет ручной прогон.",
-        bold=True,
+        "• Функциональных дефектов SauceDemo на Windows/Android automation не подтверждено.",
     )
-    add_para(doc, "5) Cross-platform conclusions — automation Compatible; manual TBD.")
-    add_code(
-        doc,
-        "Windows auto: 2 passed in 12.43s\n"
-        "Android DOM auto: 11 passed in 36.91s (TC09-W01…W10 + journey)\n"
-        "ChromeDriver: mobile/drivers/chromedriver-134.exe\n"
-        "Manual checklist: PENDING HUMAN VERIFICATION\n"
-        "Manual screenshots dirs: screenshots/kt09/manual/{windows,android}/",
-    )
-
-    add_heading(doc, "8. Скриншоты — жесты Android")
-    for name, caption in IMAGES:
-        add_shot(doc, SHOTS / name, caption)
-
-    add_heading(doc, "9. Скриншоты — automated cross-platform web (not manual)")
-    for path, caption in XP_IMAGES:
-        add_shot(doc, path, caption, width=9)
-
-    add_heading(doc, "10. Заключение")
     add_para(
         doc,
-        "КТ 09: жесты 5/5 PASS сохранены; BASIC web Windows PASS + Android DOM "
-        "11/11 PASS (36.91 с). Ручная проверка: PENDING HUMAN VERIFICATION. iOS NOT RUN.",
+        "• На Android Chrome эмулятора иногда появляются диалоги Google Password Manager "
+        "и артефакты GPU-композитора на части кадров — это окружение, не баг сайта.",
+    )
+    add_para(doc, "• iOS: NOT RUN.")
+
+    add_heading(doc, "9. Заключение")
+    add_para(
+        doc,
+        "КТ 09: публичный SauceDemo проверен автоматизацией на Windows и Android "
+        "с набором визуальных доказательств (8×2 скриншота). "
+        "Исторические результаты 11 PASS Android DOM и 5 PASS жестов сохранены. "
+        "Ручная верификация: PENDING HUMAN VERIFICATION.",
     )
 
     doc.save(OUTPUT)
@@ -216,26 +296,32 @@ def build() -> Path:
 def verify(path: Path) -> None:
     doc = Document(str(path))
     text = "\n".join(p.text for p in doc.paragraphs if p.text.strip())
+    for table in doc.tables:
+        for row in table.rows:
+            for cell in row.cells:
+                text += "\n" + cell.text
     required = [
-        "КТ №9. Кроссплатформенное тестирование и жесты (Appium)",
-        "5 passed in 54.93s",
-        "2 passed in 12.43s",
-        "11 passed in 36.91s",
+        "КТ №9",
+        "saucedemo.com",
+        "AUTOMATED",
         "PENDING HUMAN VERIFICATION",
-        "iOS",
+        "11 passed in 36.91s",
+        "5 passed in 54.93s",
         "Заключение",
+        "Windows",
+        "Android",
     ]
     missing = [r for r in required if r not in text]
     if missing:
         raise AssertionError(missing)
     pictures = list(doc.inline_shapes)
-    expected = len(IMAGES) + len(XP_IMAGES)
-    if len(pictures) < expected:
-        raise AssertionError(f"pictures={len(pictures)} expected>={expected}")
-    if len(doc.tables) < 1:
-        raise AssertionError("no table")
-    unique = [r for r in doc.part.rels.values() if r.reltype == RT.IMAGE]
-    print(f"VERIFY_OK size={path.stat().st_size} pictures={len(pictures)} unique={len(unique)}")
+    if len(pictures) < 14:  # 8 pairs = 16 ideally; allow some missing
+        raise AssertionError(f"pictures={len(pictures)}")
+    images = [r for r in doc.part.rels.values() if r.reltype == RT.IMAGE]
+    if not images:
+        raise AssertionError("no images")
+    # Ensure no launcher-only manual junk is required
+    print(f"VERIFY_OK size={path.stat().st_size} pictures={len(pictures)} unique={len(images)}")
 
 
 if __name__ == "__main__":

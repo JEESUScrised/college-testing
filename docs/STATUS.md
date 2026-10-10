@@ -12,7 +12,7 @@
 | 06 | DONE | PASS | DONE | AVD API 36; история **7 PASS / 44.63 с**; remediation **10 PASS / 67.70 с**; `reports/KT06.docx` |
 | 07 | DONE | PASS | DONE | Standalone 5 PASS + Hub+**2 Nodes** Chrome/Firefox **4 PASS** (7.72 с) + parallel overlap; `reports/KT07.docx` |
 | 08 | DONE | PASS | DONE | Public Sauce Demo + Allure; Full **9 PASS** (34.64 с); Pillow history 5/13.71с; `reports/KT08.docx` |
-| 09 | DONE | MIXED | DONE | Gestures 5 PASS + Android DOM **11 PASS / 36.91 с** + Win 2 PASS; manual PENDING; iOS NOT RUN; `reports/KT09.docx` |
+| 09 | DONE | MIXED | DONE | Gestures 5 PASS + Android DOM **11 PASS**; Win Firefox visual 8 shots + Android auto 8 shots; manual PENDING; `reports/KT09.docx` |
 | 10 | DONE | PASS | DONE | Functional 10/52.92с + responsive Sauce **6 PASS** (42.73 с, 36 rows); `reports/KT10.docx` |
 | 11 | DONE | PASS | DONE | Robot Framework 7.5 + SeleniumLibrary; **10 PASS** (28.39 с); `reports/KT11.docx` |
 | 12 | DONE | PASS | DONE | Inventory gRPC; **10 PASS** (2.34 с); `reports/KT12.docx` |
