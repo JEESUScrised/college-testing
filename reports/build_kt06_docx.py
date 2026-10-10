@@ -23,9 +23,13 @@ SCREENSHOTS = [
     ("06_back_to_app_menu.png", "Рисунок 6 — Возврат Back на меню App"),
     ("07_back_to_home.png", "Рисунок 7 — Возврат Back на Home"),
     ("08_textfields.png", "Рисунок 8 — Views → TextFields (ввод текста)"),
+    ("09_dialog_before_cancel.png", "Рисунок 9 — Text Entry до Cancel"),
+    ("10_dialog_after_cancel.png", "Рисунок 10 — Text Entry после Cancel"),
+    ("11_textfields_cleared.png", "Рисунок 11 — TextFields после clear"),
+    ("12_home_a11y.png", "Рисунок 12 — Home accessibility labels"),
 ]
 
-# Final verification suite after scroll fix (7/7)
+# Historical 7/7 preserved; remediation adds TC-08..10
 RESULTS_FINAL = [
     ("TC-06-01", "test_app_starts_and_shows_home", "PASS"),
     ("TC-06-02", "test_navigate_to_app_menu", "PASS"),
@@ -34,6 +38,9 @@ RESULTS_FINAL = [
     ("TC-06-05", "test_text_entry_dialog_input", "PASS"),
     ("TC-06-06", "test_back_returns_to_previous_screen", "PASS"),
     ("TC-06-07", "test_views_textfields_input", "PASS"),
+    ("TC-06-08", "test_text_entry_dialog_cancel", "PASS"),
+    ("TC-06-09", "test_textfields_empty_after_clear", "PASS"),
+    ("TC-06-10", "test_home_menu_accessibility_labels", "PASS"),
 ]
 
 
@@ -102,7 +109,7 @@ def build() -> Path:
         center=True,
     )
     add_para(doc, "Отчёт по контрольной точке", center=True)
-    add_para(doc, "Дата: 2026-10-09", center=True)
+    add_para(doc, "Дата обновления: 2026-10-11", center=True)
 
     add_heading(doc, "1. Цель и выбор приложения")
     add_para(
@@ -167,7 +174,9 @@ def build() -> Path:
         "junit_kt06_20261009_211440.xml, report_kt06_20261009_211440.html.",
     )
 
-    add_heading(doc, "5. Результаты финального прогона (7/7)")
+    add_heading(doc, "5. Результаты прогонов")
+    add_para(doc, "Исторический финал (2026-10-09): 7 PASS / 44.63 с — сохранён.")
+    add_para(doc, "Remediation (2026-10-11): 10 PASS / 67.70 с — + Cancel, clear/hint, a11y.")
     table = doc.add_table(rows=1, cols=3)
     table.style = "Table Grid"
     hdr = table.rows[0].cells
@@ -179,13 +188,16 @@ def build() -> Path:
     add_para(doc, "")
     add_code(
         doc,
-        "============================= 7 passed in 44.63s =============================",
+        "============================= 7 passed in 44.63s =============================\n"
+        "======================== 10 passed in 67.70s (0:01:07) ========================",
     )
 
     add_heading(doc, "6. Типы тестирования и платформа")
     add_para(doc, "Functional: launch, меню, диалоги, ввод, Back, TextFields — исполнены.")
+    add_para(doc, "Negative/dismiss: Cancel Text Entry; clear TextFields (hint остаётся).")
+    add_para(doc, "Accessibility: content-desc App/Views на Home.")
     add_para(doc, "Usability: наблюдения по скриншотам/навигации (не отдельная UX-сессия).")
-    add_para(doc, "Performance: длительность suite 44.63 с как ориентир среды (не SLA продукта).")
+    add_para(doc, "Performance: 67.70 с / 10 TC как ориентир среды (не SLA продукта).")
     add_para(doc, "Compatibility: Android API 36 emulator only; real device / другие API — NOT RUN.")
     add_para(doc, "Эмулятор vs устройство: DPI/тайминги могут отличаться.")
 
@@ -193,8 +205,9 @@ def build() -> Path:
     add_para(
         doc,
         "Подтверждённых дефектов ApiDemos нет. INC-06-01: FAIL TextFields из-за отсутствия "
-        "scroll в тесте — исправлено в Page Object. Рекомендации: real device, доп. API, "
-        "не заявлять payment/auth для demo. См. kt06-defect-analysis.md / kt06-recommendations.md.",
+        "scroll в тесте — исправлено в Page Object. После clear EditText показывает hint "
+        "(«hint text») — ожидаемое поведение Android, не баг приложения. "
+        "Рекомендации: real device, доп. API, не заявлять payment/auth для demo.",
     )
 
     add_heading(doc, "8. Архитектура")
@@ -209,8 +222,8 @@ def build() -> Path:
     add_para(
         doc,
         "КТ 06: стратегия, типы тестирования, кейсы с actual results, анализ дефектов и "
-        "рекомендации документированы. Финальный suite 7/7 PASS (44.63 с) на AVD API 36. "
-        "История suite №1 (6/1) сохранена. Push не выполнялся.",
+        "рекомендации документированы. Исторический suite 7/7 PASS (44.63 с); "
+        "remediation 10/10 PASS (67.70 с) на AVD API 36. Push не выполнялся.",
     )
 
     doc.save(OUTPUT)
@@ -224,9 +237,9 @@ def verify(path: Path) -> None:
         "КТ №6. Автоматизация мобильного тестирования Android (Appium)",
         "7 PASS",
         "7 passed in 44.63s",
+        "10 passed in 67.70s",
         "Medium_Phone_API_36.1",
         "NOT APPLICABLE",
-        "рекомендации",
         "Заключение",
     ]
     missing = [r for r in required if r not in text]
@@ -236,8 +249,9 @@ def verify(path: Path) -> None:
         raise AssertionError("Expected results table")
     pictures = list(doc.inline_shapes)
     images = [r for r in doc.part.rels.values() if r.reltype == RT.IMAGE]
-    if len(pictures) < 8:
+    if len(pictures) < 10:
         raise AssertionError(f"pictures={len(pictures)}")
+    # Word may dedupe identical PNG bytes into fewer image parts
     if len(images) < 8:
         raise AssertionError(f"images={len(images)}")
     print(

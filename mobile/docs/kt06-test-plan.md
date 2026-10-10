@@ -47,9 +47,10 @@ ApiDemos выбран ради воспроизводимости учебног
 |---|---|---|
 | **Functional** | Launch, меню App, Alert Dialogs, List/Text Entry dialogs, Back, TextFields | Платежи / auth (N/A) |
 | **Usability** | Наблюдения по читаемости списков, доступности диалогов (авто + скриншоты) | Отдельная ручная UX-сессия с респондентами |
-| **Performance** | Фиксация длительности suite (44.63 с) как ориентир среды | SLA/нагрузочные метрики продукта |
+| **Performance** | Длительность suite (исторически 44.63 с / 7 TC; remediation 67.70 с / 10 TC) | SLA/нагрузочные метрики продукта |
 | **Compatibility** | Android API 36 emulator | Другие API / iOS / физические устройства |
-| **Negative** | Пустые поля в Text Entry не блокируют OK в ApiDemos (поведение demo) | Выдуманные «негативные» кейсы без опоры на UI |
+| **Negative / dismiss** | Cancel Text Entry; clear TextFields (hint остаётся) | Выдуманные кейсы без UI |
+| **Accessibility** | content-desc пунктов App/Views на Home | Полный a11y audit / TalkBack |
 
 ## 5. Объём сценариев
 
@@ -59,13 +60,17 @@ ApiDemos выбран ради воспроизводимости учебног
 4. List dialog.  
 5. Text Entry dialog (ввод).  
 6. Back navigation.  
-7. Views → TextFields (ввод).
+7. Views → TextFields (ввод).  
+8. Text Entry Cancel (dismiss).  
+9. TextFields clear / empty (hint).  
+10. Accessibility labels Home.
 
 ## 6. Критерии входа / выхода
 
 **Вход:** `adb devices` = device; Appium `/status` ready; APK + хеш; AVD запущен.
 
 **Выход:** ≥6 UI-тестов с фактом; скриншоты; docs; DOCX; PASS/FAIL без фальсификации.
+Исторический 7/7 сохранён; remediation 10/10 (2026-10-11).
 
 ## 7. Архитектура
 

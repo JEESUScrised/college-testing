@@ -99,3 +99,48 @@ def test_views_textfields_input(driver, wait, save_screenshot):
     page.enter_text("KT06 Appium OK")
     save_screenshot("kt06", "08_textfields")
     assert "KT06 Appium OK" in page.value()
+
+
+@pytest.mark.kt06
+def test_text_entry_dialog_cancel(driver, wait, save_screenshot):
+    """Text Entry dialog: Cancel закрывает диалог без подтверждения."""
+    ApiDemosHomePage(driver).wait_loaded()
+    _open_path(driver, wait, "App", "Alert Dialogs")
+    page = AlertDialogsPage(driver).wait_loaded()
+    page.open_text_entry_dialog()
+    page.fill_text_entry("cancel_user", "tmp")
+    save_screenshot("kt06", "09_dialog_before_cancel")
+    page.cancel_dialog()
+    save_screenshot("kt06", "10_dialog_after_cancel")
+    assert not page.dialog_is_open()
+    assert page.find_visible(page.TEXT_ENTRY_DIALOG).is_displayed()
+
+
+@pytest.mark.kt06
+def test_textfields_empty_after_clear(driver, wait, save_screenshot):
+    """Views → TextFields: clear удаляет введённый текст (hint может остаться в .text)."""
+    ApiDemosHomePage(driver).wait_loaded()
+    _open_path(driver, wait, "Views", "TextFields")
+    page = ViewsTextFieldsPage(driver).wait_loaded()
+    page.enter_text("temporary")
+    assert "temporary" in page.value()
+    page.clear_text()
+    save_screenshot("kt06", "11_textfields_cleared")
+    cleared = page.value()
+    # ApiDemos EditText exposes android:hint ("hint text") when empty — not an app bug.
+    assert "temporary" not in cleared
+    assert cleared in ("", "hint text") or "hint" in cleared.lower()
+
+
+@pytest.mark.kt06
+def test_home_menu_accessibility_labels(driver, wait, save_screenshot):
+    """Home: ключевые пункты меню доступны по accessibility id (content-desc)."""
+    home = ApiDemosHomePage(driver).wait_loaded()
+    save_screenshot("kt06", "12_home_a11y")
+    for label in ("App", "Views"):
+        el = driver.find_element(AppiumBy.ACCESSIBILITY_ID, label)
+        assert el.is_displayed(), f"{label} should be visible"
+        desc = (el.get_attribute("contentDescription") or el.get_attribute("content-desc") or "").strip()
+        assert desc == label or el.text == label
+    assert home.has_category("App")
+    assert home.has_category("Views")

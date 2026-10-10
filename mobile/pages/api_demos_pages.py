@@ -41,6 +41,7 @@ class AlertDialogsPage(BaseMobilePage):
     LIST_DIALOG = (AppiumBy.ACCESSIBILITY_ID, "List dialog")
     TEXT_ENTRY_DIALOG = (AppiumBy.ACCESSIBILITY_ID, "Text Entry dialog")
     OK_BUTTON = (AppiumBy.ID, "android:id/button1")
+    CANCEL_BUTTON = (AppiumBy.ID, "android:id/button2")
     USERNAME = (AppiumBy.ID, "io.appium.android.apis:id/username_edit")
     PASSWORD = (AppiumBy.ID, "io.appium.android.apis:id/password_edit")
     ALERT_TITLE = (AppiumBy.ID, "android:id/alertTitle")
@@ -70,6 +71,17 @@ class AlertDialogsPage(BaseMobilePage):
     def confirm_dialog(self) -> None:
         self.click(self.OK_BUTTON)
 
+    def cancel_dialog(self) -> None:
+        self.click(self.CANCEL_BUTTON)
+        self.wait.until(EC.invisibility_of_element_located(self.USERNAME))
+
+    def dialog_is_open(self) -> bool:
+        self.driver.implicitly_wait(0)
+        try:
+            return len(self.driver.find_elements(*self.USERNAME)) > 0
+        finally:
+            self.driver.implicitly_wait(0)
+
 
 class ViewsTextFieldsPage(BaseMobilePage):
     """Views → TextFields screen."""
@@ -82,6 +94,10 @@ class ViewsTextFieldsPage(BaseMobilePage):
 
     def enter_text(self, value: str) -> None:
         self.type_text(self.EDIT, value)
+
+    def clear_text(self) -> None:
+        element = self.wait.until(EC.element_to_be_clickable(self.EDIT))
+        element.clear()
 
     def value(self) -> str:
         element = self.find(self.EDIT)
