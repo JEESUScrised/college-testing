@@ -2,9 +2,11 @@
 
 Все дефекты — **учебные seeded-баги** Campus Portal Demo.  
 Трекер (исторический): GitHub Issues [JEESUScrised/college-testing](https://github.com/JEESUScrised/college-testing) #1–#3.  
-**Jira:** проект `QAKT04` запланирован, создание **BLOCKED** (нет авторизованного доступа в этой сессии) — см. `docs/kt04/`.
+**Jira:** проект `QAKT04` **не создан** (BLOCKED: нет Atlassian login / нет одобрения на внешние действия).  
+Реестр: `docs/kt04/jira-issues.md` (без выдуманных ключей). CSV: `docs/kt04/jira-import-bugs.csv`.
 
-Lifecycle-фиксы и retest PASS: `selenium/fixtures/kt04_lifecycle/`, `test_kt04_lifecycle_retest.py` (3 PASS).  
+Lifecycle-фиксы и retest PASS: `selenium/fixtures/kt04_lifecycle/`, `test_kt04_lifecycle_retest.py`  
+(**3 PASS / 8.74 с**, 2026-10-11; ранее 3 PASS / 14.40 с).  
 Исходные seeded FAIL в `fixtures/kt04/` **не** переписывались.
 
 ---

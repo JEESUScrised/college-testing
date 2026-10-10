@@ -1,0 +1,65 @@
+Summary,Issue Type,Priority,Component,Description,Labels
+"Login accepts empty password",Bug,High,Authentication,"h2. Environment
+Windows + Chrome + Selenium 4; Campus Portal Demo fixtures/kt04
+
+h2. Preconditions
+Open index.html of seeded Campus Portal
+
+h2. Steps
+# Open login page
+# Enter username student
+# Leave password empty
+# Click Login
+
+h2. Test data
+username=student; password=<empty>
+
+h2. Expected
+Stay on login; show error
+
+h2. Actual
+Dashboard opens for student
+
+h2. Evidence
+screenshots/kt04/tc02_seed001_empty_password.png
+Selenium TC-02 FAIL (historical)
+GitHub: https://github.com/JEESUScrised/college-testing/issues/1
+
+h2. Lifecycle fix
+fixtures/kt04_lifecycle — empty password rejected; retest PASS",kt04 educational seed-001
+"Registration accepts email without TLD",Bug,High,Registration,"h2. Environment
+Windows + Chrome + Selenium 4; Campus Portal Demo
+
+h2. Steps
+# Open register.html
+# Name=Иван; email=user@mail; password=secret123
+# Submit
+
+h2. Expected
+Reject email without TLD
+
+h2. Actual
+Registration success shown
+
+h2. Evidence
+screenshots/kt04/tc03_seed002_invalid_email.png
+GitHub #2
+Lifecycle fix in kt04_lifecycle — retest PASS",kt04 educational seed-002
+"Order accepts quantity zero",Bug,Medium,Order Processing,"h2. Environment
+Windows + Chrome + Selenium 4; Campus Portal Demo
+
+h2. Steps
+# Login student/student123
+# Set quantity=0
+# Place order
+
+h2. Expected
+Reject qty<=0
+
+h2. Actual
+Order success with qty 0
+
+h2. Evidence
+screenshots/kt04/tc04_seed003_zero_quantity.png
+GitHub #3
+Lifecycle fix in kt04_lifecycle — retest PASS",kt04 educational seed-003

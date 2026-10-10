@@ -40,10 +40,6 @@ test_tc05_valid_order_passes PASSED
 exit code: 1
 """
 
-REGRESSION = """\
-KT01–KT03 regression: 11 passed in 53.55s, exit code 0
-"""
-
 
 def set_run_font(run, size_pt: float = 12, bold: bool = False, name: str = "Times New Roman") -> None:
     run.bold = bold
@@ -105,88 +101,86 @@ def build() -> Path:
     add_para(doc, "Преподаватель: _________________________________", center=True)
     add_para(doc, "Группа: ________________________________________", center=True)
     add_para(doc, "")
-    add_para(doc, "КТ №4. Документирование дефектов и баг-трекинг", bold=True, center=True)
+    add_para(
+        doc,
+        "КТ №4. Составление отчетов о дефектах и работа с баг-трекером Jira",
+        bold=True,
+        center=True,
+    )
     add_para(doc, "Отчёт по контрольной точке", center=True)
-    add_para(doc, "Дата выполнения: 2026-10-09", center=True)
+    add_para(doc, "Дата обновления: 2026-10-11", center=True)
 
-    add_heading(doc, "1. Цель работы")
+    add_heading(doc, "1. Цель работы (по заданию преподавателя)")
     add_para(
         doc,
-        "Цель КТ 04 — продемонстрировать полный цикл работы с дефектами: "
-        "выполнение тест-кейсов, обнаружение и воспроизведение ошибок, "
-        "оформление баг-репортов и регистрация задач в баг-трекере "
-        "(GitHub Issues как аналог Jira).",
+        "Ознакомиться с возможностями Jira; создать проект; настроить типы/приоритеты/"
+        "workflow/компоненты; оформить баг-репорты; назначить задачи; провести дефекты "
+        "по стадиям; исправить и перепроверить; закрыть; показать статистику и отчёты Jira.",
     )
 
-    add_heading(doc, "2. Инструменты и среда")
-    add_para(doc, "• Windows 11, Python 3.13.9, pytest 8.4.2, Selenium 4.50.0")
-    add_para(doc, "• Google Chrome 154.0.8037.98")
-    add_para(doc, "• Page Object (LoginPage, RegisterPage, DashboardPage)")
-    add_para(doc, "• Баг-трекер: GitHub Issues репозитория JEESUScrised/college-testing")
-
-    add_heading(doc, "3. Тестируемое приложение")
+    add_heading(doc, "2. Обзор Jira и фактический статус доступа")
     add_para(
         doc,
-        "Campus Portal Demo — локальное учебное HTML/JS-приложение "
-        "(вход, регистрация, заказ учебника). В код намеренно внедрены "
-        "три seeded-дефекта SEED-001…003. Это не дефекты production-системы.",
+        "Jira — система учёта задач/дефектов с workflow, назначениями, комментариями "
+        "и отчётностью. В этой сессии реального workspace нет: открыта страница "
+        "входа Atlassian (id.atlassian.com/login), MCP/API credentials отсутствуют. "
+        "Проект QAKT04 и issue keys НЕ создавались (не выдуманы).",
+        bold=True,
     )
-    add_para(doc, "Файлы: selenium/fixtures/kt04/*.html, seeded-bugs.md.")
 
-    add_heading(doc, "4. Тест-кейсы")
+    add_heading(doc, "3. Планируемая конфигурация проекта QAKT04")
+    add_para(doc, "Name: College QA Defect Lifecycle; Key: QAKT04; Kanban/Software если доступно.")
+    add_para(doc, "Issue types: Bug, Task, Improvement. Components: Authentication, Registration, Order Processing.")
+    add_para(doc, "Workflow (план): Open → In Progress → Ready for Testing → Done.")
+    add_para(doc, "Факт: конфигурация не применена — docs/kt04/jira-project.md.")
+
+    add_heading(doc, "4. Инструменты и среда")
+    add_para(doc, "Windows; Python 3.13; pytest 8.4.2; Selenium 4.50; Chrome.")
+    add_para(doc, "Page Object: LoginPage, RegisterPage, DashboardPage.")
+    add_para(doc, "Исторический трекер: GitHub Issues #1–#3. Jira: BLOCKED.")
+
+    add_heading(doc, "5. Учебное приложение Campus Portal Demo")
+    add_para(
+        doc,
+        "Локальное HTML/JS приложение (вход, регистрация, заказ). "
+        "Три намеренных seeded-дефекта в selenium/fixtures/kt04/. "
+        "Отдельная исправленная копия: selenium/fixtures/kt04_lifecycle/.",
+    )
+
+    add_heading(doc, "6. Исторические тест-кейсы (seeded)")
     add_para(doc, "TC-01 Валидный вход — PASS")
     add_para(doc, "TC-02 Пустой пароль должен отклоняться — FAIL (SEED-001)")
     add_para(doc, "TC-03 Email без TLD должен отклоняться — FAIL (SEED-002)")
     add_para(doc, "TC-04 Количество 0 должно отклоняться — FAIL (SEED-003)")
     add_para(doc, "TC-05 Валидный заказ — PASS")
-    add_para(doc, "Подробности: bug-reports/test-cases.md")
+    add_code(doc, KT04_OUTPUT)
 
-    add_heading(doc, "5. Баг-репорты")
-    add_para(
-        doc,
-        "BUG-KT04-001 / Issue #1 — вход с пустым паролем (Major/High, Open).",
-    )
-    add_para(
-        doc,
-        "BUG-KT04-002 / Issue #2 — email user@mail принимается (Major/High, Open).",
-    )
-    add_para(
-        doc,
-        "BUG-KT04-003 / Issue #3 — заказ с qty=0 (Minor/Medium, Open).",
-    )
-    add_para(doc, "Полные карточки: bug-reports/bug-reports.md")
+    add_heading(doc, "7. Три дефекта и баг-репорты")
+    add_para(doc, "BUG-KT04-001 / GitHub #1 — пустой пароль (Major/High). Jira key: не создан.")
+    add_para(doc, "BUG-KT04-002 / GitHub #2 — email user@mail (Major/High). Jira key: не создан.")
+    add_para(doc, "BUG-KT04-003 / GitHub #3 — qty=0 (Minor/Medium). Jira key: не создан.")
+    add_para(doc, "Карточки: bug-reports/bug-reports.md; registry: docs/kt04/jira-issues.md.")
 
-    add_heading(doc, "6. Баг-трекер (GitHub Issues)")
-    add_para(doc, "Созданы реальные issues (не черновики):")
+    add_heading(doc, "8. GitHub Issues (сохранены)")
     add_para(doc, "https://github.com/JEESUScrised/college-testing/issues/1")
     add_para(doc, "https://github.com/JEESUScrised/college-testing/issues/2")
     add_para(doc, "https://github.com/JEESUScrised/college-testing/issues/3")
-    add_para(doc, "Метки: bug, kt04, educational, severity:*, priority:*.")
 
-    add_heading(doc, "7. Фактические результаты прогона")
-    add_code(doc, KT04_OUTPUT)
-    add_code(doc, REGRESSION)
-    add_para(
-        doc,
-        "FAIL по TC-02/03/04 ожидаемы: автотесты проверяют корректное поведение "
-        "продукта и тем самым подтверждают наличие seeded-дефектов.",
-    )
-
-    add_heading(doc, "8. Скриншоты — исторический seeded suite")
+    add_heading(doc, "9. Скриншоты — исторический seeded suite")
     for name, caption in SCREENSHOTS:
         add_shot(doc, SHOTS / name, caption)
 
-    add_heading(doc, "9. Lifecycle remediation (fixed copy + retest)")
+    add_heading(doc, "10. Lifecycle: исправленная копия и before/after")
     add_para(
         doc,
-        "Исходные fixtures/kt04 сохранены. Создана копия fixtures/kt04_lifecycle "
-        "с исправлениями SEED-001/002/003. Retest: 3 passed in 14.40s "
-        "(test_kt04_lifecycle_retest.py). Исправления выполнены Cursor-агентом "
-        "(не отдельный human developer).",
+        "fixtures/kt04 не изменялись. В kt04_lifecycle: reject empty password; "
+        "email с TLD; reject qty<=0. Исправления выполнены Cursor-агентом "
+        "(образовательная симуляция ролей; без impersonation).",
     )
+    add_para(doc, "Retest 2026-10-10: 3 passed in 14.40s. Retest 2026-10-11: 3 passed in 8.74s.")
     add_code(
         doc,
-        "============================= 3 passed in 14.40s ==============================\n"
+        "============================== 3 passed in 8.74s ==============================\n"
         "test_lifecycle_empty_password_rejected PASSED\n"
         "test_lifecycle_invalid_email_rejected PASSED\n"
         "test_lifecycle_zero_quantity_rejected PASSED",
@@ -194,23 +188,50 @@ def build() -> Path:
     for path, caption in LIFE_SHOTS:
         add_shot(doc, path, caption)
 
-    add_heading(doc, "10. Jira (оригинальное требование)")
+    add_heading(doc, "11. Jira assignments / comments / transitions")
     add_para(
         doc,
-        "Создание реального проекта QAKT04 / issues / workflow / native reports: "
-        "BLOCKED — нет авторизованного доступа к Jira в этой сессии; "
-        "внешние изменения требуют явного разрешения пользователя. "
-        "Черновики: docs/kt04/jira-project.md, jira-issue-drafts.md, "
-        "defect-lifecycle.md, jira-reporting.md. GitHub Issues #1–#3 сохранены.",
+        "Фактические назначения, комментарии и переходы в Jira: отсутствуют (BLOCKED). "
+        "План: docs/kt04/defect-lifecycle.md.",
         bold=True,
     )
 
-    add_heading(doc, "11. Заключение")
+    add_heading(doc, "12. Нативные отчёты Jira")
     add_para(
         doc,
-        "КТ 04: исторический seeded suite 2 PASS / 3 FAIL + GitHub Issues сохранены; "
-        "lifecycle-фиксы и Selenium retest 3/3 PASS добавлены. "
-        "Полный цикл в Jira остаётся BLOCKED до доступа пользователя.",
+        "Native filters/dashboards/statistics недоступны без проекта. "
+        "Локальные таблицы не выдаются за отчёты Jira. См. docs/kt04/jira-reporting.md.",
+    )
+
+    add_heading(doc, "13. Матрица соответствия требованиям")
+    table = doc.add_table(rows=1, cols=3)
+    table.style = "Table Grid"
+    hdr = table.rows[0].cells
+    hdr[0].text, hdr[1].text, hdr[2].text = "Требование", "Статус", "Доказательство"
+    for row in [
+        ("Ознакомление с Jira", "PARTIAL", "Описание; UI login открыт"),
+        ("Создание проекта", "BLOCKED", "jira-project.md"),
+        ("Типы/приоритеты/компоненты/workflow", "BLOCKED", "план, не применено"),
+        ("Детальные баг-репорты", "PASS (local+GitHub)", "bug-reports.md"),
+        ("Назначения / комментарии Jira", "BLOCKED", "—"),
+        ("Переходы workflow", "BLOCKED", "—"),
+        ("Исправление дефектов", "PASS (lifecycle copy)", "kt04_lifecycle/"),
+        ("Retest", "PASS", "3/3 в 8.74s"),
+        ("Закрытие в Jira", "BLOCKED", "—"),
+        ("Статистика / native reports", "BLOCKED", "jira-reporting.md"),
+    ]:
+        cells = table.add_row().cells
+        for i, val in enumerate(row):
+            cells[i].text = val
+    add_para(doc, "")
+
+    add_heading(doc, "14. Заключение")
+    add_para(
+        doc,
+        "КТ 04 частично выполнена: seeded 2 PASS/3 FAIL, GitHub #1–#3, lifecycle fixes + "
+        "Selenium retest 3/3 PASS. Полный цикл в реальном Jira — BLOCKED до входа "
+        "пользователя в Atlassian и явного разрешения создать QAKT04 и issues. "
+        "КТ 04 не отмечается как 100% complete.",
     )
 
     doc.save(OUTPUT)
@@ -221,11 +242,12 @@ def verify(path: Path) -> None:
     doc = Document(str(path))
     text = "\n".join(p.text for p in doc.paragraphs if p.text.strip())
     required = [
-        "КТ №4. Документирование дефектов и баг-трекинг",
+        "работа с баг-трекером Jira",
         "3 failed, 2 passed in 18.08s",
-        "3 passed in 14.40s",
+        "3 passed in 8.74s",
         "BLOCKED",
         "issues/1",
+        "Матрица соответствия",
         "Заключение",
     ]
     missing = [r for r in required if r not in text]
@@ -238,6 +260,8 @@ def verify(path: Path) -> None:
         raise AssertionError(f"pictures={len(pictures)} expected>={expected}")
     if not images:
         raise AssertionError("no images")
+    if len(doc.tables) < 1:
+        raise AssertionError("expected compliance table")
     print(f"VERIFY_OK size={path.stat().st_size} pictures={len(pictures)} unique={len(images)}")
 
 
