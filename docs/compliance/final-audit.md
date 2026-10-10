@@ -1,40 +1,29 @@
-# Compliance Remediation — Final Audit
+# Compliance Remediation — Final Audit (updated)
 
 Date: 2026-10-10  
-Branch: `main` (local; no push)  
-Zip left untracked: `KT01-KT12_reports.zip`
+HEAD: see git log (Phase 5 commit)  
+Zip preserved untracked: `KT01-KT12_reports.zip`  
+New evidence zip: `submission/KT01-KT12_verified_evidence.zip`
 
-## Commits in this remediation series
+## Series commits (selected)
 
 | Phase | Commit | Summary |
 |---|---|---|
-| 0 | (baseline file) | `docs/compliance/remediation-baseline.md` |
-| 1 | `4c0f38c` | KT10 responsive Sauce matrix 6 PASS / 42.73s |
-| 2 | `5f79554` | KT02 public functional 11 PASS / 49.34s |
-| 3 | `b62740e` | KT03 public Page Object 5 PASS / 21.11s |
-| 4 | `8e2c7fc` | KT07 Hub+2 Nodes + parallel overlap |
-| 5 | `70f4d39` | KT09 BASIC Windows×Android public web |
+| Prior | `4c0f38c`…`f7c3b16` | KT10/02/03/07/09/prior audit |
+| P1 | `d6dd948` | KT09 Android ChromeDriver DOM PASS |
+| P2 | `2c62008` | KT05 docs alignment |
+| P3 | `ee714d2` | KT06 strategy/analysis |
+| P4 | `1394ff8` | KT04 lifecycle retest; Jira BLOCKED |
+| P5 | (this) | FINAL matrix + submission zip |
 
-## Gap closure vs baseline
+## Open gaps (do not claim 100%)
 
-| KT | Baseline gap | Remediation result | Status |
-|---|---|---|---|
-| KT10 | responsive viewports | 6 PASS, 36 rows, overflow none | **CLOSED** |
-| KT02 | public + pos/neg/boundary/cookies | 11 PASS public; hist 6 PASS kept | **CLOSED** |
-| KT03 | public Page Objects | 5 PASS public PO; hist 4 PASS kept | **CLOSED** |
-| KT07 | multi-node + parallel | nodes=2; 4 PASS multi; overlap=true | **CLOSED** |
-| KT09 | BASIC OS×OS public web | Win PASS×2; Android PARTIAL; iOS NOT RUN | **CLOSED (PARTIAL Android)** |
-| KT08 | (prior) Allure public | already at `f2ed436` | n/a |
+1. **KT04 Jira** — BLOCKED until user authorizes/logs into Jira and creates `QAKT04`.
+2. **KT09 manual** — PENDING HUMAN VERIFICATION.
+3. **iOS** — NOT RUN.
+4. **DOCX title placeholders** — student/group/teacher blank.
+5. Presentations cloud.ithub.ru — unavailable without login.
 
-## Honesty / remaining limits
+## DOCX audit
 
-- Presentations on cloud.ithub.ru still unavailable without login — hidden-slide parity not claimed.
-- KT09 Android DOM login blocked by ChromeDriver/Chrome 134 mismatch; intent+screencap PARTIAL.
-- KT09 iOS NOT RUN.
-- KT07 multi-node is localhost, not multi-machine.
-- Historical seeded MIXED results (KT04/KT05) unchanged.
-
-## Git
-
-- Untracked intentionally: `KT01-KT12_reports.zip`
-- No push performed.
+All KT01–KT12.docx present, non-empty, parseable; screenshots embedded where expected. Placeholders for personal data remain on purpose.

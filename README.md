@@ -2,7 +2,9 @@
 
 Учебный проект для выполнения 12 контрольных точек колледжа. Стек: **Python 3, pytest, Selenium 4, Appium 3, Robot Framework, gRPC**.
 
-> Статус: репозиторий подготовлен как каркас. Реализация и реальные прогоны тестов выполняются поэтапно в Cursor. Не отмечайте задания как выполненные, пока результаты не проверены.
+> Статус (2026-10-10): КТ 01–12 реализованы с фактическими прогонами и `reports/KT01.docx`…`KT12.docx`.  
+> Оставшиеся gaps: **Jira KT04 BLOCKED** (нужен логин пользователя); **ручной checklist KT09 PENDING HUMAN VERIFICATION**.  
+> Матрица: `docs/compliance/FINAL_REQUIREMENTS_MATRIX.md`. Архив доказательств: `submission/KT01-KT12_verified_evidence.zip` (не путать с untracked `KT01-KT12_reports.zip`).
 
 ## Разделы проекта
 

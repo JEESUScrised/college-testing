@@ -46,4 +46,21 @@ Commit: `2c62008`.
 - Historical 7 PASS preserved; INC-06-01 = test scroll issue.
 - DOCX rebuilt.
 
-Next: Phase 4 KT04 Jira (prepare locally; external project needs approval/access).
+Commit: `ee714d2`.
+
+## Phase 4 — KT04 Jira (partial / BLOCKED)
+
+- Lifecycle fixed copy + retest **3 PASS / 14.40s**.
+- Jira project/issues/native reports: **BLOCKED** (no authorized access).
+- Drafts in `docs/kt04/`. Commit: `1394ff8`.
+
+Commit: `1394ff8`.
+
+## Phase 5 — Final audit (completed)
+
+- `FINAL_REQUIREMENTS_MATRIX.md` written.
+- All 12 DOCX parsed OK; personal placeholders listed.
+- New zip: `submission/KT01-KT12_verified_evidence.zip` (~15.8 MB).
+- Old `KT01-KT12_reports.zip` still untracked/preserved.
+- Smoke: selenium pages import OK; 20 selenium tests collect; mobile 14 collect; grpc 10 collect; Robot 7.5 OK.
+- Remaining user actions: Jira auth, manual KT09, fill DOCX names.
