@@ -16,4 +16,5 @@ App: https://www.saucedemo.com/
 
 **Functional defects:** none confirmed.  
 **Usability:** Chrome onboarding promos may appear on Android before the page; dismissed via chromeOptions / FRE flags where possible.  
-**Manual human comparison:** PENDING HUMAN VERIFICATION.
+**Manual human comparison:** PENDING HUMAN VERIFICATION  
+(guide: `kt09-manual-execution-guide.md`; screenshots dirs empty until human capture).

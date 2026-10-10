@@ -10,6 +10,8 @@ from docx.opc.constants import RELATIONSHIP_TYPE as RT
 from docx.oxml.ns import qn
 from docx.shared import Cm, Pt
 
+from report_title import add_title_fields
+
 ROOT = Path(__file__).resolve().parents[1]
 SHOTS = ROOT / "screenshots" / "kt09"
 OUTPUT = Path(__file__).resolve().parent / "KT09.docx"
@@ -102,8 +104,7 @@ def build() -> Path:
     section.left_margin = Cm(2.5)
     section.right_margin = Cm(1.5)
 
-    add_para(doc, "Дисциплина: Модульное тестирование веб-приложений", center=True)
-    add_para(doc, "Студент: _______________________________________", center=True)
+    add_title_fields(doc, add_para)
     add_para(doc, "")
     add_para(
         doc,
@@ -112,7 +113,7 @@ def build() -> Path:
         center=True,
     )
     add_para(doc, "Отчёт по контрольной точке", center=True)
-    add_para(doc, "Дата: 2026-10-10", center=True)
+    add_para(doc, "Дата обновления: 2026-10-11", center=True)
 
     add_heading(doc, "1. Цель")
     add_para(
@@ -172,27 +173,32 @@ def build() -> Path:
         bold=True,
     )
 
-    add_heading(doc, "7. BASIC OS×OS public web (remediation)")
+    add_heading(doc, "7. Слои доказательств (разделение)")
+    add_para(doc, "1) Исторические жесты Android Appium — 5 PASS / 54.93 с (supplementary).")
+    add_para(doc, "2) Windows automated web (Selenium) — 2 PASS / 12.43 с.")
+    add_para(doc, "3) Android automated web (Appium Chrome DOM) — 11 PASS / 36.91 с.")
     add_para(
         doc,
-        "Публичный Sauce Demo: Windows Chrome/Firefox PASS; Android Chrome DOM suite "
-        "TC09-W01…W10 + journey: 11 passed in 36.91s "
-        "(ChromeDriver 134.0.6998.165 / Chrome 134.0.6998.135). Overflow: нет. "
-        "Ручной checklist: PENDING HUMAN VERIFICATION. iOS NOT RUN.",
+        "4) Genuine manual execution — PENDING HUMAN VERIFICATION "
+        "(см. mobile/docs/kt09-manual-checklist.md и kt09-manual-execution-guide.md). "
+        "Автоматизация не заменяет ручной прогон.",
+        bold=True,
     )
+    add_para(doc, "5) Cross-platform conclusions — automation Compatible; manual TBD.")
     add_code(
         doc,
-        "Windows: 2 passed in 12.43s\n"
-        "Android DOM: 11 passed in 36.91s (TC09-W01…W10 + journey)\n"
+        "Windows auto: 2 passed in 12.43s\n"
+        "Android DOM auto: 11 passed in 36.91s (TC09-W01…W10 + journey)\n"
         "ChromeDriver: mobile/drivers/chromedriver-134.exe\n"
-        "Manual checklist: PENDING HUMAN VERIFICATION",
+        "Manual checklist: PENDING HUMAN VERIFICATION\n"
+        "Manual screenshots dirs: screenshots/kt09/manual/{windows,android}/",
     )
 
     add_heading(doc, "8. Скриншоты — жесты Android")
     for name, caption in IMAGES:
         add_shot(doc, SHOTS / name, caption)
 
-    add_heading(doc, "9. Скриншоты — BASIC cross-platform web")
+    add_heading(doc, "9. Скриншоты — automated cross-platform web (not manual)")
     for path, caption in XP_IMAGES:
         add_shot(doc, path, caption, width=9)
 

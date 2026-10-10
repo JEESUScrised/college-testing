@@ -6,51 +6,50 @@ Automation (Windows Selenium + Android Appium DOM) is **supplementary** and does
 Target: https://www.saucedemo.com/  
 Demo credentials (public): `standard_user` / `secret_sauce`
 
+Short guide: `mobile/docs/kt09-manual-execution-guide.md`
+
 Mark each row only after a human actually performs the step.  
 Until then: **PENDING HUMAN VERIFICATION**. Do not invent tester names or timestamps.
+
+Screenshot folders (empty until human captures):
+
+- `screenshots/kt09/manual/windows/`
+- `screenshots/kt09/manual/android/`
 
 ---
 
 ## Windows 10 — Google Chrome
 
-| ID | Preconditions | Steps | Expected | Actual | PASS/FAIL | Screenshot | Tester / date |
-|---|---|---|---|---|---|---|---|
-| M-W-C-01 | Chrome installed | Open https://www.saucedemo.com/ | Login page loads; URL correct | | PENDING HUMAN VERIFICATION | | |
-| M-W-C-02 | On login page | Check username/password fields readable | Fields visible, usable | | PENDING HUMAN VERIFICATION | | |
-| M-W-C-03 | Valid demo creds | Login standard_user / secret_sauce | Inventory page opens | | PENDING HUMAN VERIFICATION | | |
-| M-W-C-04 | Logged in | Browse inventory cards | Names and prices visible | | PENDING HUMAN VERIFICATION | | |
-| M-W-C-05 | Inventory | Open a product details page | Title/description/price shown | | PENDING HUMAN VERIFICATION | | |
-| M-W-C-06 | Product or inventory | Add item to cart | Cart badge increments | | PENDING HUMAN VERIFICATION | | |
-| M-W-C-07 | Item in cart | Open cart | Product details match | | PENDING HUMAN VERIFICATION | | |
-| M-W-C-08 | Logged in | Open burger menu | Logout / All Items accessible | | PENDING HUMAN VERIFICATION | | |
-| M-W-C-09 | Any page | Scroll page; check layout | No critical overflow; controls reachable | | PENDING HUMAN VERIFICATION | | |
-| M-W-C-10 | Login or checkout fields | Type and clear text | Inputs usable | | PENDING HUMAN VERIFICATION | | |
-
-## Windows 10 — Mozilla Firefox
-
-| ID | Preconditions | Steps | Expected | Actual | PASS/FAIL | Screenshot | Tester / date |
-|---|---|---|---|---|---|---|---|
-| M-W-F-01 | Firefox installed | Open Sauce Demo | Login form visible | | PENDING HUMAN VERIFICATION | | |
-| M-W-F-02 | On login | Login with demo credentials | Inventory loads | | PENDING HUMAN VERIFICATION | | |
-| M-W-F-03 | Logged in | Add to cart → open cart | Item present | | PENDING HUMAN VERIFICATION | | |
-| M-W-F-04 | Compare vs Chrome | Note functional/layout differences | Notes recorded | | PENDING HUMAN VERIFICATION | | |
+| ID | Steps | Expected | Actual | PASS/FAIL | Screenshot | Tester / date |
+|---|---|---|---|---|---|---|
+| M-W-C-01 | Open https://www.saucedemo.com/ | Login page loads; URL correct | | PENDING HUMAN VERIFICATION | | |
+| M-W-C-02 | Check username/password readability | Fields visible, usable | | PENDING HUMAN VERIFICATION | | |
+| M-W-C-03 | Login `standard_user` / `secret_sauce` | Inventory page opens | | PENDING HUMAN VERIFICATION | | |
+| M-W-C-04 | Browse inventory cards | Names and prices visible | | PENDING HUMAN VERIFICATION | | |
+| M-W-C-05 | Open a product details page | Title/description/price shown | | PENDING HUMAN VERIFICATION | | |
+| M-W-C-06 | Add item to cart | Cart badge increments | | PENDING HUMAN VERIFICATION | | |
+| M-W-C-07 | Open cart | Product details match | | PENDING HUMAN VERIFICATION | | |
+| M-W-C-08 | Open burger menu | Logout / All Items accessible | | PENDING HUMAN VERIFICATION | | |
+| M-W-C-09 | Scroll; check layout / overflow | No critical overflow; controls reachable | | PENDING HUMAN VERIFICATION | | |
+| M-W-C-10 | Type and clear checkout/login fields | Inputs usable | | PENDING HUMAN VERIFICATION | | |
 
 ## Android 16 — Chrome (emulator or device)
 
-Device reference (verified automation env): `emulator-5554`, Chrome **134.0.6998.135**.
+Device reference (automation env only): `emulator-5554`, Chrome **134.0.6998.135**.  
+Manual run must use the Chrome UI directly (not Appium).
 
-| ID | Preconditions | Steps | Expected | Actual | PASS/FAIL | Screenshot | Tester / date |
-|---|---|---|---|---|---|---|---|
-| M-A-01 | Chrome on Android | Open saucedemo.com | Login form visible | | PENDING HUMAN VERIFICATION | | |
-| M-A-02 | On login | Verify form readability on mobile viewport | Fields readable | | PENDING HUMAN VERIFICATION | | |
-| M-A-03 | Demo creds | Login | Inventory loads | | PENDING HUMAN VERIFICATION | | |
-| M-A-04 | Logged in | Browse inventory | Cards visible | | PENDING HUMAN VERIFICATION | | |
-| M-A-05 | Inventory | Open product details | Details visible | | PENDING HUMAN VERIFICATION | | |
-| M-A-06 | Product | Add to cart | Cart state updates | | PENDING HUMAN VERIFICATION | | |
-| M-A-07 | Cart | Open cart | Item details correct | | PENDING HUMAN VERIFICATION | | |
-| M-A-08 | Logged in | Open menu | Important actions accessible | | PENDING HUMAN VERIFICATION | | |
-| M-A-09 | Any page | Scroll; check layout / touch targets | Usable; note issues | | PENDING HUMAN VERIFICATION | | |
-| M-A-10 | Inputs | Type in fields | Soft keyboard / input usable | | PENDING HUMAN VERIFICATION | | |
+| ID | Steps | Expected | Actual | PASS/FAIL | Screenshot | Tester / date |
+|---|---|---|---|---|---|---|
+| M-A-01 | Open saucedemo.com in Chrome | Login form visible | | PENDING HUMAN VERIFICATION | | |
+| M-A-02 | Verify form readability on mobile viewport | Fields readable | | PENDING HUMAN VERIFICATION | | |
+| M-A-03 | Login with demo credentials | Inventory loads | | PENDING HUMAN VERIFICATION | | |
+| M-A-04 | Browse inventory | Cards visible | | PENDING HUMAN VERIFICATION | | |
+| M-A-05 | Open product details | Details visible | | PENDING HUMAN VERIFICATION | | |
+| M-A-06 | Add to cart | Cart state updates | | PENDING HUMAN VERIFICATION | | |
+| M-A-07 | Open cart | Item details correct | | PENDING HUMAN VERIFICATION | | |
+| M-A-08 | Open menu | Important actions accessible | | PENDING HUMAN VERIFICATION | | |
+| M-A-09 | Scroll; check layout / touch targets | Usable; note issues | | PENDING HUMAN VERIFICATION | | |
+| M-A-10 | Type in checkout/login fields | Soft keyboard / input usable | | PENDING HUMAN VERIFICATION | | |
 
 ## Comparison notes (human)
 
@@ -73,5 +72,5 @@ Device reference (verified automation env): `emulator-5554`, Chrome **134.0.6998
 
 1. Perform each step personally on the stated platform/browser.  
 2. Fill Actual / PASS/FAIL / Screenshot / Tester+date.  
-3. Save screenshots under `screenshots/kt09/manual/`.  
+3. Save screenshots under `screenshots/kt09/manual/windows/` and `.../android/`.  
 4. Ask the agent to integrate completed evidence into docs/DOCX.

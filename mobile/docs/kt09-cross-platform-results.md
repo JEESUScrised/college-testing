@@ -32,6 +32,12 @@ collected 11 items
 ============================= 5 passed in 54.93s ==============================
 ```
 
-## Manual
+## Manual (human UI only)
 
-**PENDING HUMAN VERIFICATION** — `kt09-manual-checklist.md`
+**PENDING HUMAN VERIFICATION**
+
+- Guide: `kt09-manual-execution-guide.md`
+- Checklist: `kt09-manual-checklist.md`
+- Screenshot dirs (empty until human): `screenshots/kt09/manual/windows/`, `screenshots/kt09/manual/android/`
+
+Automated results above are **not** a substitute for manual rows.
