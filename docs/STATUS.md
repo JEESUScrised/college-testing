@@ -7,7 +7,7 @@
 | 01 | DONE | PASS | DONE | `reports/KT01.docx` |
 | 02 | DONE | PASS | DONE | Local windows/iframe 6 PASS + public Sauce **11 PASS** (49.34 с); `reports/KT02.docx` |
 | 03 | DONE | PASS | DONE | Local PO 4 PASS + public Sauce PO **5 PASS** (21.11 с); `reports/KT03.docx` |
-| 04 | DONE | MIXED | DONE | seeded 2P/3F + GitHub #1–#3; lifecycle retest **3 PASS**; Jira **BLOCKED** (2026-10-11 recheck); `reports/KT04.docx` |
+| 04 | PARTIAL | MIXED | DONE | seeded 2P/3F + GitHub #1–#3; lifecycle **3 PASS / 8.74s**; Jira **BLOCKED** (Atlassian login page); `reports/KT04.docx` |
 | 05 | DONE | PASS | DONE | VDNH; история 9P/1F + follow-up; remediation **10 PASS / 50.63 с** (2026-10-11); `reports/KT05.docx` |
 | 06 | DONE | PASS | DONE | AVD API 36; история **7 PASS / 44.63 с**; remediation **10 PASS / 67.70 с**; `reports/KT06.docx` |
 | 07 | DONE | PASS | DONE | Standalone 5 PASS + Hub+**2 Nodes** Chrome/Firefox **4 PASS** (7.72 с) + parallel overlap; `reports/KT07.docx` |
@@ -107,8 +107,10 @@
 
 ## КТ 04
 
-Campus Portal Demo; seeded 2 PASS / 3 FAIL; GitHub Issues #1–#3; lifecycle copy **3 PASS**.  
-Jira `QAKT04`: **BLOCKED** (нет авторизованной сессии; drafts в `docs/kt04/`). `reports/KT04.docx`.
+Campus Portal Demo; seeded **2 PASS / 3 FAIL** (исторический suite сохранён).  
+GitHub Issues #1–#3 Open. Lifecycle copy `kt04_lifecycle/` + retest **3 PASS / 8.74 с** (2026-10-11).  
+Jira `QAKT04`: **BLOCKED** — `id.atlassian.com/login` без сессии; нет MCP/API credentials; issue keys не создавались.  
+Документы: `docs/kt04/*`, `bug-reports/*`, `reports/KT04.docx` (матрица: PARTIAL/BLOCKED).
 
 ## КТ 02 — Функциональные техники (remediation 2026-10-10)
 
