@@ -38,4 +38,12 @@ Commit: `d6dd948`.
 - Product defect: not confirmed.
 - DOCX rebuilt and verified.
 
-Next: Phase 3 KT06 documentation.
+Commit: `2c62008`.
+
+## Phase 3 — KT06 docs (in progress → commit next)
+
+- Expanded strategy, types, cases with actuals, defects, recommendations.
+- Historical 7 PASS preserved; INC-06-01 = test scroll issue.
+- DOCX rebuilt.
+
+Next: Phase 4 KT04 Jira (prepare locally; external project needs approval/access).

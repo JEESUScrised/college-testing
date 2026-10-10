@@ -1,17 +1,26 @@
 # Тест-кейсы КТ 06 (ApiDemos / Appium)
 
-Локаторы взяты из реального UI ApiDemos (accessibility id / resource-id). Выдуманные экраны не используются.
+Автотесты: `mobile/tests/test_kt06_api_demos.py` (или эквивалент в `mobile/tests/`).  
+Финальный прогон: **7 PASS / 44.63 с** (2026-10-09).
 
-| ID | Название | Предусловия | Шаги | Ожидаемый результат | Автотест |
-|---|---|---|---|---|---|
-| TC-01 | Запуск приложения | Устройство готово, APK установлен Appium | Открыть ApiDemos | Виден список с пунктами App, Views | `test_app_starts_and_shows_home` |
-| TC-02 | Навигация в App | На домашнем экране | Нажать App | Виден пункт Alert Dialogs | `test_navigate_to_app_menu` |
-| TC-03 | Экран Alert Dialogs | — | App → Alert Dialogs | Видна кнопка List dialog | `test_open_alert_dialogs_screen` |
-| TC-04 | List dialog | На Alert Dialogs | Нажать List dialog → выбрать пункт списка | Диалог открывается (заголовок), затем закрывается | `test_list_dialog_interaction` |
-| TC-05 | Text Entry dialog | На Alert Dialogs | Открыть Text Entry dialog → ввести username/password → OK | Поле username содержит введённое значение | `test_text_entry_dialog_input` |
-| TC-06 | Кнопка Back | Alert Dialogs открыт | Нажать Back дважды | Возврат на App, затем на Home | `test_back_returns_to_previous_screen` |
-| TC-07 | TextFields | Home | Views → TextFields → ввод в EditText | Текст в поле совпадает с введённым | `test_views_textfields_input` |
+| ID | Описание | Preconditions | Steps | Input | Expected | Actual | Status | Evidence |
+|---|---|---|---|---|---|---|---|---|
+| TC-01 | Запуск | Emulator+Appium+APK | Открыть ApiDemos | — | Список App/Views | Список виден | **PASS** | `01_*.png` |
+| TC-02 | Меню App | Home | Tap App | — | Виден Alert Dialogs | Виден | **PASS** | `02_*.png` |
+| TC-03 | Alert Dialogs | App | Tap Alert Dialogs | — | Кнопка List dialog | Видна | **PASS** | `03_*.png` |
+| TC-04 | List dialog | Alert Dialogs | Open list → select item | list item | Диалог открыт/закрыт | OK | **PASS** | `04_*.png` |
+| TC-05 | Text Entry | Alert Dialogs | Open → type → OK | user/pass demo | Username сохранён в поле | Сохранён | **PASS** | `05_*.png` |
+| TC-06 | Back | Alert Dialogs | Back×2 | — | App → Home | OK | **PASS** | `06_*.png` |
+| TC-07 | TextFields | Home | Views→scroll→TextFields→type | sample text | EditText = input | = input | **PASS** | `08_textfields.png` |
+
+## NOT APPLICABLE (вне scope ApiDemos)
+
+| ID | Тема | Почему N/A |
+|---|---|---|
+| N/A-01 | Оплата / корзина | Нет в ApiDemos |
+| N/A-02 | Регистрация / auth backend | Нет |
+| N/A-03 | iOS parity | Не выполнялось (см. KT09) |
 
 ## Изоляция
 
-Каждый тест начинается с `mobile: startActivity` → `io.appium.android.apis/.ApiDemos`.
+Каждый тест: `mobile: startActivity` → `io.appium.android.apis/.ApiDemos`.

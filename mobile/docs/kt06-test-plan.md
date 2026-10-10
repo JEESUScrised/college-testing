@@ -1,67 +1,81 @@
 # План тестирования КТ 06 — мобильное приложение (Appium)
 
-## Цель
+## 1. Цель
 
-Проверить возможность автоматизированного UI-тестирования Android-приложения с помощью Appium 3 и драйвера UiAutomator2 на учебном образце ApiDemos.
+Проверить UI-функциональность Android-приложения с помощью Appium 3 / UiAutomator2,
+оформить стратегию, сценарии, результаты и анализ качества по требованиям преподавателя.
 
-## Объект тестирования
+## 2. Выбор приложения
 
 | Параметр | Значение |
 |---|---|
-| Приложение | Appium ApiDemos |
-| Источник | https://github.com/appium/android-apidemos (release v6.0.18) |
-| Package | `io.appium.android.apis` |
-| Main activity | `.ApiDemos` |
+| Приложение | **Appium ApiDemos** (официальный sample) |
+| Источник | https://github.com/appium/android-apidemos (v6.0.18) |
+| Package / Activity | `io.appium.android.apis` / `.ApiDemos` |
 | APK | `mobile/apps/ApiDemos-debug.apk` |
-| SHA-256 | `A9EECF37B26CD084855C530DB81C2BB1B91F4C1B095A04F47AA7C20E2791F686` |
+| SHA-256 | `A9EECF37…F686` |
 
-## Среда
+### Почему ApiDemos (и ограничения)
 
-- ОС: Windows 10/11
-- Appium Server: 3.x, `http://127.0.0.1:4723`
-- Automation: UiAutomator2
-- Клиент: Appium-Python-Client 4+/5+, pytest
-- Устройство: один Android emulator **или** одно физическое устройство на весь suite
+**Плюсы:** публичный sample; воспроизводимость; стабильные accessibility id; детерминированные
+экраны (App, Alert Dialogs, Views/TextFields); подходит для обучения Appium без коммерческих рисков.
 
-## Объём
+**Ограничения (честно):** это **не** production-приложение. Нет реальных платежей, бизнес-аккаунтов,
+онлайн-синхронизации, push-уведомлений продукта. Сценарии «оплата / регистрация пользователя»
+помечены **NOT APPLICABLE** к выбранному объекту.
 
-Минимум 6 осмысленных UI-сценариев:
+Преподаватель предпочитает beta/low-rating apps, но не делает это абсолютным требованием.
+ApiDemos выбран ради воспроизводимости учебного стенда на Windows + эмуляторе.
 
-1. Запуск приложения и проверка главного списка.
-2. Навигация по меню (App).
-3. Переход на экран Alert Dialogs.
-4. Взаимодействие с кнопкой/диалогом (List dialog).
-5. Ввод текста и проверка значения (Text Entry dialog).
-6. Возврат назад (системный Back).
-7. (доп.) Views → TextFields — ввод в EditText.
+## 3. Характеристики платформы (факт)
 
-## Подход
+| Аспект | Значение / наблюдение |
+|---|---|
+| OS / API | Android 16 / **API 36** (`Medium_Phone_API_36.1`) |
+| Устройство | Emulator `emulator-5554` (не физическое) |
+| Automation | UiAutomator2 8.7.0 + Appium 3.8.0 |
+| Селекторы | accessibility id, resource-id, UiScrollable |
+| Навигация | системный Back; списки меню ApiDemos |
+| Клавиатура | soft keyboard на Text Entry / TextFields |
+| Permissions | autoGrantPermissions в capabilities |
+| Производительность эмулятора | cold start медленнее реального устройства; AEHD acceleration |
+| Эмулятор vs device | жесты/тайминги и DPI могут отличаться на реальном телефоне |
 
-- Page Object (`mobile/pages/`)
-- Явные ожидания (`WebDriverWait`), без deprecated TouchAction / desired_capabilities
-- Одна Appium-сессия на модуль; между тестами сброс activity, без рестарта эмулятора
+## 4. Типы тестирования
+
+| Тип | Что делали | Что не делали |
+|---|---|---|
+| **Functional** | Launch, меню App, Alert Dialogs, List/Text Entry dialogs, Back, TextFields | Платежи / auth (N/A) |
+| **Usability** | Наблюдения по читаемости списков, доступности диалогов (авто + скриншоты) | Отдельная ручная UX-сессия с респондентами |
+| **Performance** | Фиксация длительности suite (44.63 с) как ориентир среды | SLA/нагрузочные метрики продукта |
+| **Compatibility** | Android API 36 emulator | Другие API / iOS / физические устройства |
+| **Negative** | Пустые поля в Text Entry не блокируют OK в ApiDemos (поведение demo) | Выдуманные «негативные» кейсы без опоры на UI |
+
+## 5. Объём сценариев
+
+1. Запуск и главный список.  
+2. Навигация App.  
+3. Alert Dialogs.  
+4. List dialog.  
+5. Text Entry dialog (ввод).  
+6. Back navigation.  
+7. Views → TextFields (ввод).
+
+## 6. Критерии входа / выхода
+
+**Вход:** `adb devices` = device; Appium `/status` ready; APK + хеш; AVD запущен.
+
+**Выход:** ≥6 UI-тестов с фактом; скриншоты; docs; DOCX; PASS/FAIL без фальсификации.
+
+## 7. Архитектура
+
+- Page Object: `mobile/pages/`
+- Фикстуры: `mobile/conftest.py` (одна сессия на модуль)
 - Скриншоты: `screenshots/kt06/`
-- Артефакты: `mobile/artifacts/`
+- Связь с KT09: та же Appium/AVD среда
 
-## Критерии готовности к прогону
+## 8. Риски
 
-- `adb devices` показывает хотя бы одно `device`
-- Appium отвечает на `/status`
-- APK на месте и хеш совпадает
-
-## Критерии приёмки отчёта
-
-- Фактический прогон выполнен
-- Результаты PASS/FAIL зафиксированы
-- Скриншоты подлинные
-- DOCX на русском (`reports/KT06.docx`) — **только после прогона**
-
-## Риски
-
-- Нет system image / AVD → выполнение выполнения
-- Изменение UI ApiDemos между версиями → обновление локаторов
-- Медленный cold start эмулятора → таймауты сессии
-
-## Связь с KT09
-
-План среды и зависимости переиспользуются для жестов/свайпов (KT09) без смены Appium/APK.
+- TextFields вне экрана на API 36 → нужен scrollIntoView (исправлено).
+- Нет второго API/device → совместимость ограничена.
+- Demo-приложение ≠ оценка качества коммерческого продукта.

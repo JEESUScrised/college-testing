@@ -104,12 +104,17 @@ def build() -> Path:
     add_para(doc, "Отчёт по контрольной точке", center=True)
     add_para(doc, "Дата: 2026-10-09", center=True)
 
-    add_heading(doc, "1. Цель и объект тестирования")
+    add_heading(doc, "1. Цель и выбор приложения")
     add_para(
         doc,
-        "Выполнить UI-автотесты официального приложения ApiDemos (Appium sample) "
-        "через Appium 3 + UiAutomator2 на Android-эмуляторе. Объект: "
-        "package io.appium.android.apis, APK v6.0.18.",
+        "Выполнить UI-автотесты официального sample ApiDemos через Appium 3 + UiAutomator2. "
+        "Package io.appium.android.apis, APK v6.0.18.",
+    )
+    add_para(
+        doc,
+        "Почему ApiDemos: публичный sample, воспроизводимость, стабильные accessibility id, "
+        "детерминированные экраны. Ограничения: не production — платежи/бизнес-auth "
+        "NOT APPLICABLE. Подробнее: mobile/docs/kt06-test-plan.md.",
     )
 
     add_heading(doc, "2. Среда выполнения (новый ПК)")
@@ -177,23 +182,35 @@ def build() -> Path:
         "============================= 7 passed in 44.63s =============================",
     )
 
-    add_heading(doc, "6. Архитектура")
-    add_para(doc, "Page Object: mobile/pages/ (ApiDemosHomePage, AlertDialogsPage, ViewsTextFieldsPage).")
-    add_para(doc, "Тесты: mobile/tests/test_kt06_appium.py (7 кейсов, session-scoped driver).")
-    add_para(doc, "Между тестами: mobile: startActivity на io.appium.android.apis/.ApiDemos.")
+    add_heading(doc, "6. Типы тестирования и платформа")
+    add_para(doc, "Functional: launch, меню, диалоги, ввод, Back, TextFields — исполнены.")
+    add_para(doc, "Usability: наблюдения по скриншотам/навигации (не отдельная UX-сессия).")
+    add_para(doc, "Performance: длительность suite 44.63 с как ориентир среды (не SLA продукта).")
+    add_para(doc, "Compatibility: Android API 36 emulator only; real device / другие API — NOT RUN.")
+    add_para(doc, "Эмулятор vs устройство: DPI/тайминги могут отличаться.")
 
-    add_heading(doc, "7. Скриншоты")
+    add_heading(doc, "7. Дефекты и рекомендации")
+    add_para(
+        doc,
+        "Подтверждённых дефектов ApiDemos нет. INC-06-01: FAIL TextFields из-за отсутствия "
+        "scroll в тесте — исправлено в Page Object. Рекомендации: real device, доп. API, "
+        "не заявлять payment/auth для demo. См. kt06-defect-analysis.md / kt06-recommendations.md.",
+    )
+
+    add_heading(doc, "8. Архитектура")
+    add_para(doc, "Page Object: mobile/pages/; тесты: mobile/tests/test_kt06_appium.py.")
+    add_para(doc, "Между тестами: mobile: startActivity → .ApiDemos.")
+
+    add_heading(doc, "9. Скриншоты")
     for name, caption in SCREENSHOTS:
         add_shot(doc, name, caption)
 
-    add_heading(doc, "8. Заключение")
+    add_heading(doc, "10. Заключение")
     add_para(
         doc,
-        "КТ 06 выполнена на новом ПК с существующим эмулятором Medium_Phone_API_36.1. "
-        "Диагностический тест и финальный suite (7/7 PASS) подтверждены реальными "
-        "артефактами и скриншотами. Первый полный прогон зафиксировал 1 FAIL из-за "
-        "необходимости прокрутки списка Views; после исправления Page Object "
-        "сценарий TextFields проходит. KT07/KT09 не начинались. Push в GitHub не выполнялся.",
+        "КТ 06: стратегия, типы тестирования, кейсы с actual results, анализ дефектов и "
+        "рекомендации документированы. Финальный suite 7/7 PASS (44.63 с) на AVD API 36. "
+        "История suite №1 (6/1) сохранена. Push не выполнялся.",
     )
 
     doc.save(OUTPUT)
@@ -208,7 +225,8 @@ def verify(path: Path) -> None:
         "7 PASS",
         "7 passed in 44.63s",
         "Medium_Phone_API_36.1",
-        "A9EECF37B26CD084855C530DB81C2BB1B91F4C1B095A04F47AA7C20E2791F686",
+        "NOT APPLICABLE",
+        "рекомендации",
         "Заключение",
     ]
     missing = [r for r in required if r not in text]

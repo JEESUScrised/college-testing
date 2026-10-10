@@ -1,56 +1,55 @@
 # Отчёт о тестировании КТ 06 — Appium / Android
 
-Дата выполнения: **2026-10-09** (новый ПК после миграции).
+Дата выполнения: **2026-10-09**. Документация расширена: **2026-10-10**.
 
-## Статус выполнения
+## Статус
 
-**DONE / PASS** — UI-тесты Appium выполнены на реальном эмуляторе `Medium_Phone_API_36.1`.
+**DONE / PASS** — 7 UI-тестов на эмуляторе `Medium_Phone_API_36.1`.  
+История: suite №1 имел 1 FAIL (TextFields scroll) → fix PO → suite №2 **7 PASS / 44.63 с**.
 
-Файл `reports/KT06.docx` создан по фактическим артефактам.
+## Выбор приложения и ограничения
+
+ApiDemos — официальный sample (воспроизводимость). Не production: платежи/auth **N/A**.  
+План: `kt06-test-plan.md`. Дефекты: `kt06-defect-analysis.md` (багов приложения не подтверждено).
 
 ## Среда
 
-Подробности: [`../environment-report.md`](../environment-report.md).
-
 | Параметр | Значение |
 |---|---|
-| Appium | 3.8.0 (local `mobile/node_modules`) |
-| Driver | uiautomator2@8.7.0 |
-| Doctor | 0 required fixes |
-| Node | v22.14.0 / npm 10.9.2 |
-| Java | Android Studio JBR 21 |
+| Appium / driver | 3.8.0 / uiautomator2@8.7.0 |
 | Python / pytest | 3.13.2 / 8.4.2 |
-| SDK | `C:\Users\user\AppData\Local\Android\Sdk` |
-| AVD | Medium_Phone_API_36.1 (API 36) |
-| udid | emulator-5554 |
-| APK | ApiDemos v6.0.18, SHA-256 проверен |
+| AVD | Medium_Phone_API_36.1 (API 36), udid emulator-5554 |
+| APK | ApiDemos v6.0.18 |
 
-## Результаты
+Подробности: `mobile/environment-report.md`.
 
-| # | Тест | Suite №1 | После фикса / Suite №2 |
-|---|---|---|---|
-| 1 | test_app_starts_and_shows_home | PASS | PASS |
-| 2 | test_navigate_to_app_menu | PASS | PASS |
-| 3 | test_open_alert_dialogs_screen | PASS | PASS |
-| 4 | test_list_dialog_interaction | PASS | PASS |
-| 5 | test_text_entry_dialog_input | PASS | PASS |
-| 6 | test_back_returns_to_previous_screen | PASS | PASS |
-| 7 | test_views_textfields_input | FAIL (scroll) | PASS |
+## Типы тестирования (факт)
 
-Финал: **7 passed in 44.63s**.
+Functional — да. Usability — наблюдения по скриншотам/навигации. Performance — длительность suite как ориентир среды. Compatibility — только API 36 emulator. Negative — ограничено возможностями demo UI.
 
-## Исправление
+## Результаты suite №2 (финал)
 
-На API 36 пункт `TextFields` вне видимой области списка Views.
-Добавлен `BaseMobilePage.click_menu_item` с `UiScrollable.scrollIntoView`.
+| # | Тест | Result |
+|---|---|---|
+| 1–7 | см. kt06-test-cases.md | **PASS** |
 
-## Скриншоты
+```
+============================= 7 passed in 44.63s ==============================
+```
 
-`screenshots/kt06/01_*.png` … `08_textfields.png` — подлинные PNG с сессии Appium.
+## Скриншоты / артефакты
 
-## Артефакты
+`screenshots/kt06/01_*.png` … `08_textfields.png`; `mobile/artifacts/pytest_kt06_*`.
 
-- `mobile/artifacts/pytest_kt06_20261009_211440.log`
-- `mobile/artifacts/junit_kt06_20261009_211440.xml`
-- `mobile/artifacts/report_kt06_20261009_211440.html`
-- `mobile/artifacts/summary_20261009_211526.md`
+## Compliance matrix (кратко)
+
+| Требование преподавателя | Статус |
+|---|---|
+| Выбор приложения + ограничения | PASS (документировано) |
+| Характеристики платформы | PASS |
+| Стратегия / типы тестирования | PASS |
+| Сценарии + preconditions/steps/expected/actual | PASS |
+| Исполнение | PASS (7/7) |
+| Дефекты | PASS (нет confirmed app bugs; INC-06-01 = test) |
+| Анализ + рекомендации | PASS |
+| iOS / real device / payments | NOT RUN / N/A |
