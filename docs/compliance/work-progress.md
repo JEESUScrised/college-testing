@@ -24,4 +24,10 @@
 - Hub+2 Nodes ready (`nodes=2`).
 - Multi suite: **4 passed in 7.72s** (Chrome+Firefox).
 - Parallel overlap proof: **true**.
-- Next: Phase 5 KT09 basic cross-platform.
+- Commit: `8e2c7fc`.
+
+## Checkpoint 5 — KT09 BASIC cross-platform
+- Windows Chrome+Firefox Sauce: **2 PASS / 12.43s**.
+- Android Chrome public web: **PARTIAL** (adb + screenshots; pytest wrapper PASS).
+- Gestures historical 5 PASS preserved.
+- Next: Phase 6 final compliance audit.

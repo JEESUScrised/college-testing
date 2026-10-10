@@ -66,12 +66,22 @@ def add_code(doc, code):
         p.paragraph_format.space_after = Pt(0)
 
 
-def add_shot(doc, filename, caption):
-    path = SHOTS / filename
+XP = SHOTS / "crossplatform"
+XP_IMAGES = [
+    (XP / "windows_chrome_01_login.png", "Рисунок 11 — Windows Chrome login"),
+    (XP / "windows_chrome_02_inventory.png", "Рисунок 12 — Windows Chrome inventory"),
+    (XP / "windows_firefox_01_login.png", "Рисунок 13 — Windows Firefox login"),
+    (XP / "windows_firefox_02_inventory.png", "Рисунок 14 — Windows Firefox inventory"),
+    (XP / "android_chrome_01_login.png", "Рисунок 15 — Android Chrome Sauce Demo (PARTIAL)"),
+    (XP / "android_chrome_02_inventory.png", "Рисунок 16 — Android Chrome page (PARTIAL)"),
+]
+
+
+def add_shot(doc, path: Path, caption, width=7.5):
     if not path.is_file():
-        add_para(doc, f"[Нет файла: {filename}]")
+        add_para(doc, f"[Нет файла: {path.name}]")
         return
-    doc.add_picture(str(path), width=Cm(7.5))
+    doc.add_picture(str(path), width=Cm(width))
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     run = p.add_run(caption)
@@ -148,24 +158,41 @@ def build() -> Path:
     add_para(doc, "")
     add_code(doc, "============================= 5 passed in 54.93s ==============================")
 
-    add_heading(doc, "6. Кроссплатформенность")
+    add_heading(doc, "6. Кроссплатформенность (жесты)")
     add_para(
         doc,
         "Общий контракт GesturePort позволяет в будущем подключить XCUITest. "
-        "Факт: протестирован только Android. iOS NOT RUN — нет симулятора/драйвера/сборки. "
-        "Общий код ≠ успешный прогон на двух ОС.",
+        "Жесты: протестирован только Android. iOS NOT RUN — нет симулятора/драйвера/сборки.",
         bold=True,
     )
 
-    add_heading(doc, "7. Скриншоты")
-    for name, caption in IMAGES:
-        add_shot(doc, name, caption)
-
-    add_heading(doc, "8. Заключение")
+    add_heading(doc, "7. Remediation: BASIC OS×OS public web (2026-10-10)")
     add_para(
         doc,
-        "КТ 09 выполнена на Android: 5 жестовых автотестов PASS, before/after "
-        "скриншоты, документация ограничения iOS. KT10 не начиналась.",
+        "Матрица публичного Sauce Demo: Windows Chrome PASS, Windows Firefox PASS, "
+        "Android Chrome PARTIAL (adb intent + screencap; ChromeDriver 134 отсутствует "
+        "для DOM-логина), iOS NOT RUN.",
+    )
+    add_code(
+        doc,
+        "Windows: 2 passed in 12.43s\n"
+        "Android smoke pytest: 1 passed in 99.04s (cell result=PARTIAL)\n"
+        "See docs/kt09/basic-cross-platform-matrix.md",
+    )
+
+    add_heading(doc, "8. Скриншоты — жесты Android")
+    for name, caption in IMAGES:
+        add_shot(doc, SHOTS / name, caption)
+
+    add_heading(doc, "9. Скриншоты — BASIC cross-platform web")
+    for path, caption in XP_IMAGES:
+        add_shot(doc, path, caption, width=9)
+
+    add_heading(doc, "10. Заключение")
+    add_para(
+        doc,
+        "КТ 09: жесты Android 5/5 PASS сохранены; добавлена BASIC public-web матрица "
+        "Windows×Android (2 PASS + 1 PARTIAL). iOS NOT RUN.",
     )
 
     doc.save(OUTPUT)
@@ -178,6 +205,8 @@ def verify(path: Path) -> None:
     required = [
         "КТ №9. Кроссплатформенное тестирование и жесты (Appium)",
         "5 passed in 54.93s",
+        "2 passed in 12.43s",
+        "PARTIAL",
         "iOS",
         "Заключение",
     ]
@@ -185,9 +214,9 @@ def verify(path: Path) -> None:
     if missing:
         raise AssertionError(missing)
     pictures = list(doc.inline_shapes)
-    images = [r for r in doc.part.rels.values() if r.reltype == RT.IMAGE]
-    if len(pictures) < 8 or len(images) < 8:
-        raise AssertionError(f"pictures={len(pictures)} images={len(images)}")
+    expected = len(IMAGES) + len(XP_IMAGES)
+    if len(pictures) < expected:
+        raise AssertionError(f"pictures={len(pictures)} expected>={expected}")
     if len(doc.tables) < 1:
         raise AssertionError("no table")
     print(f"VERIFY_OK size={path.stat().st_size} pictures={len(pictures)} unique={len(images)}")
