@@ -219,7 +219,8 @@ def verify(path: Path) -> None:
         raise AssertionError(f"pictures={len(pictures)} expected>={expected}")
     if len(doc.tables) < 1:
         raise AssertionError("no table")
-    print(f"VERIFY_OK size={path.stat().st_size} pictures={len(pictures)} unique={len(images)}")
+    unique = [r for r in doc.part.rels.values() if r.reltype == RT.IMAGE]
+    print(f"VERIFY_OK size={path.stat().st_size} pictures={len(pictures)} unique={len(unique)}")
 
 
 if __name__ == "__main__":

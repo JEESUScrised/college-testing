@@ -30,4 +30,8 @@
 - Windows Chrome+Firefox Sauce: **2 PASS / 12.43s**.
 - Android Chrome public web: **PARTIAL** (adb + screenshots; pytest wrapper PASS).
 - Gestures historical 5 PASS preserved.
-- Next: Phase 6 final compliance audit.
+- Commit: `70f4d39`.
+
+## Checkpoint 6 — Final audit
+- Written: `docs/compliance/final-audit.md`.
+- All planned remediation phases completed; zip still untracked; no push.
