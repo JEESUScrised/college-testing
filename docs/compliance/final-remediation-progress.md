@@ -4,6 +4,12 @@ Started: 2026-10-10
 HEAD at start: `f7c3b16`  
 Untracked preserved: `KT01-KT12_reports.zip`
 
+## Continuation 2026-10-11 — Phase 0 recover
+
+- HEAD: `6d4a10e`; branch `main`; zip still untracked.
+- Android ChromeDriver already resolved (134.0.6998.165); reuse only.
+- Next: expand KT09 Android suite to ≥8 DOM scenarios (TC09-W*).
+
 ## Phase 0 — Recover current state
 
 Verified local facts:

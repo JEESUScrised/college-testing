@@ -1,24 +1,21 @@
 # Кроссплатформенная совместимость — КТ 09
 
-## Что сделано на Android
+## A. BASIC public web (Sauce Demo)
 
-- Жесты: `mobile: swipeGesture`, `mobile: scrollGesture`, опционально W3C Pointer Actions.  
-- Координаты из размеров окна/элемента с отступом от системных краёв.  
-- Реальные экраны ApiDemos (Views list, Gallery).
+| OS | Browser | Method | Result |
+|---|---|---|---|
+| Windows 10 | Chrome / Firefox | Selenium Desktop | PASS (2) |
+| Android 16 API 36 | Chrome 134.0.6998.135 | Appium + ChromeDriver 134.0.6998.165 DOM | **11 PASS / 36.91s** |
+| iOS | Safari | — | **NOT RUN** |
+| Manual Win/Android | — | Human checklist | **PENDING HUMAN VERIFICATION** |
 
-## Как адаптировать для iOS (не выполнялось)
+Details: `kt09-platform-comparison.md`, `kt09-cross-platform-results.md`.
 
-| Слой | Android (факт) | iOS (план) |
-|---|---|---|
-| Driver | UiAutomator2 | XCUITest |
-| Gesture API | `mobile: swipeGesture` / `scrollGesture` | `mobile: swipe` / `mobile: scroll` (XCUITest) или W3C actions |
-| Port | `AndroidGesturePort` | реализовать `IOSGesturePort` |
-| Локаторы | accessibility id / resource-id | accessibility id / iOS predicate |
-| Приложение | ApiDemos APK | аналог demo app / XCUITest sample |
+## B. Gestures (ApiDemos, supplementary)
 
-Общий тест-код должен вызывать только `GesturePort` и Page Object с платформенными локаторами.
+- Жесты: `mobile: swipeGesture` / `scrollGesture` на Android — **5 PASS / 54.93s** (сохранены).
+- iOS gesture port — NOT RUN (нет симулятора/XCUITest).
 
 ## Ограничение
 
-**iOS не тестировался.** Нет симулятора/устройства, нет XCUITest-драйвера, нет iOS-сборки.  
-Наличие общего `GesturePort` **не** означает успешное кроссплатформенное выполнение.
+Общий `GesturePort` ≠ успешный прогон на двух мобильных ОС. BASIC web Android DOM выполнен; ручная проверка человеком ещё не подтверждена.

@@ -73,11 +73,13 @@ XP_IMAGES = [
     (XP / "windows_chrome_02_inventory.png", "Рисунок 12 — Windows Chrome inventory"),
     (XP / "windows_firefox_01_login.png", "Рисунок 13 — Windows Firefox login"),
     (XP / "windows_firefox_02_inventory.png", "Рисунок 14 — Windows Firefox inventory"),
-    (DOM / "dom_01_login.png", "Рисунок 15 — Android Chrome DOM login (PASS)"),
-    (DOM / "dom_02_inventory.png", "Рисунок 16 — Android Chrome DOM inventory"),
-    (DOM / "dom_03_product.png", "Рисунок 17 — Android Chrome DOM product"),
-    (DOM / "dom_04_cart.png", "Рисунок 18 — Android Chrome DOM cart"),
-    (DOM / "dom_05_menu.png", "Рисунок 19 — Android Chrome DOM menu"),
+    (DOM / "tc09_w01_loading.png", "Рисунок 15 — TC09-W01 Android loading"),
+    (DOM / "tc09_w03_authenticated.png", "Рисунок 16 — TC09-W03 Android authenticated"),
+    (DOM / "tc09_w04_inventory.png", "Рисунок 17 — TC09-W04 Android inventory"),
+    (DOM / "tc09_w07_cart.png", "Рисунок 18 — TC09-W07 Android cart"),
+    (DOM / "tc09_w08_checkout_validation.png", "Рисунок 19 — TC09-W08 checkout validation"),
+    (DOM / "tc09_w09_menu.png", "Рисунок 20 — TC09-W09 burger menu"),
+    (DOM / "tc09_w10_layout.png", "Рисунок 21 — TC09-W10 layout / overflow"),
 ]
 
 
@@ -173,17 +175,17 @@ def build() -> Path:
     add_heading(doc, "7. BASIC OS×OS public web (remediation)")
     add_para(
         doc,
-        "Публичный Sauce Demo: Windows Chrome/Firefox PASS; Android Chrome DOM PASS "
-        "через Appium + pinned ChromeDriver 134.0.6998.165 (Chrome for Testing) для "
-        "эмуляторного Chrome 134.0.6998.135. Overflow: не обнаружен. "
+        "Публичный Sauce Demo: Windows Chrome/Firefox PASS; Android Chrome DOM suite "
+        "TC09-W01…W10 + journey: 11 passed in 36.91s "
+        "(ChromeDriver 134.0.6998.165 / Chrome 134.0.6998.135). Overflow: нет. "
         "Ручной checklist: PENDING HUMAN VERIFICATION. iOS NOT RUN.",
     )
     add_code(
         doc,
         "Windows: 2 passed in 12.43s\n"
-        "Android DOM: 1 passed in 16.71s (login→inventory→product→cart→menu)\n"
-        "ChromeDriver: mobile/drivers/chromedriver-134.exe (gitignored; download script)\n"
-        "Manual checklist: mobile/docs/kt09-manual-checklist.md",
+        "Android DOM: 11 passed in 36.91s (TC09-W01…W10 + journey)\n"
+        "ChromeDriver: mobile/drivers/chromedriver-134.exe\n"
+        "Manual checklist: PENDING HUMAN VERIFICATION",
     )
 
     add_heading(doc, "8. Скриншоты — жесты Android")
@@ -197,9 +199,8 @@ def build() -> Path:
     add_heading(doc, "10. Заключение")
     add_para(
         doc,
-        "КТ 09: жесты Android 5/5 PASS сохранены; BASIC public-web Windows×Android "
-        "автоматизация PASS (включая Android DOM). Ручная проверка преподавателя "
-        "остаётся PENDING HUMAN VERIFICATION. iOS NOT RUN.",
+        "КТ 09: жесты 5/5 PASS сохранены; BASIC web Windows PASS + Android DOM "
+        "11/11 PASS (36.91 с). Ручная проверка: PENDING HUMAN VERIFICATION. iOS NOT RUN.",
     )
 
     doc.save(OUTPUT)
@@ -213,7 +214,7 @@ def verify(path: Path) -> None:
         "КТ №9. Кроссплатформенное тестирование и жесты (Appium)",
         "5 passed in 54.93s",
         "2 passed in 12.43s",
-        "1 passed in 16.71s",
+        "11 passed in 36.91s",
         "PENDING HUMAN VERIFICATION",
         "iOS",
         "Заключение",
