@@ -10,9 +10,12 @@ from docx.opc.constants import RELATIONSHIP_TYPE as RT
 from docx.oxml.ns import qn
 from docx.shared import Cm, Pt
 
+from report_title import add_title_fields
+
 ROOT = Path(__file__).resolve().parents[1]
 SHOTS = ROOT / "screenshots" / "kt04"
 JIRA = SHOTS / "jira"
+JIRA_FINAL = JIRA / "final"
 OUTPUT = Path(__file__).resolve().parent / "KT04.docx"
 
 SCREENSHOTS = [
@@ -32,13 +35,11 @@ LIFE_SHOTS = [
 
 JIRA_SHOTS = [
     (JIRA / "01_board_college_qa.png", "Рисунок 9 — Jira board College QA Defect Lifecycle (KAN)"),
-    (JIRA / "02_issue_KAN-4.png", "Рисунок 10 — Jira KAN-4 Done + comments"),
-    (JIRA / "03_filter_bugs_done.png", "Рисунок 11 — Jira filter: 3 Bugs Done"),
+    (JIRA_FINAL / "02_KAN-4_issue_comments.png", "Рисунок 10 — KAN-4 Done + 3 comments (remote verify)"),
+    (JIRA_FINAL / "07_saved_filter_bugs_done.png", "Рисунок 11 — Saved filter KT04 KAN Bugs Done"),
+    (JIRA_FINAL / "04_project_summary.png", "Рисунок 12 — Project Summary: Выполнено 3"),
+    (JIRA_FINAL / "05_dashboard_kt04_reports.png", "Рисунок 13 — Dashboard KT04 Defect Reports"),
 ]
-
-KT04_OUTPUT = """\
-======================== 3 failed, 2 passed in 18.08s =========================
-"""
 
 
 def set_run_font(run, size_pt: float = 12, bold: bool = False, name: str = "Times New Roman") -> None:
@@ -91,11 +92,7 @@ def build() -> Path:
     section.left_margin = Cm(2.5)
     section.right_margin = Cm(1.5)
 
-    add_para(doc, "Дисциплина: Модульное тестирование веб-приложений", center=True)
-    add_para(doc, "Учебное заведение: ______________________________", center=True)
-    add_para(doc, "Студент: _______________________________________", center=True)
-    add_para(doc, "Преподаватель: _________________________________", center=True)
-    add_para(doc, "Группа: ________________________________________", center=True)
+    add_title_fields(doc, add_para)
     add_para(doc, "")
     add_para(
         doc,
@@ -104,7 +101,7 @@ def build() -> Path:
         center=True,
     )
     add_para(doc, "Отчёт по контрольной точке", center=True)
-    add_para(doc, "Дата обновления: 2026-10-11", center=True)
+    add_para(doc, "Дата обновления: 2026-10-11 (remote Jira verification)", center=True)
 
     add_heading(doc, "1. Цель работы")
     add_para(
@@ -116,24 +113,30 @@ def build() -> Path:
 
     add_heading(doc, "2. Реальный проект Jira")
     add_para(doc, "Site: https://collegeqakt04.atlassian.net")
-    add_para(doc, "Project: College QA Defect Lifecycle, key KAN (planned QAKT04 — auto key KAN).")
+    add_para(doc, "Project: College QA Defect Lifecycle, key KAN (team-managed / next-gen).")
     add_para(doc, "Board: https://collegeqakt04.atlassian.net/jira/software/projects/KAN/boards/2")
-    add_para(doc, "Issue types: Epic, Story, Task, Баг, Subtask (Bug добавлен вручную).")
+    add_para(doc, "Issue types: Epic, Story, Task, Баг, Subtask.")
     add_para(doc, "Workflow: Open → In Progress → Ready for Testing → Done.")
-    add_para(doc, "Components: labels authentication / registration / order-processing.")
+    add_para(
+        doc,
+        "Components: PARTIAL — native Components field empty on team-managed project; "
+        "labels authentication / registration / order-processing used as substitute "
+        "(not claimed as native Components).",
+    )
 
-    add_heading(doc, "3. Три реальных Jira Bug")
-    add_para(doc, "KAN-4 — Login accepts empty password — High — Done — assignee JEESUS")
+    add_heading(doc, "3. Три реальных Jira Bug (REST verified)")
+    add_para(doc, "KAN-4 — Login accepts empty password — High — Done — assignee JEESUS — 3 comments")
     add_para(doc, "https://collegeqakt04.atlassian.net/browse/KAN-4")
-    add_para(doc, "KAN-5 — Registration accepts email without TLD — High — Done")
+    add_para(doc, "KAN-5 — Registration accepts email without TLD — High — Done — 3 comments")
     add_para(doc, "https://collegeqakt04.atlassian.net/browse/KAN-5")
-    add_para(doc, "KAN-6 — Order accepts quantity zero — Medium — Done")
+    add_para(doc, "KAN-6 — Order accepts quantity zero — Medium — Done — 3 comments")
     add_para(doc, "https://collegeqakt04.atlassian.net/browse/KAN-6")
+    add_para(doc, "Changelog KAN-4: Open→In Progress→Ready for Testing→Done.")
     add_para(doc, "GitHub #1–#3 сохранены как исторические записи.")
 
     add_heading(doc, "4. Исторический seeded suite (не переписывался)")
     add_para(doc, "Campus Portal fixtures/kt04: 2 PASS / 3 FAIL (ожидаемые учебные FAIL).")
-    add_code(doc, KT04_OUTPUT)
+    add_code(doc, "======================== 3 failed, 2 passed in 18.08s =========================")
 
     add_heading(doc, "5. Скриншоты seeded suite")
     for name, caption in SCREENSHOTS:
@@ -141,10 +144,7 @@ def build() -> Path:
 
     add_heading(doc, "6. Lifecycle copy + Selenium retest")
     add_para(doc, "fixtures/kt04_lifecycle: empty password / email TLD / qty>0. Retest 3 passed in 8.74s.")
-    add_code(
-        doc,
-        "============================== 3 passed in 8.74s ==============================",
-    )
+    add_code(doc, "============================== 3 passed in 8.74s ==============================")
     for path, caption in LIFE_SHOTS:
         add_shot(doc, path, caption)
 
@@ -153,16 +153,23 @@ def build() -> Path:
         doc,
         "На каждом баге: assign JEESUS; 3 комментария (triage / fix / retest); "
         "переходы Open→In Progress→Ready for Testing→Done. "
-        "Все роли выполнялись на одном аккаунте JEESUS Cursor-агентом (образовательная симуляция, без impersonation).",
+        "Все роли на одном аккаунте JEESUS Cursor-агентом (образовательная симуляция).",
     )
 
-    add_heading(doc, "8. Скриншоты Jira")
+    add_heading(doc, "8. Скриншоты Jira (включая final verification)")
     for path, caption in JIRA_SHOTS:
         add_shot(doc, path, caption)
 
-    add_heading(doc, "9. Отчёты / статистика Jira")
-    add_para(doc, "Filter Type=Баг: 3 issues, все Done. High=2, Medium=1.")
-    add_para(doc, "Native issue navigator + board; см. docs/kt04/jira-reporting.md.")
+    add_heading(doc, "9. Отчёты / статистика Jira (native)")
+    add_para(doc, "Saved filter: https://collegeqakt04.atlassian.net/issues/?filter=10002")
+    add_para(doc, "Dashboard: https://collegeqakt04.atlassian.net/jira/dashboards/10001")
+    add_para(doc, "Summary: https://collegeqakt04.atlassian.net/jira/software/projects/KAN/summary")
+    add_para(doc, "Totals: Bugs=3, Open=0, Done=3, High=2, Medium=1.")
+    add_para(
+        doc,
+        "Limitation: classic board Reports URL 404 on team-managed; "
+        "dashboard gadgets exist but need UI filter selection; Components breakdown N/A.",
+    )
 
     add_heading(doc, "10. Матрица соответствия")
     table = doc.add_table(rows=1, cols=3)
@@ -170,15 +177,16 @@ def build() -> Path:
     hdr = table.rows[0].cells
     hdr[0].text, hdr[1].text, hdr[2].text = "Требование", "Статус", "Доказательство"
     for row in [
-        ("Ознакомление с Jira", "PASS", "Реальный сайт collegeqakt04"),
+        ("Ознакомление с Jira", "PASS", "collegeqakt04 + REST verify"),
         ("Создание проекта", "PASS", "KAN College QA Defect Lifecycle"),
         ("Типы/приоритеты/workflow", "PASS", "Баг + Ready for Testing"),
-        ("Детальные баг-репорты", "PASS", "KAN-4/5/6 + bug-reports.md"),
+        ("Детальные баг-репорты", "PASS", "KAN-4/5/6 descriptions"),
         ("Назначения / комментарии", "PASS", "JEESUS + 3 comments/issue"),
-        ("Переходы workflow", "PASS", "→ Done"),
+        ("Переходы workflow", "PASS", "changelog → Done"),
         ("Исправление + retest", "PASS", "kt04_lifecycle 3/3"),
         ("Закрытие в Jira", "PASS", "Готово"),
-        ("Статистика / filters", "PASS", "filter 3 Bugs Done"),
+        ("Native Components", "PARTIAL", "labels substitute; field empty"),
+        ("Статистика / reports", "PARTIAL", "filter+summary PASS; gadgets UI pending"),
     ]:
         cells = table.add_row().cells
         for i, val in enumerate(row):
@@ -191,7 +199,7 @@ def build() -> Path:
         "КТ 04: реальный Jira проект KAN с тремя Bugs (KAN-4/5/6), полный lifecycle до Done, "
         "локальные lifecycle-фиксы и Selenium retest 3/3 PASS. "
         "Исторический seeded 2/3 FAIL и GitHub #1–#3 сохранены. "
-        "Ограничения: ключ KAN вместо QAKT04; components = labels.",
+        "Ограничения: ключ KAN; Components = labels (PARTIAL); dashboard gadgets need UI config.",
     )
 
     doc.save(OUTPUT)
@@ -209,6 +217,7 @@ def verify(path: Path) -> None:
         "KAN-6",
         "3 passed in 8.74s",
         "3 failed, 2 passed",
+        "PARTIAL",
         "Заключение",
     ]
     missing = [r for r in required if r not in text]
