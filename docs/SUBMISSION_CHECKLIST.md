@@ -19,12 +19,17 @@
 
 ## Финальный аудит (2026-10-11)
 
-- [x] Все 12 DOCX существуют и парсятся python-docx (KT05/06/09 обновлены)
+- [x] Все 12 DOCX существуют и парсятся (`docs/compliance/docx-audit.json`)
 - [x] Матрица `docs/compliance/FINAL_REQUIREMENTS_MATRIX.md`
-- [x] Архив `submission/KT01-KT12_final_evidence_20261011.zip` (старый `KT01-KT12_reports.zip` не трогать)
-- [x] KT05 remediation full suite 10 PASS; KT06 remediation 10 PASS; KT09 Android DOM 11 PASS
-- [ ] Заполнить персональные поля на титулах DOCX (студент/группа/преподаватель) — вручную
-- [x] KT04: Jira site collegeqakt04 + KAN-4/5/6 Done
-- [ ] KT09: пройти `mobile/docs/kt09-manual-checklist.md` человеком (Windows+Android)
-- [ ] Заполнить титулы DOCX: студент / группа / преподаватель / учебное заведение
+- [x] KT04 Jira remote verify KAN-4/5/6 Done + filter/summary/dashboard
+- [x] Shared title metadata `reports/report_metadata.json`
+- [x] Архив `submission/KT01-KT12_READY_FOR_SUBMISSION.zip` (старый `KT01-KT12_reports.zip` не трогать)
+- [ ] Заполнить персональные поля в `reports/report_metadata.json` и пересобрать DOCX при необходимости
+- [ ] KT09: пройти `mobile/docs/kt09-manual-execution-guide.md` человеком (Windows+Android)
+- [ ] (Опционально) Утвердить создание native Jira Components
+- [ ] (Опционально) В UI Edit настроить gadgets dashboard 10001 на filter 10002
 - [ ] Push в GitHub — только по явному запросу
+
+## Readiness
+
+**PARTIALLY READY** — mandatory human KT09 checks still open; KT04 Components/reporting PARTIAL but evidenced.

@@ -10,6 +10,8 @@ from docx.opc.constants import RELATIONSHIP_TYPE as RT
 from docx.oxml.ns import qn
 from docx.shared import Cm, Pt
 
+from report_title import add_title_fields
+
 ROOT = Path(__file__).resolve().parents[1]
 SHOTS = ROOT / "screenshots" / "kt05"
 OUTPUT = Path(__file__).resolve().parent / "KT05.docx"
@@ -92,11 +94,7 @@ def build() -> Path:
     section.left_margin = Cm(2.5)
     section.right_margin = Cm(1.5)
 
-    add_para(doc, "Дисциплина: Модульное тестирование веб-приложений", center=True)
-    add_para(doc, "Учебное заведение: ______________________________", center=True)
-    add_para(doc, "Студент: _______________________________________", center=True)
-    add_para(doc, "Преподаватель: _________________________________", center=True)
-    add_para(doc, "Группа: ________________________________________", center=True)
+    add_title_fields(doc, add_para)
     add_para(doc, "")
     add_para(
         doc,

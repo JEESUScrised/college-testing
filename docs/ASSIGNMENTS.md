@@ -36,7 +36,8 @@
 ## Актуальный compliance (2026-10-10)
 
 Полная матрица: `docs/compliance/FINAL_REQUIREMENTS_MATRIX.md`.  
-Критические gaps: **КТ04 Jira BLOCKED**; **КТ09 manual PENDING HUMAN VERIFICATION**.
+Критические gaps: **КТ09 manual PENDING HUMAN VERIFICATION**.  
+КТ04 Jira: project KAN + KAN-4/5/6 Done (remote verified); Components/reporting **PARTIAL** (labels / gadget UI).
 
 ## Оговорки
 - В КТ02, 04–07, 09–10 указано «Выполнить задание из презентации» или «Задание» без полного текста, поэтому детали нельзя считать полностью выясненными.

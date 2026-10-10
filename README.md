@@ -2,10 +2,11 @@
 
 Учебный проект для выполнения 12 контрольных точек колледжа. Стек: **Python 3, pytest, Selenium 4, Appium 3, Robot Framework, gRPC**.
 
-> Статус (2026-10-11): КТ 01–12 реализованы с фактическими прогонами и `reports/KT01.docx`…`KT12.docx`.  
-> Gaps: **KT09 manual PENDING HUMAN VERIFICATION**. KT04 Jira: **DONE** (https://collegeqakt04.atlassian.net , KAN-4/5/6 Done).  
+> Статус (2026-10-11): КТ 01–12 реализованы; readiness **PARTIALLY READY**.  
+> KT04 Jira: **DONE** + remote verify (https://collegeqakt04.atlassian.net , KAN-4/5/6); Components **PARTIAL** (labels).  
+> Gaps: **KT09 manual PENDING HUMAN VERIFICATION**; personal DOCX fields empty.  
 > Матрица: `docs/compliance/FINAL_REQUIREMENTS_MATRIX.md`.  
-> Архивы: `submission/KT01-KT12_submission_20261011_jira_blocked.zip`; untracked `KT01-KT12_reports.zip` не трогать.
+> Сдача: `submission/KT01-KT12_READY_FOR_SUBMISSION.zip`; untracked `KT01-KT12_reports.zip` не трогать.
 
 ## Разделы проекта
 

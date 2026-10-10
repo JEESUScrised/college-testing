@@ -9,6 +9,8 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml.ns import qn
 from docx.shared import Cm, Pt
 
+from report_title import add_title_fields
+
 ROOT = Path(__file__).resolve().parents[1]
 SCREENSHOT = ROOT / "screenshots" / "kt01" / "ya_ru_opened.png"
 OUTPUT = Path(__file__).resolve().parent / "KT01.docx"
@@ -104,11 +106,7 @@ def build() -> Path:
     section.left_margin = Cm(2.5)
     section.right_margin = Cm(1.5)
 
-    add_para(doc, "Дисциплина: Модульное тестирование веб-приложений", center=True)
-    add_para(doc, "Учебное заведение: ______________________________", center=True)
-    add_para(doc, "Студент: _______________________________________", center=True)
-    add_para(doc, "Преподаватель: _________________________________", center=True)
-    add_para(doc, "Группа: ________________________________________", center=True)
+    add_title_fields(doc, add_para)
     add_para(doc, "")
     add_para(doc, "КТ №1. Запуск и работа с WebDriver в Selenium", bold=True, center=True)
     add_para(doc, "Отчёт по контрольной точке", center=True)
