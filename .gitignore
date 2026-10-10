@@ -38,7 +38,7 @@ selenium/drivers/*.zip
 selenium/grid/runtime/
 selenium/grid/server.meta
 mobile/artifacts/
-grpc/generated/
+grpc/artifacts/
 
 # Keep reviewed report evidence in reports/ and screenshots/ on purpose.
 # Do not commit tokens, passwords or personal data.

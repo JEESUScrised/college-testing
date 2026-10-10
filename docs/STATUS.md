@@ -15,9 +15,26 @@
 | 09 | DONE | PASS | DONE | Appium gestures Android; suite **5 PASS** (54.93 с); iOS NOT RUN; `reports/KT09.docx` |
 | 10 | DONE | PASS | DONE | Chrome×Firefox 5×2 **10 PASS** (52.92 с); listeners+HTML/JUnit; `reports/KT10.docx` |
 | 11 | DONE | PASS | DONE | Robot Framework 7.5 + SeleniumLibrary; **10 PASS** (28.39 с); `reports/KT11.docx` |
-| 12 | TODO | NOT RUN | TODO | 10 gRPC тестов |
+| 12 | DONE | PASS | DONE | Inventory gRPC; **10 PASS** (2.34 с); `reports/KT12.docx` |
 
 Значения: TODO / IN PROGRESS / DONE / BLOCKED. Тесты: PASS / FAIL / SKIP / NOT RUN / MIXED.
+
+## Итог проекта (КТ 01–12)
+
+Все 12 контрольных точек реализованы; отчёты `reports/KT01.docx` … `reports/KT12.docx` присутствуют.
+
+Известные ограничения (сохранены):
+- **КТ04** — намеренные seeded FAIL / MIXED.
+- **КТ05** — полный прогон 9 PASS / 1 FAIL; show_more отдельно PASS (не один прогон 10/10).
+- **КТ09** — только Android; iOS NOT RUN.
+- Презентации cloud.ithub.ru без логина недоступны — полное соответствие скрытым слайдам не утверждается.
+
+## КТ 12 — gRPC InventoryService (финальная)
+
+- grpcio/grpcio-tools **1.84.0**, protobuf **7.36.2**; proto3 `inventory.proto` + generated stubs.
+- Suite: **10 passed in 2.34s**; unary + server/client/bidi streaming + DEADLINE_EXCEEDED.
+- Код: `grpc/server/`, `grpc/client/cli.py`, `grpc/tests/test_kt12_grpc.py`, `grpc/conftest.py`.
+- Артефакты: `grpc/artifacts/kt12/` (gitignore); скриншот `screenshots/kt12/`; отчёт `reports/KT12.docx`.
 
 ## КТ 11 — Robot Framework
 
@@ -26,7 +43,6 @@
 - Код: `robot/tests/kt11.robot`, `robot/resources/*.resource`, `robot/fixtures/`, `robot/lib/FixtureServer.py`.
 - Артефакты: `robot/artifacts/kt11/` (gitignore); скриншоты `screenshots/kt11/`; отчёт `reports/KT11.docx`.
 - Презентация cloud.ithub.ru недоступна без логина — соответствие скрытым слайдам не утверждается.
-- KT12 не начиналась.
 
 ## КТ 10 — Кроссбраузерность, отчёты, listeners
 
@@ -36,7 +52,6 @@
 - Failure demo: намеренный FAIL → `FAIL_chrome_….png` (screenshot-on-failure).
 - Скриншоты: `screenshots/kt10/`; документы: `docs/kt10/`; отчёт `reports/KT10.docx`.
 - Презентация cloud.ithub.ru недоступна без логина — соответствие скрытым слайдам не утверждается.
-- KT11/KT12 не начинались.
 
 ## КТ 09 — Жесты Appium (Android; iOS не выполнялся)
 

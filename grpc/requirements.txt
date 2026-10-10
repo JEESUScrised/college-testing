@@ -1,0 +1,5 @@
+# KT12 — gRPC Inventory Service
+# grpcio and grpcio-tools versions must match; protobuf range from grpcio-tools 1.84.0.
+grpcio==1.84.0
+grpcio-tools==1.84.0
+protobuf>=7.35.1,<8

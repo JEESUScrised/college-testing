@@ -1,0 +1,82 @@
+syntax = "proto3";
+
+package inventory.v1;
+
+// InventoryService — учебный сервис складского учёта (in-memory).
+service InventoryService {
+  // Unary: создать позицию.
+  rpc CreateItem (CreateItemRequest) returns (Item);
+
+  // Unary: получить позицию по ID.
+  rpc GetItem (GetItemRequest) returns (Item);
+
+  // Unary: изменить остаток на delta (может быть отрицательным).
+  rpc UpdateStock (UpdateStockRequest) returns (Item);
+
+  // Server streaming: вернуть все позиции (опционально по категории).
+  rpc ListItems (ListItemsRequest) returns (stream Item);
+
+  // Client streaming: принять поток CreateItemRequest, вернуть сводку.
+  rpc BulkCreate (stream CreateItemRequest) returns (BulkCreateResponse);
+
+  // Bidirectional: на каждый WatchRequest — WatchResponse в том же порядке.
+  rpc EchoWatch (stream WatchRequest) returns (stream WatchResponse);
+
+  // Unary: контролируемая задержка для проверки deadline/cancellation.
+  rpc SlowPing (SlowPingRequest) returns (SlowPingResponse);
+}
+
+message Item {
+  string id = 1;
+  string name = 2;
+  int32 quantity = 3;
+  string category = 4;
+}
+
+message CreateItemRequest {
+  string id = 1;
+  string name = 2;
+  int32 quantity = 3;
+  string category = 4;
+}
+
+message GetItemRequest {
+  string id = 1;
+}
+
+message UpdateStockRequest {
+  string id = 1;
+  int32 delta = 2;
+}
+
+message ListItemsRequest {
+  // Пустая строка = все категории.
+  string category_filter = 1;
+}
+
+message BulkCreateResponse {
+  int32 created_count = 1;
+  repeated string ids = 2;
+}
+
+message WatchRequest {
+  string item_id = 1;
+  string note = 2;
+}
+
+message WatchResponse {
+  string item_id = 1;
+  string note = 2;
+  string status = 3;
+  int32 quantity = 4;
+}
+
+message SlowPingRequest {
+  // Сколько миллисекунд сервер должен ждать (с проверкой cancellation).
+  int32 delay_ms = 1;
+}
+
+message SlowPingResponse {
+  string message = 1;
+  int32 waited_ms = 2;
+}
