@@ -12,12 +12,22 @@
 | 06 | DONE | PASS | DONE | AVD `Medium_Phone_API_36.1` (API 36); suite **7 PASS** (44.63 с); `reports/KT06.docx` |
 | 07 | DONE | PASS | DONE | Grid 4.50 Standalone **5 PASS** (4.88 с); Hub+Node verified; `reports/KT07.docx` |
 | 08 | DONE | PASS | DONE | Pillow visual regression; suite **5 PASS** (13.71 с); `reports/KT08.docx` |
-| 09 | TODO | NOT RUN | TODO | Свайпы |
+| 09 | DONE | PASS | DONE | Appium gestures Android; suite **5 PASS** (54.93 с); iOS NOT RUN; `reports/KT09.docx` |
 | 10 | TODO | NOT RUN | TODO | Браузеры + отчеты |
 | 11 | TODO | NOT RUN | TODO | 10 Robot тестов |
 | 12 | TODO | NOT RUN | TODO | 10 gRPC тестов |
 
 Значения: TODO / IN PROGRESS / DONE / BLOCKED. Тесты: PASS / FAIL / SKIP / NOT RUN / MIXED.
+
+## КТ 09 — Жесты Appium (Android; iOS не выполнялся)
+
+- Жесты: `mobile/gestures/` (`swipeGesture`/`scrollGesture`, GesturePort).
+- Экраны: ApiDemos Views (vertical) + Gallery/1. Photos (horizontal).
+- AVD: `Medium_Phone_API_36.1` (API 36); Appium 3.8.0 / uiautomator2 8.7.0.
+- Suite: **5 passed in 54.93s**; скриншоты `screenshots/kt09/01_…` … `11_…`.
+- iOS / XCUITest: **NOT RUN** (документировано в `mobile/docs/kt09-platform-compatibility.md`).
+- Презентация cloud.ithub.ru недоступна без логина — соответствие скрытым слайдам не утверждается.
+- Отчёт: `reports/KT09.docx`.
 
 ## КТ 08 — Visual regression (Selenium + Pillow)
 

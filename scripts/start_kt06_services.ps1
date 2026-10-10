@@ -48,7 +48,8 @@ if ($devices.Count -gt 0) {
         $devices = Get-ReadyAndroidDevices -AdbPath $adb
         $booted = $false
         if ($devices.Count -gt 0) {
-            $prop = & $adb -s $devices[0] shell getprop sys.boot_completed 2>$null
+            # Capture stderr so PowerShell Stop does not abort while device is still booting
+            $prop = cmd /c "`"$adb`" -s $($devices[0]) shell getprop sys.boot_completed 2>nul"
             $booted = ($prop -match "1")
         }
     } while (-not $booted -and (Get-Date) -lt $deadline)
