@@ -194,7 +194,9 @@ def build() -> Path:
     add_code(
         doc,
         "Windows Firefox visual capture: 8 screenshots (2026-10-11)\n"
-        "Android automated visual set: 8 screenshots (DOM suite + order complete)\n"
+        "Android Chrome automated visual set: 8 screenshots "
+        "(Appium + ChromeDriver web screenshot, emulator soft GPU; "
+        "scripts/capture_kt09_android_visual.py)\n"
         "Manual checklist: PENDING HUMAN VERIFICATION",
     )
 

@@ -23,4 +23,4 @@ Evidence type: **AUTOMATED** (not manual)
 
 **Manual human comparison:** PENDING HUMAN VERIFICATION  
 **Functional defects:** none confirmed.  
-**Env notes:** Android may show Google Password Manager dialogs / occasional emulator GPU artifacts on some frames.
+**Capture method:** Android visual set via `scripts/capture_kt09_android_visual.py` (ChromeDriver web screenshot, emulator `-gpu swiftshader_indirect`). Older GPU-glitched frames discarded.
