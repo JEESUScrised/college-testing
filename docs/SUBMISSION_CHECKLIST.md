@@ -17,11 +17,12 @@
 
 Отчёт не должен утверждать успех непроверенного теста.
 
-## Финальный аудит (2026-10-10)
+## Финальный аудит (2026-10-11)
 
-- [x] Все 12 DOCX существуют и парсятся python-docx
+- [x] Все 12 DOCX существуют и парсятся python-docx (KT05/06/09 обновлены)
 - [x] Матрица `docs/compliance/FINAL_REQUIREMENTS_MATRIX.md`
-- [x] Новый архив `submission/KT01-KT12_verified_evidence.zip` (старый `KT01-KT12_reports.zip` не трогать)
+- [x] Архив `submission/KT01-KT12_final_evidence_20261011.zip` (старый `KT01-KT12_reports.zip` не трогать)
+- [x] KT05 remediation full suite 10 PASS; KT06 remediation 10 PASS; KT09 Android DOM 11 PASS
 - [ ] Заполнить персональные поля на титулах DOCX (студент/группа/преподаватель) — вручную
 - [ ] KT04: создать Jira `QAKT04` после авторизации пользователя
 - [ ] KT09: пройти `mobile/docs/kt09-manual-checklist.md` человеком

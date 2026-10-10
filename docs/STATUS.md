@@ -7,9 +7,9 @@
 | 01 | DONE | PASS | DONE | `reports/KT01.docx` |
 | 02 | DONE | PASS | DONE | Local windows/iframe 6 PASS + public Sauce **11 PASS** (49.34 с); `reports/KT02.docx` |
 | 03 | DONE | PASS | DONE | Local PO 4 PASS + public Sauce PO **5 PASS** (21.11 с); `reports/KT03.docx` |
-| 04 | DONE | MIXED | DONE | seeded 2P/3F + GitHub #1–#3; lifecycle retest **3 PASS**; Jira **BLOCKED**; `reports/KT04.docx` |
-| 05 | DONE | MIXED | DONE | VDNH; полный прогон **9 PASS / 1 FAIL** (98.63 с); целевой show_more **PASS** (11.60 с) — отдельно; **не** один прогон 10/10; `reports/KT05.docx` |
-| 06 | DONE | PASS | DONE | AVD `Medium_Phone_API_36.1` (API 36); suite **7 PASS** (44.63 с); `reports/KT06.docx` |
+| 04 | DONE | MIXED | DONE | seeded 2P/3F + GitHub #1–#3; lifecycle retest **3 PASS**; Jira **BLOCKED** (2026-10-11 recheck); `reports/KT04.docx` |
+| 05 | DONE | PASS | DONE | VDNH; история 9P/1F + follow-up; remediation **10 PASS / 50.63 с** (2026-10-11); `reports/KT05.docx` |
+| 06 | DONE | PASS | DONE | AVD API 36; история **7 PASS / 44.63 с**; remediation **10 PASS / 67.70 с**; `reports/KT06.docx` |
 | 07 | DONE | PASS | DONE | Standalone 5 PASS + Hub+**2 Nodes** Chrome/Firefox **4 PASS** (7.72 с) + parallel overlap; `reports/KT07.docx` |
 | 08 | DONE | PASS | DONE | Public Sauce Demo + Allure; Full **9 PASS** (34.64 с); Pillow history 5/13.71с; `reports/KT08.docx` |
 | 09 | DONE | MIXED | DONE | Gestures 5 PASS + Android DOM **11 PASS / 36.91 с** + Win 2 PASS; manual PENDING; iOS NOT RUN; `reports/KT09.docx` |
@@ -24,9 +24,9 @@
 Все 12 контрольных точек реализованы; отчёты `reports/KT01.docx` … `reports/KT12.docx` присутствуют.
 
 Известные ограничения (сохранены):
-- **КТ04** — намеренные seeded FAIL / MIXED.
-- **КТ05** — полный прогон 9 PASS / 1 FAIL; show_more отдельно PASS (не один прогон 10/10).
-- **КТ09** — только Android; iOS NOT RUN.
+- **КТ04** — намеренные seeded FAIL / MIXED; реальный Jira lifecycle **BLOCKED** (нет авторизации).
+- **КТ05** — исторически 9P/1F + follow-up; текущий remediation suite **10/10 PASS** (прогоны не склеивать).
+- **КТ09** — manual **PENDING HUMAN VERIFICATION**; iOS NOT RUN.
 - Презентации cloud.ithub.ru без логина недоступны — полное соответствие скрытым слайдам не утверждается.
 
 ## КТ 12 — gRPC InventoryService (финальная)
@@ -80,44 +80,35 @@
 
 ## КТ 06 — Appium Android
 
-- Каркас: `mobile/` (pytest + Appium-Python-Client + UiAutomator2Options, Page Object, 7 тест-кейсов ApiDemos).
-- Appium 3.8.0 + uiautomator2@8.7.0 (локально в `mobile/node_modules`).
-- APK: ApiDemos v6.0.18, SHA-256 `A9EECF37…F686` (вне Git).
-- Скрипты: `scripts/diagnose_kt06.ps1`, `start_kt06_services.ps1`, `run_kt06.ps1`, `collect_kt06_artifacts.ps1`.
-- Новый ПК: `ANDROID_HOME=C:\Users\user\AppData\Local\Android\Sdk`, JAVA_HOME=Android Studio JBR 21, AVD **`Medium_Phone_API_36.1`** (API 36; `KT06_API33` не создавался — вариант B).
-- Аудит: `mobile/environment-report.md` — **READY**.
-- Прогоны: диагностика PASS → suite №1 **6/1** (TextFields вне экрана) → scroll-fix → suite №2 **7 PASS / 44.63 с**.
-- Скриншоты: `screenshots/kt06/01_*.png` … `08_textfields.png`.
-- `reports/KT06.docx` создан по фактическим артефактам.
-- KT09 не реализован; среда рассчитана на переиспользование.
+- Каркас: `mobile/` (pytest + Appium-Python-Client + UiAutomator2Options, Page Object).
+- Appium 3.8.0 + uiautomator2; AVD **`Medium_Phone_API_36.1`** (API 36 / Android 16), `emulator-5554`.
+- Исторический suite: **7 PASS / 44.63 с** (2026-10-09).
+- Remediation (2026-10-11): **10 PASS / 67.70 с** (+ Cancel dialog, clear/hint, a11y labels).
+- Скриншоты: `screenshots/kt06/01_*.png` … `12_home_a11y.png`; `reports/KT06.docx`.
+- Подтверждённых дефектов ApiDemos нет.
 
 ## КТ 05 — факт прогонов
 
-### Прогон №1 (полный, без VPN)
+### Прогон №1 (полный, без VPN) — история
 
-- Скрипт: `scripts/run_kt05_no_vpn.ps1`
 - Результат: **9 passed, 1 failed in 98.63s**, exit 1
-- FAIL: `test_show_more_loads_additional_cards` (`TimeoutException`, wait 35s)
-- Артефакты: `selenium/artifacts/kt05/pytest_20261009_125706.log` (+ junit/html/summary)
-- Скриншоты: `screenshots/kt05/01_*.png` … `09_before_show_more.png`, `11_*`, `12_*`
+- FAIL: `test_show_more_loads_additional_cards`
 
-### Прогон №2 (только show_more, после правки PO)
+### Прогон №2 (только show_more) — история
 
-- Скрипт: `scripts/run_kt05_show_more_only.ps1`
 - Результат: **1 passed in 11.60s**, exit 0
-- Артефакты: `selenium/artifacts/kt05/pytest_show_more_20261009_131026.log` (+ junit/html/summary)
-- Скриншот: `screenshots/kt05/10_after_show_more.png`
 
-### Вывод по FAIL
+### Прогон №3 (полный remediation, 2026-10-11)
 
-- Наиболее вероятно: исправление Page Object (перепоиск кнопки + более широкое условие успеха).
-- Неопределённость: полный suite с новым кодом повторно не гонялся.
-- Дефект сайта не подтверждён.
-- Отчёт: `reports/KT05.docx`. Документы: `docs/kt05/`.
+- Команда: `pytest selenium/tests/test_kt05_vdnh_news.py --browser=chrome --page-load-strategy=none`
+- Результат: **10 passed in 50.63s**, exit 0
+- Артефакты: `selenium/artifacts/kt05/*_20261011_011634.*`
+- Дефект сайта не подтверждён. Исторические прогоны сохранены отдельно.
 
 ## КТ 04
 
-Campus Portal Demo; 2 PASS / 3 FAIL (seeded); Issues #1–#3 Open; `reports/KT04.docx`.
+Campus Portal Demo; seeded 2 PASS / 3 FAIL; GitHub Issues #1–#3; lifecycle copy **3 PASS**.  
+Jira `QAKT04`: **BLOCKED** (нет авторизованной сессии; drafts в `docs/kt04/`). `reports/KT04.docx`.
 
 ## КТ 02 — Функциональные техники (remediation 2026-10-10)
 

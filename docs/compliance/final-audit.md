@@ -1,20 +1,19 @@
 # Compliance Remediation — Final Audit (updated)
 
-Date: 2026-10-10  
-HEAD: see git log (Phase 5 commit)  
+Date: **2026-10-11**  
 Zip preserved untracked: `KT01-KT12_reports.zip`  
-New evidence zip: `submission/KT01-KT12_verified_evidence.zip`
+Evidence zips: `submission/KT01-KT12_verified_evidence.zip`, `submission/KT01-KT12_final_evidence_20261011.zip`
 
 ## Series commits (selected)
 
 | Phase | Commit | Summary |
 |---|---|---|
 | Prior | `4c0f38c`…`f7c3b16` | KT10/02/03/07/09/prior audit |
-| P1 | `d6dd948` | KT09 Android ChromeDriver DOM PASS |
-| P2 | `2c62008` | KT05 docs alignment |
-| P3 | `ee714d2` | KT06 strategy/analysis |
-| P4 | `1394ff8` | KT04 lifecycle retest; Jira BLOCKED |
-| P5 | (this) | FINAL matrix + submission zip |
+| KT09 DOM | `d6dd948` / `e0dce55` | Android Chrome W01–W10 **11 PASS / 36.91s** |
+| KT05 | `8a2de2a` | Full suite remediation **10 PASS / 50.63s** + docs |
+| KT06 | `a5a477b` | ApiDemos **10 PASS / 67.70s** + docs |
+| KT04 | drafts | Jira still **BLOCKED** (recheck 2026-10-11) |
+| Final | (this) | Matrix + STATUS + evidence archive |
 
 ## Open gaps (do not claim 100%)
 
@@ -24,6 +23,7 @@ New evidence zip: `submission/KT01-KT12_verified_evidence.zip`
 4. **DOCX title placeholders** — student/group/teacher blank.
 5. Presentations cloud.ithub.ru — unavailable without login.
 
-## DOCX audit
+## DOCX audit (2026-10-11)
 
-All KT01–KT12.docx present, non-empty, parseable; screenshots embedded where expected. Placeholders for personal data remain on purpose.
+All `reports/KT01.docx` … `KT12.docx` present and rebuildable where scripts exist.
+KT05/KT06/KT09 refreshed with remediation evidence. No fabricated Jira/manual claims.
