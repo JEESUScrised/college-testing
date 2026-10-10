@@ -1,0 +1,5 @@
+# KT11 — Robot Framework + SeleniumLibrary
+# Pin selenium to the project version used by KT01–KT10 (do not upgrade via this file).
+robotframework>=7.0,<8
+robotframework-seleniumlibrary>=6.7.0,<7
+selenium==4.50.0

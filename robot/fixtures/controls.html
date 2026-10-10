@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>KT11 Controls</title>
+  <style>
+    body { font-family: Georgia, serif; margin: 2rem; background: #eef3f8; color: #1a2433; }
+    fieldset { margin: 1rem 0; background: #fff; border: 1px solid #9bb0c5; padding: 1rem; }
+    #controls-summary { margin-top: 1rem; padding: 0.75rem; background: #fff; border: 1px solid #9bb0c5; }
+  </style>
+</head>
+<body>
+  <h1 id="controls-heading">Элементы управления</h1>
+  <p><a id="back-home" href="index.html">На главную</a></p>
+
+  <fieldset>
+    <legend>Чекбокс</legend>
+    <label>
+      <input id="newsletter" name="newsletter" type="checkbox" value="yes">
+      Подписка на новости
+    </label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Радио</legend>
+    <label><input type="radio" name="plan" id="plan-basic" value="basic"> Basic</label>
+    <label><input type="radio" name="plan" id="plan-pro" value="pro"> Pro</label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Список</legend>
+    <label for="country">Страна</label>
+    <select id="country" name="country">
+      <option value="">— выберите —</option>
+      <option value="ru">Россия</option>
+      <option value="kz">Казахстан</option>
+      <option value="by">Беларусь</option>
+    </select>
+  </fieldset>
+
+  <div id="controls-summary">Чекбокс: off | План: none | Страна: none</div>
+
+  <script>
+    function refreshSummary() {
+      var cb = document.getElementById("newsletter").checked ? "on" : "off";
+      var planEl = document.querySelector('input[name="plan"]:checked');
+      var plan = planEl ? planEl.value : "none";
+      var country = document.getElementById("country").value || "none";
+      document.getElementById("controls-summary").textContent =
+        "Чекбокс: " + cb + " | План: " + plan + " | Страна: " + country;
+    }
+    document.getElementById("newsletter").addEventListener("change", refreshSummary);
+    document.querySelectorAll('input[name="plan"]').forEach(function (el) {
+      el.addEventListener("change", refreshSummary);
+    });
+    document.getElementById("country").addEventListener("change", refreshSummary);
+  </script>
+</body>
+</html>

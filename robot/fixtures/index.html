@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>KT11 Robot Home</title>
+  <style>
+    body { font-family: Georgia, serif; margin: 2rem; background: #eef3f8; color: #1a2433; }
+    nav a { margin-right: 1rem; }
+    #dynamic-status { margin-top: 1rem; padding: 0.75rem; background: #fff; border: 1px solid #9bb0c5; }
+    button { margin-top: 0.5rem; padding: 0.4rem 0.8rem; }
+  </style>
+</head>
+<body>
+  <h1 id="home-heading">KT11 Robot Framework Demo</h1>
+  <p id="home-intro">Локальное приложение для 10 автотестов Robot Framework.</p>
+  <nav id="main-nav">
+    <a id="nav-register" href="register.html">Регистрация</a>
+    <a id="nav-controls" href="controls.html">Элементы управления</a>
+    <a id="nav-frames" href="frames.html">IFrame</a>
+    <a id="nav-secondary" href="secondary.html" target="_blank" rel="noopener">Вторичная вкладка</a>
+  </nav>
+  <div id="dynamic-panel">
+    <p id="dynamic-status">Статус: исходный</p>
+    <button id="dynamic-btn" type="button">Обновить статус</button>
+  </div>
+  <script>
+    var clicks = 0;
+    document.getElementById("dynamic-btn").addEventListener("click", function () {
+      clicks += 1;
+      document.getElementById("dynamic-status").textContent =
+        "Статус: обновлено (" + clicks + ")";
+    });
+  </script>
+</body>
+</html>

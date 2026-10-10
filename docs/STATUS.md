@@ -14,10 +14,19 @@
 | 08 | DONE | PASS | DONE | Pillow visual regression; suite **5 PASS** (13.71 с); `reports/KT08.docx` |
 | 09 | DONE | PASS | DONE | Appium gestures Android; suite **5 PASS** (54.93 с); iOS NOT RUN; `reports/KT09.docx` |
 | 10 | DONE | PASS | DONE | Chrome×Firefox 5×2 **10 PASS** (52.92 с); listeners+HTML/JUnit; `reports/KT10.docx` |
-| 11 | TODO | NOT RUN | TODO | 10 Robot тестов |
+| 11 | DONE | PASS | DONE | Robot Framework 7.5 + SeleniumLibrary; **10 PASS** (28.39 с); `reports/KT11.docx` |
 | 12 | TODO | NOT RUN | TODO | 10 gRPC тестов |
 
 Значения: TODO / IN PROGRESS / DONE / BLOCKED. Тесты: PASS / FAIL / SKIP / NOT RUN / MIXED.
+
+## КТ 11 — Robot Framework
+
+- Robot Framework **7.5** + SeleniumLibrary **6.9.0**; Selenium 4.50.0 сохранён.
+- Suite: **10 passed / 0 failed**, elapsed **28.39 с** (`output.xml`).
+- Код: `robot/tests/kt11.robot`, `robot/resources/*.resource`, `robot/fixtures/`, `robot/lib/FixtureServer.py`.
+- Артефакты: `robot/artifacts/kt11/` (gitignore); скриншоты `screenshots/kt11/`; отчёт `reports/KT11.docx`.
+- Презентация cloud.ithub.ru недоступна без логина — соответствие скрытым слайдам не утверждается.
+- KT12 не начиналась.
 
 ## КТ 10 — Кроссбраузерность, отчёты, listeners
 
