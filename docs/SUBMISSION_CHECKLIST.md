@@ -24,7 +24,7 @@
 - [x] Архив `submission/KT01-KT12_final_evidence_20261011.zip` (старый `KT01-KT12_reports.zip` не трогать)
 - [x] KT05 remediation full suite 10 PASS; KT06 remediation 10 PASS; KT09 Android DOM 11 PASS
 - [ ] Заполнить персональные поля на титулах DOCX (студент/группа/преподаватель) — вручную
-- [ ] KT04: войти в Atlassian → одобрить создание `QAKT04` + 3 Bug + transitions
+- [x] KT04: Jira site collegeqakt04 + KAN-4/5/6 Done
 - [ ] KT09: пройти `mobile/docs/kt09-manual-checklist.md` человеком (Windows+Android)
 - [ ] Заполнить титулы DOCX: студент / группа / преподаватель / учебное заведение
 - [ ] Push в GitHub — только по явному запросу

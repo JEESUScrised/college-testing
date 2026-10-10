@@ -1,53 +1,42 @@
-# KT04 — Defect lifecycle demonstration
+# KT04 — Defect lifecycle (local + REAL Jira)
 
-## Principle
+## Layers
 
 | Layer | Location | Status |
 |---|---|---|
-| Historical seeded defective app | `selenium/fixtures/kt04/` | Unchanged; suite MIXED **2 PASS / 3 FAIL** |
+| Historical seeded app | `selenium/fixtures/kt04/` | Unchanged; **2 PASS / 3 FAIL** |
 | Lifecycle fixed copy | `selenium/fixtures/kt04_lifecycle/` | SEED-001/002/003 fixed |
-| Retest (2026-10-10) | `test_kt04_lifecycle_retest.py` | **3 PASS / 14.40s** |
-| Retest (2026-10-11) | same | **3 PASS / 8.74s** |
+| Selenium retest | `test_kt04_lifecycle_retest.py` | **3 PASS / 8.74s** (2026-10-11) |
 | GitHub Issues | #1–#3 | Preserved Open (historical) |
-| Jira Issues / transitions | QAKT04 | **BLOCKED** — not created |
+| Jira Issues | **KAN-4, KAN-5, KAN-6** | **Done** after full workflow |
 
-## Fixes in lifecycle copy (actual code)
+## Jira workflow performed (same Atlassian account JEESUS)
+
+Educational simulated roles on one account (Cursor agent) — **no impersonation of other people**.
+
+For each of KAN-4 / KAN-5 / KAN-6:
+
+1. Created Bug with reproduction + GitHub link  
+2. Assigned to JEESUS  
+3. Comment: triage / reproduce  
+4. Transition → In Progress (`В работе`)  
+5. Comment: fix summary + lifecycle path  
+6. Transition → Ready for Testing  
+7. Comment: Selenium retest PASS  
+8. Transition → Done (`Готово`)
+
+## Fixes in lifecycle copy
 
 | SEED | File | Fix |
 |---|---|---|
-| 001 | `kt04_lifecycle/index.html` | Reject empty password before dashboard redirect |
+| 001 | `kt04_lifecycle/index.html` | Reject empty password |
 | 002 | `kt04_lifecycle/register.html` | Email must match `local@domain.tld` |
 | 003 | `kt04_lifecycle/dashboard.html` | Reject `qty <= 0` |
 
-Original `selenium/fixtures/kt04/` **not modified**.
+## Before / after
 
-## Before / after evidence
-
-| Defect | BEFORE (seeded) | AFTER (lifecycle) |
-|---|---|---|
-| Empty password | TC-02 FAIL; `tc02_seed001_empty_password.png` | retest PASS; `lifecycle/retest_seed001_empty_password.png` |
-| Invalid email | TC-03 FAIL; `tc03_seed002_invalid_email.png` | retest PASS; `lifecycle/retest_seed002_invalid_email.png` |
-| Qty=0 | TC-04 FAIL; `tc04_seed003_zero_quantity.png` | retest PASS; `lifecycle/retest_seed003_zero_quantity.png` |
-
-## Simulated team roles (honest)
-
-All code fixes and Selenium retests were performed by the **Cursor coding agent**.  
-No separate human developer/QA accounts were used. When Jira is available with one account, comments must state the educational simulated-role workflow — **no impersonation**.
-
-## Planned Jira transitions (when unblocked + approved)
-
-For each bug: Open → In Progress → comment (fix) → Ready for Testing → comment (retest) → Done.
-
-Actual transition timestamps/keys: **N/A until Jira exists**.
-
-## Commands
-
-```powershell
-# Historical (expect 3 FAIL / 2 PASS):
-.\.venv\Scripts\python.exe -m pytest selenium\tests\test_kt04_defects.py -v --browser=chrome
-
-# Lifecycle retest (expect 3 PASS):
-.\.venv\Scripts\python.exe -m pytest selenium\tests\test_kt04_lifecycle_retest.py -v --browser=chrome
-```
-
-Latest lifecycle artifacts: `selenium/artifacts/kt04/junit_lifecycle_20261011.xml`.
+| Defect | BEFORE | AFTER | Jira |
+|---|---|---|---|
+| Empty password | TC-02 FAIL | retest PASS | KAN-4 Done |
+| Invalid email | TC-03 FAIL | retest PASS | KAN-5 Done |
+| Qty=0 | TC-04 FAIL | retest PASS | KAN-6 Done |

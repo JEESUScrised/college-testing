@@ -1,56 +1,45 @@
-# KT04 — Jira project design (College QA Defect Lifecycle)
+# KT04 — Jira project (REAL)
 
-## Status: BLOCKED — no authorized Jira workspace access
+## Status: CREATED
 
-Rechecked **2026-10-11**:
-
-1. No Atlassian/Jira MCP tools in this agent session.
-2. No `JIRA_*` / `ATLASSIAN_*` environment credentials configured.
-3. Cursor browser opened `https://id.atlassian.com/login` → **Atlassian login page** (not signed in).
-
-**No real Jira project, issues, comments, assignments, transitions, or native reports were created.**  
-Creating them requires: user login in the legitimate Atlassian UI **and** explicit approval to create/modify Jira resources.
-
-## Planned project (ready when authorized)
-
-| Field | Value |
+| Field | Actual value |
 |---|---|
-| Name | College QA Defect Lifecycle |
-| Key | `QAKT04` (or next available) |
-| Type | Software / Kanban if supported |
-| Components | Authentication, Registration, Order Processing |
-| Issue types | Bug, Task, Improvement |
-| Priorities | Highest / High / Medium / Low (site defaults OK) |
+| Workspace / site | https://collegeqakt04.atlassian.net |
+| Organization | prilepov2005 |
+| Account | JEESUS (`prilepov2005@gmail.com`) |
+| Project name | College QA Defect Lifecycle |
+| Project key | **KAN** (auto-assigned; planned `QAKT04` unavailable as key) |
+| Project URL | https://collegeqakt04.atlassian.net/jira/software/projects/KAN/boards/2 |
+| Type | Team-managed software / Kanban |
+| Plan | Cloud Standard trial (7 days) |
 
-## Planned workflow states
+## Issue types (configured)
 
-Open → In Progress → Ready for Testing → Done  
+Epic, Story, Task, **Баг (Bug)**, Subtask  
 
-(Use only states the account actually supports; do not claim custom states until configured.)
+Bug was added via Project settings → Типы задач → Добавить тип задачи.
 
-## Actual recorded configuration
+## Priorities
 
-| Item | Value |
+Highest / High / Medium / Low / Lowest (site defaults). Used **High** and **Medium** on bugs.
+
+## Components
+
+Native Components UI not configured on this team-managed board.  
+Component mapping encoded as **labels**:
+
+| Component (planned) | Label used |
 |---|---|
-| Workspace URL | *not available — not logged in* |
-| Project URL | *not created* |
-| Project key | *not created* |
-| Issue types / components / workflow | *not configured* |
+| Authentication | `authentication` |
+| Registration | `registration` |
+| Order Processing | `order-processing` |
 
-## Cross-reference
+## Workflow statuses (actual board columns)
 
-Historical GitHub Issues (preserved):
+Open (`Открыть`) → In Progress (`В работе`) → **Ready for Testing** → Done (`Готово`)
 
-- https://github.com/JEESUScrised/college-testing/issues/1
-- https://github.com/JEESUScrised/college-testing/issues/2
-- https://github.com/JEESUScrised/college-testing/issues/3
+## Screenshots
 
-Local lifecycle fixes: `selenium/fixtures/kt04_lifecycle/` — retest **3 PASS / 8.74s** (2026-10-11).
-
-## User action required
-
-1. Sign in at `https://id.atlassian.com/login` (Cursor browser or system browser).
-2. Explicitly authorize creating project `QAKT04` (or alternative key).
-3. Approve creating three Bug issues from `jira-issue-drafts.md` / `jira-import-bugs.csv`.
-4. Approve workflow transitions and comments for the educational lifecycle demo.
-5. Re-run the agent to complete real Jira evidence + screenshots.
+- `screenshots/kt04/jira/01_board_college_qa.png`
+- `screenshots/kt04/jira/02_issue_KAN-4.png`
+- `screenshots/kt04/jira/03_filter_bugs_done.png`

@@ -13,12 +13,12 @@ Status values: PASS | PARTIAL | FAIL | BLOCKED | NOT RUN | PENDING
 | 02 | R02-04 | Test report | yes | docs/kt02 + DOCX | — | KT02.docx | PASS | — |
 | 03 | R03-01 | Public website PO | Sauce PO | `pages/sauce/`, `test_kt03_sauce_po.py` | 5 PASS / 21.11s | KT03.docx | PASS | — |
 | 03 | R03-02 | ≥2 major functions | login/inventory/cart/checkout | same | same | KT03.docx | PASS | — |
-| 04 | R04-01 | Real Jira project | drafts + CSV | `docs/kt04/jira-project.md` | Atlassian login page only | KT04.docx | **BLOCKED** | User login + approve create `QAKT04` |
-| 04 | R04-02 | Defect reports | yes | bug-reports/ + jira-issues.md | GitHub #1–#3; no Jira keys | KT04.docx | PARTIAL | Create real Jira bugs |
-| 04 | R04-03 | Workflow transitions | designed | defect-lifecycle.md | lifecycle Selenium **3 PASS / 8.74s** | KT04.docx | PARTIAL | Jira transitions |
-| 04 | R04-04 | Assignment / comments | planned | jira-issue-drafts.md | — | KT04.docx | **BLOCKED** | Jira access |
-| 04 | R04-05 | Fixes + retests | lifecycle copy | `kt04_lifecycle/`, lifecycle tests | **3 PASS / 8.74s** (2026-10-11) | KT04.docx | PASS (local) | Link to Jira when available |
-| 04 | R04-06 | Jira statistics/reports | — | jira-reporting.md | — | KT04.docx | **BLOCKED** | Native Jira gadgets |
+| 04 | R04-01 | Real Jira project | yes | collegeqakt04 / KAN | board + settings | KT04.docx | PASS | Key is KAN not QAKT04 |
+| 04 | R04-02 | Defect reports | yes | KAN-4/5/6 + bug-reports | Jira Done + GitHub | KT04.docx | PASS | — |
+| 04 | R04-03 | Workflow transitions | yes | defect-lifecycle.md | Open→…→Done | KT04.docx | PASS | Localized status names |
+| 04 | R04-04 | Assignment / comments | yes | JEESUS + 3 comments/issue | REST+UI verified | KT04.docx | PASS | Single-account educational roles |
+| 04 | R04-05 | Fixes + retests | lifecycle copy | `kt04_lifecycle/` | **3 PASS / 8.74s** | KT04.docx | PASS | — |
+| 04 | R04-06 | Jira statistics/reports | filter + board | jira-reporting.md | 3 Bugs Done screenshot | KT04.docx | PASS | Components via labels |
 | 05 | R05-01 | Choose/justify website | VDNH | website-selection.md | — | KT05.docx | PASS | — |
 | 05 | R05-02 | Black/gray/white strategy | documented | test-plan.md | — | KT05.docx | PASS | White-box N/A backend |
 | 05 | R05-03 | Scope + entry/exit | yes | test-plan.md | — | KT05.docx | PASS | — |

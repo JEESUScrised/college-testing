@@ -7,7 +7,7 @@
 | 01 | DONE | PASS | DONE | `reports/KT01.docx` |
 | 02 | DONE | PASS | DONE | Local windows/iframe 6 PASS + public Sauce **11 PASS** (49.34 с); `reports/KT02.docx` |
 | 03 | DONE | PASS | DONE | Local PO 4 PASS + public Sauce PO **5 PASS** (21.11 с); `reports/KT03.docx` |
-| 04 | PARTIAL | MIXED | DONE | seeded 2P/3F + GitHub #1–#3; lifecycle **3 PASS / 8.74s**; Jira **BLOCKED** (Atlassian login page); `reports/KT04.docx` |
+| 04 | DONE | MIXED | DONE | seeded 2P/3F; lifecycle **3 PASS / 8.74s**; Jira **KAN-4/5/6 Done** @ collegeqakt04.atlassian.net; `reports/KT04.docx` |
 | 05 | DONE | PASS | DONE | VDNH; история 9P/1F + follow-up; remediation **10 PASS / 50.63 с** (2026-10-11); `reports/KT05.docx` |
 | 06 | DONE | PASS | DONE | AVD API 36; история **7 PASS / 44.63 с**; remediation **10 PASS / 67.70 с**; `reports/KT06.docx` |
 | 07 | DONE | PASS | DONE | Standalone 5 PASS + Hub+**2 Nodes** Chrome/Firefox **4 PASS** (7.72 с) + parallel overlap; `reports/KT07.docx` |
@@ -24,7 +24,7 @@
 Все 12 контрольных точек реализованы; отчёты `reports/KT01.docx` … `reports/KT12.docx` присутствуют.
 
 Известные ограничения (сохранены):
-- **КТ04** — намеренные seeded FAIL / MIXED; реальный Jira lifecycle **BLOCKED** (нет авторизации).
+- **КТ04** — намеренные seeded FAIL сохранены; Jira lifecycle **DONE** (KAN-4/5/6); ключ KAN (не QAKT04).
 - **КТ05** — исторически 9P/1F + follow-up; текущий remediation suite **10/10 PASS** (прогоны не склеивать).
 - **КТ09** — manual **PENDING HUMAN VERIFICATION**; iOS NOT RUN.
 - Презентации cloud.ithub.ru без логина недоступны — полное соответствие скрытым слайдам не утверждается.
@@ -107,10 +107,11 @@
 
 ## КТ 04
 
-Campus Portal Demo; seeded **2 PASS / 3 FAIL** (исторический suite сохранён).  
-GitHub Issues #1–#3 Open. Lifecycle copy `kt04_lifecycle/` + retest **3 PASS / 8.74 с** (2026-10-11).  
-Jira `QAKT04`: **BLOCKED** — `id.atlassian.com/login` без сессии; нет MCP/API credentials; issue keys не создавались.  
-Документы: `docs/kt04/*`, `bug-reports/*`, `reports/KT04.docx` (матрица: PARTIAL/BLOCKED).
+Campus Portal Demo; seeded **2 PASS / 3 FAIL** (сохранён). GitHub #1–#3.  
+Lifecycle `kt04_lifecycle/` + retest **3 PASS / 8.74 с**.  
+**Jira REAL:** https://collegeqakt04.atlassian.net — project **KAN** «College QA Defect Lifecycle»;  
+Bugs **KAN-4 / KAN-5 / KAN-6** (Баг) → assign JEESUS → comments → Open→In Progress→Ready for Testing→**Done**.  
+Документы: `docs/kt04/*`, скриншоты `screenshots/kt04/jira/`, `reports/KT04.docx`.
 
 ## КТ 02 — Функциональные техники (remediation 2026-10-10)
 
