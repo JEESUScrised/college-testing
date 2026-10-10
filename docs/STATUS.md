@@ -13,11 +13,21 @@
 | 07 | DONE | PASS | DONE | Grid 4.50 Standalone **5 PASS** (4.88 с); Hub+Node verified; `reports/KT07.docx` |
 | 08 | DONE | PASS | DONE | Pillow visual regression; suite **5 PASS** (13.71 с); `reports/KT08.docx` |
 | 09 | DONE | PASS | DONE | Appium gestures Android; suite **5 PASS** (54.93 с); iOS NOT RUN; `reports/KT09.docx` |
-| 10 | TODO | NOT RUN | TODO | Браузеры + отчеты |
+| 10 | DONE | PASS | DONE | Chrome×Firefox 5×2 **10 PASS** (52.92 с); listeners+HTML/JUnit; `reports/KT10.docx` |
 | 11 | TODO | NOT RUN | TODO | 10 Robot тестов |
 | 12 | TODO | NOT RUN | TODO | 10 gRPC тестов |
 
 Значения: TODO / IN PROGRESS / DONE / BLOCKED. Тесты: PASS / FAIL / SKIP / NOT RUN / MIXED.
+
+## КТ 10 — Кроссбраузерность, отчёты, listeners
+
+- Матрица: Chrome 155.0.8059.39 × Firefox 157.0.1; 5 сценариев × 2 = **10 PASS / 52.92 с**.
+- Инфра: `selenium/crossbrowser/` (`EventFiringWebDriver` + `Kt10EventListener`, отдельный `kt10_driver`).
+- Отчёты: pytest-html + JUnit; `events.jsonl`, `run_summary.jsonl`, `browser_comparison.json`.
+- Failure demo: намеренный FAIL → `FAIL_chrome_….png` (screenshot-on-failure).
+- Скриншоты: `screenshots/kt10/`; документы: `docs/kt10/`; отчёт `reports/KT10.docx`.
+- Презентация cloud.ithub.ru недоступна без логина — соответствие скрытым слайдам не утверждается.
+- KT11/KT12 не начинались.
 
 ## КТ 09 — Жесты Appium (Android; iOS не выполнялся)
 

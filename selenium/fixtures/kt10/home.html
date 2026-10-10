@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>KT10 Cross-Browser Home</title>
+  <style>
+    body { font-family: Georgia, serif; margin: 2rem; background: #eef2f7; color: #1a2433; }
+    .card { background: #fff; border: 1px solid #9bb0c5; padding: 1rem 1.25rem; max-width: 520px; }
+    label { display: block; margin-top: 0.75rem; }
+    #status { margin-top: 1rem; padding: 0.5rem; background: #f7fafc; border: 1px solid #c5d3e0; }
+    #status.error { border-color: #c0392b; color: #922b21; }
+    #status.ok { border-color: #1e8449; color: #145a32; }
+  </style>
+</head>
+<body>
+  <h1 id="heading">KT10 Cross-Browser Home</h1>
+  <p id="intro">Локальная страница для матрицы Chrome × Firefox.</p>
+  <div class="card">
+    <button id="action-btn" type="button">Нажать</button>
+    <span id="click-count">Кликов: 0</span>
+    <form id="demo-form" novalidate>
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" placeholder="user@example.com">
+      <label for="name">Имя</label>
+      <input id="name" name="name" type="text" placeholder="Имя">
+      <button id="submit-btn" type="submit">Отправить</button>
+    </form>
+    <div id="status">Статус: ожидание</div>
+  </div>
+  <script>
+    var clicks = 0;
+    document.getElementById("action-btn").addEventListener("click", function () {
+      clicks += 1;
+      document.getElementById("click-count").textContent = "Кликов: " + clicks;
+    });
+    document.getElementById("demo-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      var email = document.getElementById("email").value.trim();
+      var name = document.getElementById("name").value.trim();
+      var status = document.getElementById("status");
+      if (!email || email.indexOf("@") < 0 || !name) {
+        status.className = "error";
+        status.textContent = "Статус: ошибка валидации";
+        return;
+      }
+      status.className = "ok";
+      status.textContent = "Статус: принято — " + name + " <" + email + ">";
+    });
+  </script>
+</body>
+</html>
