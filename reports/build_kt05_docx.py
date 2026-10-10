@@ -114,25 +114,37 @@ def build() -> Path:
         "https://github.com/sa-teach/selenium-tests (структура; локаторы сверены с актуальной вёрсткой).",
     )
 
-    add_heading(doc, "2. Сайт")
-    add_para(doc, "URL: https://vdnh.ru/news/")
+    add_heading(doc, "2. Обоснование выбора сайта")
+    add_para(doc, "URL: https://vdnh.ru/ и https://vdnh.ru/news/")
     add_para(
         doc,
-        "Для стабильного запуска использовались pageLoadStrategy=none, явные ожидания "
-        "и прогон без VPN (scripts/run_kt05_no_vpn.ps1).",
+        "Выбран публичный информационный портал ВДНХ: read-only сценарии без регистрации, "
+        "реальная лента новостей с подгрузкой, достаточная сложность для Page Object, "
+        "этичные ограничения (без нагрузки). Подробнее: docs/kt05/website-selection.md.",
+    )
+    add_para(
+        doc,
+        "Бизнес-назначение: информирование посетителей о событиях; критичны доступность "
+        "ленты, кликабельность карточек, читаемость статей и подгрузка «Показать ещё».",
     )
 
     add_heading(doc, "3. Среда и инструменты")
-    add_para(doc, "Windows 11; Python 3.13.9; pytest 8.4.2; Selenium 4.50.0; Chrome headed.")
+    add_para(doc, "Windows; Python 3.13; pytest 8.4.2; Selenium 4.50.0; Chrome headed.")
+    add_para(doc, "pageLoadStrategy=none + DOM waits; запуск без VPN: scripts/run_kt05_no_vpn.ps1.")
     add_para(doc, "Page Object: selenium/pages/vdnh_pages.py; тесты: selenium/tests/test_kt05_vdnh_news.py.")
-    add_para(doc, "Документация: docs/kt05/.")
 
-    add_heading(doc, "4. Методика")
-    add_para(doc, "Чёрный ящик — сценарии пользователя. Серый ящик — DOM/URL. Белый ящик backend не применялся.")
+    add_heading(doc, "4. Методика и критерии")
+    add_para(doc, "Black-box — пользовательские сценарии. Gray-box — DOM/CSS/URL/readyState.")
+    add_para(doc, "White-box backend: не применим (закрытый сервер VDNH).")
+    add_para(doc, "Risk-based: P0 лента/статья; P1 show_more; P2 logo/menu.")
+    add_para(doc, "Вход: Chrome, venv, сайт доступен. Выход: ≥8 автотестов, docs/kt05/, DOCX, честные результаты.")
+    add_para(doc, "Подробный план: docs/kt05/test-plan.md.")
 
-    add_heading(doc, "5. Кратко о тест-плане")
-    add_para(doc, "Scope: главная, /news/, карточки, статья, возврат, «Показать еще», меню/логотип.")
-    add_para(doc, "Подробности: docs/kt05/test-plan.md.")
+    add_heading(doc, "5. Трассируемость требований преподавателя")
+    add_para(doc, "1) Выбор сайта — website-selection.md / §2. 2) Подходы black/gray/white — §4.")
+    add_para(doc, "3) Scope + entry/exit — test-plan.md. 4) Сценарии — test-cases.md + таблица ниже.")
+    add_para(doc, "5) Исполнение — §7. 6) Дефекты — §8 / defect-analysis.md (баг сайта не подтверждён).")
+    add_para(doc, "7) Рекомендации — §11. 8) Итоговый отчёт — данный DOCX.")
 
     add_heading(doc, "6. Таблица тест-кейсов (два прогона)")
     add_para(
@@ -201,14 +213,22 @@ def build() -> Path:
     for name, caption in SCREENSHOTS:
         add_shot(doc, name, caption)
 
-    add_heading(doc, "11. Заключение")
+    add_heading(doc, "11. Рекомендации")
+    add_para(doc, "Продукт: подтверждённых дефектов раздела новостей нет.")
     add_para(
         doc,
-        "КТ 05 завершена: 10 функциональных автотестов на https://vdnh.ru/news/, "
-        "Page Object, документация docs/kt05/, offline-скрипты запуска. "
-        "Полный прогон: 9 PASS / 1 FAIL. Сценарий «Показать еще» дополнительно "
-        "подтверждён целевым PASS (11.60 с). Отчёт не подменяет два прогона одним "
-        "успешным 10/10.",
+        "Процесс: не склеивать полный и follow-up прогоны; составные условия успеха "
+        "подгрузки; data-testid на динамических кнопках желательны на стороне сайта; "
+        "локаторы перепроверять при смене вёрстки. См. docs/kt05/recommendations.md.",
+    )
+
+    add_heading(doc, "12. Заключение")
+    add_para(
+        doc,
+        "КТ 05: 10 функциональных автотестов на https://vdnh.ru/news/, Page Object, "
+        "расширенная документация (выбор сайта, методика, дефекты, рекомендации). "
+        "Полный прогон: 9 PASS / 1 FAIL. Show_more подтверждён отдельно PASS (11.60 с). "
+        "Единого прогона 10/10 не было. Дефект сайта не подтверждён.",
     )
 
     doc.save(OUTPUT)
@@ -224,6 +244,8 @@ def verify(path: Path) -> None:
         "1 passed in 11.60s",
         "Единого прогона «10/10 PASS» не было",
         "https://vdnh.ru/news/",
+        "Обоснование выбора сайта",
+        "Рекомендации",
         "Заключение",
     ]
     missing = [r for r in required if r not in text]

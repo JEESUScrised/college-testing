@@ -6,7 +6,7 @@
 - [x] 10 различных автотестов
 - [x] Assertions без жёсткой привязки к конкретным заголовкам новостей
 - [x] Маркеры `kt05` / `smoke`
-- [x] Документация: test-plan, test-cases, checklist, RTM, test-report
+- [x] Документация: test-plan, test-cases, checklist, RTM, test-report, website-selection, defect-analysis, recommendations
 - [x] Полный прогон без VPN: **9 PASS / 1 FAIL** (98.63 с)
 - [x] Целевой повтор show_more: **PASS** (11.60 с) — отдельно от полного прогона
 - [x] Скриншоты `screenshots/kt05/`

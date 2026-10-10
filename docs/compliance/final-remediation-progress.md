@@ -29,4 +29,13 @@ Working tree clean except intentional untracked zip. No destructive ops needed.
 - Overflow: none. Manual checklist: PENDING HUMAN VERIFICATION.
 - Commit pending: `fix(kt09): improve Android browser compatibility coverage`
 
-Next: Phase 2 KT05 documentation.
+Commit: `d6dd948`.
+
+## Phase 2 — KT05 docs (completed)
+
+- Expanded plan/selection/defect-analysis/recommendations.
+- Historical 9 PASS / 1 FAIL + follow-up PASS preserved.
+- Product defect: not confirmed.
+- DOCX rebuilt and verified.
+
+Next: Phase 3 KT06 documentation.
