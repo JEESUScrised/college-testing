@@ -183,34 +183,45 @@ def fixture_http_url(fixture_http_server):
 @pytest.fixture
 def grid_driver(browser_name: str, page_load_strategy: str, grid_url: str, request):
     """Remote WebDriver session via Selenium Grid 4 (does not replace local `driver`)."""
-    if browser_name != "chrome":
-        pytest.skip("KT07 Grid demo on this PC uses Chrome only (Firefox/Edge not installed)")
+    if browser_name == "chrome":
+        options = ChromeOptions()
+        options.add_argument("--window-size=1400,1000")
+        options.add_argument("--disable-notifications")
+        options.page_load_strategy = page_load_strategy
+    elif browser_name == "firefox":
+        options = FirefoxOptions()
+        options.page_load_strategy = page_load_strategy
+    else:
+        pytest.skip(f"Unsupported Grid browser: {browser_name}")
 
-    options = ChromeOptions()
-    options.add_argument("--window-size=1400,1000")
-    options.add_argument("--disable-notifications")
-    options.page_load_strategy = page_load_strategy
     # Visible name in Grid UI / session metadata
     options.set_capability("se:name", f"KT07:{request.node.name}")
     options.set_capability("se:kt", "07")
 
     drv: RemoteWebDriver = webdriver.Remote(command_executor=grid_url, options=options)
-    # Prove this is RemoteWebDriver, not local Chrome()
+    # Prove this is RemoteWebDriver, not a local driver class
     assert isinstance(drv, RemoteWebDriver), type(drv)
-    assert not isinstance(drv, webdriver.Chrome)
+    assert not isinstance(drv, (webdriver.Chrome, webdriver.Firefox))
 
     load_timeout = 20 if page_load_strategy == "none" else DEFAULT_PAGE_LOAD_TIMEOUT
     drv.set_page_load_timeout(load_timeout)
     drv.implicitly_wait(DEFAULT_IMPLICIT_WAIT)
     drv.set_script_timeout(DEFAULT_SCRIPT_TIMEOUT)
+    try:
+        drv.set_window_size(1400, 1000)
+    except Exception:
+        pass
 
     caps_path = PROJECT_ROOT / "selenium" / "artifacts" / "kt07"
     caps_path.mkdir(parents=True, exist_ok=True)
+    caps = dict(drv.capabilities)
     session_meta = {
         "test": request.node.name,
+        "browser": browser_name,
         "session_id": drv.session_id,
         "command_executor": grid_url,
-        "capabilities": dict(drv.capabilities),
+        "se:nodeUri": caps.get("se:nodeUri") or caps.get("se:gridConnectedTo") or caps.get("se:cdp"),
+        "capabilities": caps,
     }
     meta_file = caps_path / f"session_{request.node.name}_{drv.session_id[:8]}.json"
     meta_file.write_text(json.dumps(session_meta, ensure_ascii=False, indent=2), encoding="utf-8")

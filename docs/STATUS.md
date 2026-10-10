@@ -10,7 +10,7 @@
 | 04 | DONE | MIXED | DONE | seeded FAIL; Issues #1–#3; `reports/KT04.docx` |
 | 05 | DONE | MIXED | DONE | VDNH; полный прогон **9 PASS / 1 FAIL** (98.63 с); целевой show_more **PASS** (11.60 с) — отдельно; **не** один прогон 10/10; `reports/KT05.docx` |
 | 06 | DONE | PASS | DONE | AVD `Medium_Phone_API_36.1` (API 36); suite **7 PASS** (44.63 с); `reports/KT06.docx` |
-| 07 | DONE | PASS | DONE | Grid 4.50 Standalone **5 PASS** (4.88 с); Hub+Node verified; `reports/KT07.docx` |
+| 07 | DONE | PASS | DONE | Standalone 5 PASS + Hub+**2 Nodes** Chrome/Firefox **4 PASS** (7.72 с) + parallel overlap; `reports/KT07.docx` |
 | 08 | DONE | PASS | DONE | Public Sauce Demo + Allure; Full **9 PASS** (34.64 с); Pillow history 5/13.71с; `reports/KT08.docx` |
 | 09 | DONE | PASS | DONE | Appium gestures Android; suite **5 PASS** (54.93 с); iOS NOT RUN; `reports/KT09.docx` |
 | 10 | DONE | PASS | DONE | Functional 10/52.92с + responsive Sauce **6 PASS** (42.73 с, 36 rows); `reports/KT10.docx` |
@@ -70,15 +70,14 @@
 - Full suite: **9 passed in 34.64s**; исторический Pillow: **5 passed in 13.71s**.
 - Отчёт обновлён: `reports/KT08.docx`.
 
-## КТ 07 — Selenium Grid 4
+## КТ 07 — Selenium Grid 4 (remediation 2026-10-10)
 
 - JAR: `selenium-server-4.50.0` (SeleniumHQ release; вне Git).
-- Скрипты: `selenium/grid/start_standalone.ps1`, `start_hub_node.ps1`, `stop_grid.ps1`, `health_check.ps1`.
-- Bind: `127.0.0.1`; Node port **5556** (5555 занят qemu/emulator).
-- Event Bus принудительно `tcp://127.0.0.1:4442/4443` (иначе VPN 26.x ломал регистрацию Node).
-- Фикстура `grid_driver` (RemoteWebDriver); локальный `driver` KT01–KT05 не изменён.
-- Standalone suite: **5 passed in 4.88s**; Hub+Node: node `http://127.0.0.1:5556`, 2 PASS proof.
-- Документы: `docs/kt07/`, `selenium/grid/README.md`; отчёт `reports/KT07.docx`.
+- Исторический Standalone: **5 PASS / 4.88 с**; Hub+1 Node сохранён.
+- Новое: Hub + Node A(:5556) + Node B(:5557); status **nodes=2**.
+- Multi-browser: Chrome+Firefox **4 PASS / 7.72 с**; parallel overlap **true**.
+- Скрипты: `start_hub_multi_node.ps1`, `scripts/run_kt07_multi.ps1`, `run_kt07_parallel_proof.py`.
+- Документы: `docs/kt07/multi-node.md`; отчёт `reports/KT07.docx`.
 - Кросс-машинный Grid не разворачивался (честно задокументировано).
 
 ## КТ 06 — Appium Android

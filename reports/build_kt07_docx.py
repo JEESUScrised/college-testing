@@ -12,6 +12,7 @@ from docx.shared import Cm, Pt
 
 ROOT = Path(__file__).resolve().parents[1]
 SHOTS = ROOT / "screenshots" / "kt07"
+MULTI = SHOTS / "multi"
 OUTPUT = Path(__file__).resolve().parent / "KT07.docx"
 
 SCREENSHOTS = [
@@ -24,6 +25,15 @@ SCREENSHOTS = [
     ("07_iframe_host.png", "Рисунок 7 — Host с iframe"),
     ("08_iframe_inside.png", "Рисунок 8 — Внутри iframe"),
     ("09_iframe_default_content.png", "Рисунок 9 — default_content"),
+]
+
+MULTI_SHOTS = [
+    (MULTI / "chrome_01_session.png", "Рисунок 10 — Multi-node Chrome session"),
+    (MULTI / "firefox_01_session.png", "Рисунок 11 — Multi-node Firefox session"),
+    (MULTI / "chrome_02_landing.png", "Рисунок 12 — Chrome fixture via Grid"),
+    (MULTI / "firefox_02_landing.png", "Рисунок 13 — Firefox fixture via Grid"),
+    (MULTI / "parallel_chrome_overlap.png", "Рисунок 14 — Parallel Chrome (overlap proof)"),
+    (MULTI / "parallel_firefox_overlap.png", "Рисунок 15 — Parallel Firefox (overlap proof)"),
 ]
 
 RESULTS = [
@@ -67,10 +77,9 @@ def add_code(doc: Document, code: str) -> None:
         p.paragraph_format.space_before = Pt(0)
 
 
-def add_shot(doc: Document, filename: str, caption: str) -> None:
-    path = SHOTS / filename
+def add_shot(doc: Document, path: Path, caption: str) -> None:
     if not path.is_file():
-        add_para(doc, f"[Скриншот отсутствует: {filename}]")
+        add_para(doc, f"[Скриншот отсутствует: {path.name}]")
         return
     doc.add_picture(str(path), width=Cm(12))
     p = doc.add_paragraph()
@@ -186,16 +195,41 @@ def build() -> Path:
         "Доказательство сессий: 2 PASS (session + navigate).",
     )
 
-    add_heading(doc, "8. Скриншоты")
-    for name, caption in SCREENSHOTS:
-        add_shot(doc, name, caption)
-
-    add_heading(doc, "9. Заключение")
+    add_heading(doc, "8. Remediation: Hub + 2 Nodes + parallel (2026-10-10)")
     add_para(
         doc,
-        "КТ 07 выполнена: официальный Selenium Grid 4, Standalone suite 5/5 PASS, "
-        "Hub + Node с регистрацией Node и реальными Remote-сессиями, отчётные "
-        "артефакты и скриншоты. Grid слушал только localhost. KT08+ не начинались.",
+        "Добавлен режим Hub + Node A (:5556) + Node B (:5557). "
+        "Статус Grid: ready=true, nodes=2. Multi-browser suite Chrome+Firefox: "
+        "4 passed in 7.72s. Параллельный proof: simultaneous Chrome+Firefox "
+        "Remote-сессии с пересечением hold-интервалов (parallel_overlap=true).",
+    )
+    add_code(
+        doc,
+        r""".\selenium\grid\start_hub_multi_node.ps1
+.\.venv\Scripts\python.exe -m pytest selenium\tests\test_kt07_multi_node.py -v --grid-url=http://127.0.0.1:4444
+.\.venv\Scripts\python.exe scripts\run_kt07_parallel_proof.py
+.\selenium\grid\stop_grid.ps1""",
+    )
+    add_code(
+        doc,
+        "============================== 4 passed in 7.72s ==============================\n"
+        "parallel_overlap=true (Chrome hold ∩ Firefox hold)",
+    )
+
+    add_heading(doc, "9. Скриншоты — исторический Standalone")
+    for name, caption in SCREENSHOTS:
+        add_shot(doc, SHOTS / name, caption)
+
+    add_heading(doc, "10. Скриншоты — multi-node / parallel")
+    for path, caption in MULTI_SHOTS:
+        add_shot(doc, path, caption)
+
+    add_heading(doc, "11. Заключение")
+    add_para(
+        doc,
+        "КТ 07: Standalone 5/5 PASS сохранён; remediation добавил Hub+2 Nodes, "
+        "Chrome+Firefox Remote-сессии и доказательство параллельного overlap. "
+        "Grid только на localhost.",
     )
 
     doc.save(OUTPUT)
@@ -208,7 +242,8 @@ def verify(path: Path) -> None:
     required = [
         "КТ №7. Удалённый запуск автотестов через Selenium Grid 4",
         "5 passed in 4.88s",
-        "Hub + Node",
+        "4 passed in 7.72s",
+        "parallel_overlap",
         "127.0.0.1",
         "Заключение",
     ]
@@ -216,10 +251,10 @@ def verify(path: Path) -> None:
     if missing:
         raise AssertionError(missing)
     pictures = list(doc.inline_shapes)
-    images = [r for r in doc.part.rels.values() if r.reltype == RT.IMAGE]
-    if len(pictures) < 9 or len(images) < 9:
-        raise AssertionError(f"pictures={len(pictures)} images={len(images)}")
-    print(f"VERIFY_OK size={path.stat().st_size} pictures={len(pictures)} unique={len(images)}")
+    expected = len(SCREENSHOTS) + len(MULTI_SHOTS)
+    if len(pictures) < expected:
+        raise AssertionError(f"pictures={len(pictures)} expected>={expected}")
+    print(f"VERIFY_OK size={path.stat().st_size} pictures={len(pictures)}")
 
 
 if __name__ == "__main__":

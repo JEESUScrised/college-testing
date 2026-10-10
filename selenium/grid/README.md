@@ -51,6 +51,17 @@
 .\selenium\grid\stop_grid.ps1
 ```
 
+## Hub + 2 Nodes (remediation) + parallel
+
+```powershell
+.\selenium\grid\stop_grid.ps1
+.\selenium\grid\start_hub_multi_node.ps1   # Node A :5556, Node B :5557
+.\scripts\run_kt07_multi.ps1 -SkipStart    # Chrome+Firefox tests + overlap proof
+.\selenium\grid\stop_grid.ps1
+```
+
+Документация: `docs/kt07/multi-node.md`.
+
 ## Остановка
 
 `stop_grid.ps1` завершает **только** Java-процессы, чьи PID записаны в `selenium/grid/runtime/grid.pids.json` нашими скриптами. Чужие Java/браузеры не трогает.

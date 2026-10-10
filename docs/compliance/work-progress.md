@@ -18,4 +18,10 @@
 ## Checkpoint 3 — KT03 public Page Object
 - Suite: **5 passed in 21.11s** (`test_kt03_sauce_po.py`).
 - Shared PO `selenium/pages/sauce/`; historical local PO 4 PASS preserved.
-- Next: Phase 4 KT07 multi-node parallel Grid.
+- Commit: `b62740e`.
+
+## Checkpoint 4 — KT07 multi-node + parallel
+- Hub+2 Nodes ready (`nodes=2`).
+- Multi suite: **4 passed in 7.72s** (Chrome+Firefox).
+- Parallel overlap proof: **true**.
+- Next: Phase 5 KT09 basic cross-platform.
