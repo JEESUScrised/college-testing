@@ -42,3 +42,9 @@ grpc/artifacts/
 
 # Keep reviewed report evidence in reports/ and screenshots/ on purpose.
 # Do not commit tokens, passwords or personal data.
+
+# Local pinned ChromeDriver binaries (download via scripts/download_kt09_chromedriver.ps1)
+mobile/drivers/*.exe
+mobile/drivers/*.zip
+mobile/drivers/*-extract/
+

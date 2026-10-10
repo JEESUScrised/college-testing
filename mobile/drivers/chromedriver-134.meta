@@ -1,0 +1,4 @@
+VERSION=134.0.6998.165
+SOURCE=https://storage.googleapis.com/chrome-for-testing-public/134.0.6998.165/win64/chromedriver-win64.zip
+BROWSER_ANDROID=134.0.6998.135
+DOWNLOADED=2026-10-10T22:24:27.2689971+03:00

@@ -12,7 +12,7 @@
 | 06 | DONE | PASS | DONE | AVD `Medium_Phone_API_36.1` (API 36); suite **7 PASS** (44.63 с); `reports/KT06.docx` |
 | 07 | DONE | PASS | DONE | Standalone 5 PASS + Hub+**2 Nodes** Chrome/Firefox **4 PASS** (7.72 с) + parallel overlap; `reports/KT07.docx` |
 | 08 | DONE | PASS | DONE | Public Sauce Demo + Allure; Full **9 PASS** (34.64 с); Pillow history 5/13.71с; `reports/KT08.docx` |
-| 09 | DONE | MIXED | DONE | Gestures 5 PASS + BASIC web Win Chrome/FF **PASS** / Android Chrome **PARTIAL**; iOS NOT RUN; `reports/KT09.docx` |
+| 09 | DONE | MIXED | DONE | Gestures 5 PASS + BASIC web Win/Android DOM **PASS**; manual checklist PENDING; iOS NOT RUN; `reports/KT09.docx` |
 | 10 | DONE | PASS | DONE | Functional 10/52.92с + responsive Sauce **6 PASS** (42.73 с, 36 rows); `reports/KT10.docx` |
 | 11 | DONE | PASS | DONE | Robot Framework 7.5 + SeleniumLibrary; **10 PASS** (28.39 с); `reports/KT11.docx` |
 | 12 | DONE | PASS | DONE | Inventory gRPC; **10 PASS** (2.34 с); `reports/KT12.docx` |
@@ -54,10 +54,10 @@
 ## КТ 09 — Жесты + BASIC cross-platform (remediation 2026-10-10)
 
 - Жесты Android: **5 PASS / 54.93 с** (сохранены).
-- BASIC public web: Windows Chrome/Firefox **2 PASS / 12.43 с**; Android Chrome **PARTIAL** (adb intent + screencap; ChromeDriver 134 missing).
-- Матрица: `docs/kt09/basic-cross-platform-matrix.md`; скриншоты `screenshots/kt09/crossplatform/`.
-- iOS: **NOT RUN**.
-- Отчёт: `reports/KT09.docx`.
+- BASIC public web auto: Windows Chrome/Firefox **2 PASS**; Android Chrome DOM **1 PASS / 16.71 с** (ChromeDriver 134.0.6998.165).
+- Manual checklist: **PENDING HUMAN VERIFICATION** (`mobile/docs/kt09-manual-checklist.md`).
+- Docs: `mobile/docs/kt09-cross-platform-*.md`, `docs/kt09/basic-cross-platform-matrix.md`.
+- iOS: **NOT RUN**. Отчёт: `reports/KT09.docx`.
 
 ## КТ 08 — Скриншоты + Allure (compliance remediation 2026-10-10)
 
