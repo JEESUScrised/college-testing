@@ -26,10 +26,10 @@
 - [x] Архив `submission/KT01-KT12_READY_FOR_SUBMISSION.zip` (старый `KT01-KT12_reports.zip` не трогать)
 - [ ] Заполнить персональные поля в `reports/report_metadata.json` и пересобрать DOCX при необходимости
 - [ ] KT09: пройти `mobile/docs/kt09-manual-execution-guide.md` человеком (Windows+Android)
-- [ ] (Опционально) Утвердить создание native Jira Components
-- [ ] (Опционально) В UI Edit настроить gadgets dashboard 10001 на filter 10002
+- [x] KT04 dashboard gadgets configured (filter 10002) — live status/priority charts
+- [x] KT04 Components: documented UNAVAILABLE on team-managed (POST 405); labels substitute
 - [ ] Push в GitHub — только по явному запросу
 
 ## Readiness
 
-**PARTIALLY READY** — mandatory human KT09 checks still open; KT04 Components/reporting PARTIAL but evidenced.
+**PARTIALLY READY** — mandatory human KT09 checks still open; KT04 reporting PASS; Components platform-limited.
