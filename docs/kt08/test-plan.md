@@ -1,31 +1,34 @@
-# План тестирования — КТ 08
+# План тестирования — КТ 08 (оригинальные требования + Pillow)
 
-## Цель
+## Цель (из презентации преподавателя)
 
-Реализовать воспроизводимый screenshot visual regression: захват реальных скриншотов Selenium Chrome, сравнение с approved baseline через Pillow, детекция осмысленных отличий и генерация диагностических артефактов.
+Изучить скриншотное тестирование веб-приложений и интегрировать результаты с **Allure**.
 
-## Источник требований
+## Два контура
 
-Презентация https://cloud.ithub.ru/index.php/s/mxkfJ97fjj9e6yT недоступна без авторизации (виден только заголовок). План опирается на формулировку задания в репозитории/чате; полное соответствие скрытым слайдам **не утверждается**.
+| Контур | Назначение | Файл |
+|---|---|---|
+| A. Публичный сайт + Allure | Требование преподавателя | `test_kt08_public_allure.py` |
+| B. Локальная Pillow regression | Доп. детерминированный контур | `test_kt08_visual.py` |
 
-## Объект
+## Публичный сайт
 
-Локальные HTML-фикстуры `selenium/fixtures/kt08/` (детерминированный layout, без внешних сайтов).
+**Выбран:** https://www.saucedemo.com/  
+**Причина отказа от** https://the-internet.herokuapp.com/ — под Chrome automation страница отдаёт пустой DOM (challenge/bot protection); Sauce Demo стабильно открывается.
 
-## Среда
+Сценарии: login page, inventory после login, sort dropdown, add to cart.
 
-Windows 10; Python 3.13; Selenium 4; Pillow 11; Chrome; viewport window 1400×1000.
+## Allure
 
-## Сценарии
+- `allure-pytest` 2.16.2 → `selenium/artifacts/kt08/allure-results/`
+- CLI Allure 2.37.0 → `selenium/artifacts/kt08/allure-report/`
+- PNG через `allure.attach.file(..., AttachmentType.PNG)` в шагах тестов
 
-1. Match с baseline  
-2. Детекция text/color change  
-3. Детекция layout shift  
-4. Significant difference + метрики  
-5. Dimension mismatch без resize  
+## Команда
 
-## Критерии
-
-- Match: `diff_percent <= 0.75%` при tolerance=12  
-- Ожидаемые отличия: тест PASS только если утилита **обнаружила** отличие  
-- Baseline не обновляется автоматически  
+```powershell
+.\scripts\run_kt08.ps1 -Mode Full
+.\scripts\run_kt08.ps1 -Mode Public
+.\scripts\run_kt08.ps1 -Mode Pillow
+.\scripts\run_kt08.ps1 -Mode DiagnosticPublic
+```

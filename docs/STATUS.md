@@ -11,7 +11,7 @@
 | 05 | DONE | MIXED | DONE | VDNH; полный прогон **9 PASS / 1 FAIL** (98.63 с); целевой show_more **PASS** (11.60 с) — отдельно; **не** один прогон 10/10; `reports/KT05.docx` |
 | 06 | DONE | PASS | DONE | AVD `Medium_Phone_API_36.1` (API 36); suite **7 PASS** (44.63 с); `reports/KT06.docx` |
 | 07 | DONE | PASS | DONE | Grid 4.50 Standalone **5 PASS** (4.88 с); Hub+Node verified; `reports/KT07.docx` |
-| 08 | DONE | PASS | DONE | Pillow visual regression; suite **5 PASS** (13.71 с); `reports/KT08.docx` |
+| 08 | DONE | PASS | DONE | Public Sauce Demo + Allure; Full **9 PASS** (34.64 с); Pillow history 5/13.71с; `reports/KT08.docx` |
 | 09 | DONE | PASS | DONE | Appium gestures Android; suite **5 PASS** (54.93 с); iOS NOT RUN; `reports/KT09.docx` |
 | 10 | DONE | PASS | DONE | Chrome×Firefox 5×2 **10 PASS** (52.92 с); listeners+HTML/JUnit; `reports/KT10.docx` |
 | 11 | DONE | PASS | DONE | Robot Framework 7.5 + SeleniumLibrary; **10 PASS** (28.39 с); `reports/KT11.docx` |
@@ -63,14 +63,14 @@
 - Презентация cloud.ithub.ru недоступна без логина — соответствие скрытым слайдам не утверждается.
 - Отчёт: `reports/KT09.docx`.
 
-## КТ 08 — Visual regression (Selenium + Pillow)
+## КТ 08 — Скриншоты + Allure (compliance remediation 2026-10-10)
 
-- Утилита: `selenium/visual/compare.py` (tolerance, diff%, mask/overlay, без auto-resize/auto-baseline).
-- Baseline: `selenium/baselines/kt08/home_baseline.png` (Chrome, 1384×849).
-- Фикстуры: `selenium/fixtures/kt08/*.html` (локальные, без VDNH).
-- Suite: **5 passed in 13.71s** — match 0%; text/color 1.11%; layout 5.06%; significant 99.85%; dimension mismatch 1384×849 vs 884×549.
-- Артефакты: `screenshots/kt08/`, `selenium/artifacts/kt08/`; отчёт `reports/KT08.docx`.
-- Презентация cloud.ithub.ru недоступна без логина — соответствие скрытым слайдам не утверждается.
+- **Оригинал презентации:** публичный сайт + Allure HTML со скриншотами (7 требований — PASS).
+- Публичный сайт: https://www.saucedemo.com/ (the-internet.herokuapp.com заблокирован под Chrome automation).
+- Public tests: `test_kt08_public_allure.py` (4); Pillow: `test_kt08_visual.py` (5, сохранены).
+- Allure: allure-pytest **2.16.2**, CLI **2.37.0** → `selenium/artifacts/kt08/allure-report/`.
+- Full suite: **9 passed in 34.64s**; исторический Pillow: **5 passed in 13.71s**.
+- Отчёт обновлён: `reports/KT08.docx`.
 
 ## КТ 07 — Selenium Grid 4
 

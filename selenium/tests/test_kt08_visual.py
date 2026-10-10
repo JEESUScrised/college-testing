@@ -1,14 +1,21 @@
-"""КТ 08: визуальная регрессия Selenium + Pillow."""
+"""КТ 08: визуальная регрессия Selenium + Pillow (локальные фикстуры).
+
+Исторический suite: 5 passed in 13.71s (2026-10-09).
+Публичный сайт + Allure: см. test_kt08_public_allure.py.
+"""
 
 from __future__ import annotations
 
 import json
 from pathlib import Path
 
+import allure
 import pytest
+from allure_commons.types import Severity
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
+from visual.allure_helpers import attach_png, attach_text
 from visual.compare import compare_images, write_summary_row
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -49,6 +56,7 @@ def _capture(driver, name: str) -> Path:
     SHOTS.mkdir(parents=True, exist_ok=True)
     path = SHOTS / f"{name}.png"
     assert driver.save_screenshot(str(path)), path
+    attach_png(path, name)
     return path
 
 
@@ -63,6 +71,11 @@ def _record(result, test_id: str, status: str) -> None:
     (ARTIFACTS / f"{test_id}_result.json").write_text(
         json.dumps(row, ensure_ascii=False, indent=2), encoding="utf-8"
     )
+    attach_text(json.dumps(row, ensure_ascii=False, indent=2), f"{test_id}-metrics")
+    if result.diff_mask_path:
+        attach_png(result.diff_mask_path, f"{test_id}-diff-mask")
+    if result.overlay_path:
+        attach_png(result.overlay_path, f"{test_id}-overlay")
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -73,7 +86,12 @@ def _reset_summary():
     yield
 
 
+@allure.epic("KT08 Screenshot Testing")
+@allure.feature("Local Pillow visual regression")
+@allure.title("TC-08-01 Unchanged page matches baseline")
+@allure.severity(Severity.CRITICAL)
 @pytest.mark.kt08
+@pytest.mark.kt08_pillow
 def test_unchanged_page_matches_baseline(visual_driver, visual_wait, fixture_url):
     """Неизменённая страница совпадает с утверждённым baseline."""
     baseline = BASELINES / "home_baseline.png"
@@ -95,7 +113,12 @@ def test_unchanged_page_matches_baseline(visual_driver, visual_wait, fixture_url
     assert result.matched, result.message
 
 
+@allure.epic("KT08 Screenshot Testing")
+@allure.feature("Local Pillow visual regression")
+@allure.title("TC-08-02 Text/color change detected")
+@allure.severity(Severity.NORMAL)
 @pytest.mark.kt08
+@pytest.mark.kt08_pillow
 def test_text_or_color_change_detected(visual_driver, visual_wait, fixture_url):
     """Изменение текста/цвета кнопки обнаруживается сравнением."""
     baseline = BASELINES / "home_baseline.png"
@@ -119,7 +142,12 @@ def test_text_or_color_change_detected(visual_driver, visual_wait, fixture_url):
     assert result.overlay_path and Path(result.overlay_path).is_file()
 
 
+@allure.epic("KT08 Screenshot Testing")
+@allure.feature("Local Pillow visual regression")
+@allure.title("TC-08-03 Layout shift detected")
+@allure.severity(Severity.NORMAL)
 @pytest.mark.kt08
+@pytest.mark.kt08_pillow
 def test_layout_shift_detected(visual_driver, visual_wait, fixture_url):
     """Сдвиг layout обнаруживается (без auto-resize)."""
     baseline = BASELINES / "home_baseline.png"
@@ -141,7 +169,12 @@ def test_layout_shift_detected(visual_driver, visual_wait, fixture_url):
     assert result.diff_percent >= MIN_DIFF_LAYOUT, result.message
 
 
+@allure.epic("KT08 Screenshot Testing")
+@allure.feature("Local Pillow visual regression")
+@allure.title("TC-08-04 Significant difference reported with metrics")
+@allure.severity(Severity.NORMAL)
 @pytest.mark.kt08
+@pytest.mark.kt08_pillow
 def test_significant_difference_reported_with_metrics(
     visual_driver, visual_wait, fixture_url
 ):
@@ -167,7 +200,12 @@ def test_significant_difference_reported_with_metrics(
     assert result.overlay_path and Path(result.overlay_path).is_file()
 
 
+@allure.epic("KT08 Screenshot Testing")
+@allure.feature("Local Pillow visual regression")
+@allure.title("TC-08-05 Dimension mismatch detected")
+@allure.severity(Severity.NORMAL)
 @pytest.mark.kt08
+@pytest.mark.kt08_pillow
 def test_dimension_mismatch_detected(visual_driver, visual_wait, fixture_url):
     """Разные размеры скриншотов обнаруживаются без авто-масштабирования."""
     baseline = BASELINES / "home_baseline.png"

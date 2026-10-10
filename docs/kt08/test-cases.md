@@ -1,11 +1,22 @@
 # Тест-кейсы — КТ 08
 
-| ID | Автотест | Fixture / действие | Ожидание |
-|---|---|---|---|
-| TC-08-01 | `test_unchanged_page_matches_baseline` | `home.html` vs `home_baseline.png` | `matched=True`, diff≈0% |
-| TC-08-02 | `test_text_or_color_change_detected` | `home_text_color.html` | `matched=False`, diff≥0.3%, mask+overlay |
-| TC-08-03 | `test_layout_shift_detected` | `home_layout_shift.html` | `matched=False`, diff≥1% |
-| TC-08-04 | `test_significant_difference_reported_with_metrics` | `home_significant.html` | `matched=False`, diff≥10%, метрики в message |
-| TC-08-05 | `test_dimension_mismatch_detected` | `home.html` @ 900×700 | `dimension_mismatch=True`, без resize |
+## A. Публичный сайт (Sauce Demo) + Allure
 
-Параметры сравнения: `color_tolerance=12`, порог совпадения `0.75%`.
+| ID | Тест | UI | Allure |
+|---|---|---|---|
+| TC-08-P01 | `test_public_login_page_and_branding` | Login / branding / form | screenshot + steps |
+| TC-08-P02 | `test_public_inventory_after_login` | Products inventory | screenshot + steps |
+| TC-08-P03 | `test_public_sort_dropdown` | Sort dropdown | screenshot + steps |
+| TC-08-P04 | `test_public_add_to_cart` | Add to cart / badge | screenshot + steps |
+
+## B. Локальная Pillow visual regression (сохранено)
+
+| ID | Тест | Ожидание |
+|---|---|---|
+| TC-08-01 | match baseline | MATCH / 0% |
+| TC-08-02 | text/color change | DIFF ≥ 0.3% |
+| TC-08-03 | layout shift | DIFF ≥ 1% |
+| TC-08-04 | significant | DIFF ≥ 10% |
+| TC-08-05 | dimension mismatch | DIMENSION_MISMATCH |
+
+Исторический прогон Pillow: **5 passed in 13.71s** (2026-10-09).

@@ -1,34 +1,40 @@
-# Отчёт о тестировании — КТ 08
+# Отчёт о тестировании — КТ 08 (remediation)
 
-Дата: **2026-10-09**.
+Дата remediation: **2026-10-10**.
 
 ## Среда
 
 | Параметр | Значение |
 |---|---|
-| Python / Selenium / Pillow | 3.13.2 / 4.50.0 / 11.3.0 |
-| Chrome | локальный headed |
-| Baseline | `selenium/baselines/kt08/home_baseline.png` (1384×849) |
-| Window | 1400×1000 |
+| Python / Selenium / Pillow | 3.13.2 / 4.50.0 / 11.x |
+| allure-pytest | 2.16.2 |
+| Allure CLI | 2.37.0 |
+| Java | OpenJDK 21 |
+| Публичный сайт | https://www.saucedemo.com/ |
 
-## Прогоны
+## Исторический Pillow suite (сохранён)
 
-- Диагностика TC-08-01: **PASS** (2.89 с)  
-- Полный suite: **5 passed in 13.71s**, exit 0  
+```
+5 passed in 13.71s
+```
 
-## Метрики suite
+## Remediation прогоны
 
-| ID | Status | Diff% | Changed px | Notes |
-|---|---|---:|---:|---|
-| TC-08-01 | PASS | 0.0000 | 0 | MATCH |
-| TC-08-02 | PASS | 1.1082 | 13021 | text/color |
-| TC-08-03 | PASS | 5.0647 | 59511 | layout shift |
-| TC-08-04 | PASS | 99.8457 | 1173203 | significant |
-| TC-08-05 | PASS | n/a | — | DIMENSION_MISMATCH 1384×849 vs 884×549 |
+| Прогон | Результат |
+|---|---|
+| DiagnosticPublic TC-08-P01 | **1 passed in 3.84s** |
+| Public only | **4 passed in 21.27s** |
+| Full (Pillow + Public) | **9 passed in 34.64s** |
 
-## Артефакты
+Лог Full: `pytest_kt08_20261010_144813.log` (SHA16 `08CE9954B2C0F07F`).
 
-- Screenshots: `screenshots/kt08/01_…` … `05_…`
-- Diff/overlay: `selenium/artifacts/kt08/*_diff_mask.png`, `*_overlay.png`
-- Summary: `selenium/artifacts/kt08/comparison_summary.jsonl`
-- Отчёт DOCX: `reports/KT08.docx`
+## Allure
+
+- Results: `selenium/artifacts/kt08/allure-results/` (9 `*-result.json`, PNG attachments в шагах)
+- HTML: `selenium/artifacts/kt08/allure-report/index.html`
+- UI screenshots: `screenshots/kt08/allure_01_overview.png`, `allure_02_suites.png`
+- Public screenshots: `public_01_…` … `public_04_…`
+
+## Compliance (7 требований преподавателя)
+
+См. матрицу в `reports/KT08.docx` и STATUS — все 7 = **PASS** по фактическим артефактам.

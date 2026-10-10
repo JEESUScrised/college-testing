@@ -1,44 +1,35 @@
-# Visual regression (KT08) — Selenium + Pillow
+# Visual / screenshot testing (KT08)
 
-## Что делает модуль
+## Два контура
 
-`visual/compare.py` сравнивает утверждённый baseline PNG с актуальным скриншотом Selenium:
+1. **Публичный сайт + Allure** (требование презентации преподавателя)  
+   `selenium/tests/test_kt08_public_allure.py` → https://www.saucedemo.com/
+2. **Локальная Pillow visual regression** (доп. детерминированный контур)  
+   `selenium/tests/test_kt08_visual.py` + `visual/compare.py`
 
-- загрузка и валидация изображений;
-- отказ при несовпадении размеров (**без auto-resize**);
-- per-pixel сравнение с допуском цвета (`color_tolerance`);
-- процент изменённых пикселей;
-- diff-mask и overlay с подсветкой;
-- диагностическое сообщение с метриками.
+## Allure
 
-Базовые изображения **не перезаписываются** при FAIL.
+Зависимость: `allure-pytest` (см. `selenium/requirements.txt`).  
+CLI: `allure` 2.37.0 (уже установлен: `C:\allure\allure-2.37.0\`).
 
-## Генерация baseline
+```powershell
+.\scripts\run_kt08.ps1 -Mode Full
+# allure-results + allure-report под selenium/artifacts/kt08/
+```
+
+PNG крепятся через `allure.attach.file(..., AttachmentType.PNG)` (`visual/allure_helpers.py`).
+
+## Pillow compare
+
+`visual/compare.py` — baseline vs actual, без auto-resize, mask/overlay.
 
 ```powershell
 .\.venv\Scripts\python.exe selenium\visual\generate_kt08_baselines.py
+.\scripts\run_kt08.ps1 -Mode Pillow
 ```
 
-Результат: `selenium/baselines/kt08/home_baseline.png` + `baseline_manifest.json`.
+Исторический результат Pillow: **5 passed in 13.71s**.
 
-## Запуск тестов
+## Почему не the-internet.herokuapp.com
 
-```powershell
-.\scripts\run_kt08.ps1
-```
-
-Артефакты: `screenshots/kt08/`, `selenium/artifacts/kt08/` (masks, overlays, summary JSONL).
-
-## Параметры по умолчанию в тестах
-
-| Параметр | Значение |
-|---|---|
-| window size | 1400×1000 |
-| color_tolerance | 12 |
-| match threshold | 0.75% changed pixels |
-
-## Ограничения
-
-- Чувствительно к DPI/шрифтам/версии Chrome.
-- Не заменяет semantic UI-тесты.
-- Презентация KT08 на cloud.ithub.ru недоступна без авторизации — требования взяты из формулировки задания в чате.
+Под Chrome automation сайт отдаёт пустой DOM (challenge script). Sauce Demo выбран как доступный публичный demo с login/inventory/controls.
