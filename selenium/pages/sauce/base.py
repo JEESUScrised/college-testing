@@ -56,3 +56,9 @@ class SauceBasePage:
         )
         self.driver.execute_script("arguments[0].click();", link)
         self.wait.until(EC.url_contains("cart.html"))
+
+    def logout(self) -> None:
+        self.open_menu()
+        link = self.wait.until(EC.element_to_be_clickable((By.ID, "logout_sidebar_link")))
+        self.driver.execute_script("arguments[0].click();", link)
+        self.wait.until(EC.visibility_of_element_located((By.ID, "login-button")))

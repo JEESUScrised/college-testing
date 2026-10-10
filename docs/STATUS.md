@@ -6,7 +6,7 @@
 |---|---|---|---|---|
 | 01 | DONE | PASS | DONE | `reports/KT01.docx` |
 | 02 | DONE | PASS | DONE | Local windows/iframe 6 PASS + public Sauce **11 PASS** (49.34 с); `reports/KT02.docx` |
-| 03 | DONE | PASS | DONE | `reports/KT03.docx` |
+| 03 | DONE | PASS | DONE | Local PO 4 PASS + public Sauce PO **5 PASS** (21.11 с); `reports/KT03.docx` |
 | 04 | DONE | MIXED | DONE | seeded FAIL; Issues #1–#3; `reports/KT04.docx` |
 | 05 | DONE | MIXED | DONE | VDNH; полный прогон **9 PASS / 1 FAIL** (98.63 с); целевой show_more **PASS** (11.60 с) — отдельно; **не** один прогон 10/10; `reports/KT05.docx` |
 | 06 | DONE | PASS | DONE | AVD `Medium_Phone_API_36.1` (API 36); suite **7 PASS** (44.63 с); `reports/KT06.docx` |
@@ -129,6 +129,12 @@ Campus Portal Demo; 2 PASS / 3 FAIL (seeded); Issues #1–#3 Open; `reports/KT04
 - Код: `selenium/tests/test_kt02_sauce_public.py`, PO `selenium/pages/sauce/`.
 - Скриншоты: `screenshots/kt02/public/`; docs: `docs/kt02/`; отчёт `reports/KT02.docx`.
 
-## КТ 01 / КТ 03
+## КТ 03 — Page Object (remediation 2026-10-10)
 
-См. `reports/KT01.docx`, `reports/KT03.docx`.
+- Исторический локальный PO окон/iframe: **4 PASS / 14.90 с** (сохранён).
+- Новое: публичный Sauce Demo PO **5 PASS / 21.11 с** (`test_kt03_sauce_po.py`).
+- PO: `selenium/pages/sauce/`; скриншоты `screenshots/kt03/public/`; `reports/KT03.docx`.
+
+## КТ 01
+
+См. `reports/KT01.docx`.

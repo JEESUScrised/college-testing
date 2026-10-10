@@ -13,4 +13,9 @@
 - Techniques: positive / negative / boundary / locators / cookies / window handles.
 - Historical windows/iframe 6 PASS preserved.
 - Screenshots: `screenshots/kt02/public/` (12).
-- Next: Phase 3 KT03 public Page Object.
+- Commit: `5f79554`.
+
+## Checkpoint 3 — KT03 public Page Object
+- Suite: **5 passed in 21.11s** (`test_kt03_sauce_po.py`).
+- Shared PO `selenium/pages/sauce/`; historical local PO 4 PASS preserved.
+- Next: Phase 4 KT07 multi-node parallel Grid.
