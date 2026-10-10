@@ -22,6 +22,13 @@ SCREENSHOTS = [
     ("tc05_valid_order.png", "Рисунок 5 — TC-05 PASS: валидный заказ"),
 ]
 
+LIFECYCLE = SHOTS / "lifecycle"
+LIFE_SHOTS = [
+    (LIFECYCLE / "retest_seed001_empty_password.png", "Рисунок 6 — Lifecycle retest SEED-001 REJECTED (PASS)"),
+    (LIFECYCLE / "retest_seed002_invalid_email.png", "Рисунок 7 — Lifecycle retest SEED-002 REJECTED (PASS)"),
+    (LIFECYCLE / "retest_seed003_zero_quantity.png", "Рисунок 8 — Lifecycle retest SEED-003 REJECTED (PASS)"),
+]
+
 KT04_OUTPUT = """\
 collected 5 items
 test_tc01_valid_login_passes PASSED
@@ -70,8 +77,7 @@ def add_code(doc: Document, code: str) -> None:
         p.paragraph_format.space_before = Pt(0)
 
 
-def add_shot(doc: Document, filename: str, caption: str) -> None:
-    path = SHOTS / filename
+def add_shot(doc: Document, path: Path, caption: str) -> None:
     if not path.is_file():
         raise FileNotFoundError(path)
     doc.add_picture(str(path), width=Cm(14))
@@ -166,25 +172,45 @@ def build() -> Path:
         "продукта и тем самым подтверждают наличие seeded-дефектов.",
     )
 
-    add_heading(doc, "8. Скриншоты")
+    add_heading(doc, "8. Скриншоты — исторический seeded suite")
     for name, caption in SCREENSHOTS:
-        add_shot(doc, name, caption)
+        add_shot(doc, SHOTS / name, caption)
 
-    add_heading(doc, "9. Жизненный цикл дефекта")
-    add_para(doc, "Open → In Progress → Resolved → Closed.")
+    add_heading(doc, "9. Lifecycle remediation (fixed copy + retest)")
     add_para(
         doc,
-        "Все три дефекта оставлены в статусе Open: исправления и ретесты "
-        "не выполнялись в рамках КТ 04.",
+        "Исходные fixtures/kt04 сохранены. Создана копия fixtures/kt04_lifecycle "
+        "с исправлениями SEED-001/002/003. Retest: 3 passed in 14.40s "
+        "(test_kt04_lifecycle_retest.py). Исправления выполнены Cursor-агентом "
+        "(не отдельный human developer).",
+    )
+    add_code(
+        doc,
+        "============================= 3 passed in 14.40s ==============================\n"
+        "test_lifecycle_empty_password_rejected PASSED\n"
+        "test_lifecycle_invalid_email_rejected PASSED\n"
+        "test_lifecycle_zero_quantity_rejected PASSED",
+    )
+    for path, caption in LIFE_SHOTS:
+        add_shot(doc, path, caption)
+
+    add_heading(doc, "10. Jira (оригинальное требование)")
+    add_para(
+        doc,
+        "Создание реального проекта QAKT04 / issues / workflow / native reports: "
+        "BLOCKED — нет авторизованного доступа к Jira в этой сессии; "
+        "внешние изменения требуют явного разрешения пользователя. "
+        "Черновики: docs/kt04/jira-project.md, jira-issue-drafts.md, "
+        "defect-lifecycle.md, jira-reporting.md. GitHub Issues #1–#3 сохранены.",
+        bold=True,
     )
 
-    add_heading(doc, "10. Заключение")
+    add_heading(doc, "11. Заключение")
     add_para(
         doc,
-        "КТ 04 выполнена: подготовлено учебное приложение с тремя seeded-багами, "
-        "описаны и прогнаны 5 тест-кейсов (2 PASS / 3 FAIL), оформлены баг-репорты, "
-        "созданы GitHub Issues #1–#3, собраны подлинные скриншоты и отчёт DOCX. "
-        "Регрессия КТ 01–03 прошла успешно (11 passed).",
+        "КТ 04: исторический seeded suite 2 PASS / 3 FAIL + GitHub Issues сохранены; "
+        "lifecycle-фиксы и Selenium retest 3/3 PASS добавлены. "
+        "Полный цикл в Jira остаётся BLOCKED до доступа пользователя.",
     )
 
     doc.save(OUTPUT)
@@ -197,6 +223,8 @@ def verify(path: Path) -> None:
     required = [
         "КТ №4. Документирование дефектов и баг-трекинг",
         "3 failed, 2 passed in 18.08s",
+        "3 passed in 14.40s",
+        "BLOCKED",
         "issues/1",
         "Заключение",
     ]
@@ -205,8 +233,9 @@ def verify(path: Path) -> None:
         raise AssertionError(missing)
     pictures = list(doc.inline_shapes)
     images = [r for r in doc.part.rels.values() if r.reltype == RT.IMAGE]
-    if len(pictures) < len(SCREENSHOTS):
-        raise AssertionError(f"pictures={len(pictures)}")
+    expected = len(SCREENSHOTS) + len(LIFE_SHOTS)
+    if len(pictures) < expected:
+        raise AssertionError(f"pictures={len(pictures)} expected>={expected}")
     if not images:
         raise AssertionError("no images")
     print(f"VERIFY_OK size={path.stat().st_size} pictures={len(pictures)} unique={len(images)}")

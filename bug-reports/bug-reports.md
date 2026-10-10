@@ -1,7 +1,11 @@
 # Баг-репорты — КТ 04
 
 Все дефекты — **учебные seeded-баги** Campus Portal Demo.  
-Трекер: GitHub Issues репозитория [JEESUScrised/college-testing](https://github.com/JEESUScrised/college-testing).
+Трекер (исторический): GitHub Issues [JEESUScrised/college-testing](https://github.com/JEESUScrised/college-testing) #1–#3.  
+**Jira:** проект `QAKT04` запланирован, создание **BLOCKED** (нет авторизованного доступа в этой сессии) — см. `docs/kt04/`.
+
+Lifecycle-фиксы и retest PASS: `selenium/fixtures/kt04_lifecycle/`, `test_kt04_lifecycle_retest.py` (3 PASS).  
+Исходные seeded FAIL в `fixtures/kt04/` **не** переписывались.
 
 ---
 

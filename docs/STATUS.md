@@ -7,7 +7,7 @@
 | 01 | DONE | PASS | DONE | `reports/KT01.docx` |
 | 02 | DONE | PASS | DONE | Local windows/iframe 6 PASS + public Sauce **11 PASS** (49.34 с); `reports/KT02.docx` |
 | 03 | DONE | PASS | DONE | Local PO 4 PASS + public Sauce PO **5 PASS** (21.11 с); `reports/KT03.docx` |
-| 04 | DONE | MIXED | DONE | seeded FAIL; Issues #1–#3; `reports/KT04.docx` |
+| 04 | DONE | MIXED | DONE | seeded 2P/3F + GitHub #1–#3; lifecycle retest **3 PASS**; Jira **BLOCKED**; `reports/KT04.docx` |
 | 05 | DONE | MIXED | DONE | VDNH; полный прогон **9 PASS / 1 FAIL** (98.63 с); целевой show_more **PASS** (11.60 с) — отдельно; **не** один прогон 10/10; `reports/KT05.docx` |
 | 06 | DONE | PASS | DONE | AVD `Medium_Phone_API_36.1` (API 36); suite **7 PASS** (44.63 с); `reports/KT06.docx` |
 | 07 | DONE | PASS | DONE | Standalone 5 PASS + Hub+**2 Nodes** Chrome/Firefox **4 PASS** (7.72 с) + parallel overlap; `reports/KT07.docx` |
