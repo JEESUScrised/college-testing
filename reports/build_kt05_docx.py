@@ -1,4 +1,4 @@
-"""Generate reports/KT05.docx from verified dual-run KT05 evidence."""
+"""Generate reports/KT05.docx from verified multi-run KT05 evidence."""
 
 from __future__ import annotations
 
@@ -15,27 +15,28 @@ SHOTS = ROOT / "screenshots" / "kt05"
 OUTPUT = Path(__file__).resolve().parent / "KT05.docx"
 
 SCREENSHOTS = [
-    ("01_home_opened.png", "Рисунок 1 — Главная VDNH (прогон №1)"),
-    ("02_news_section_loaded.png", "Рисунок 2 — Раздел /news/ (прогон №1)"),
-    ("04_news_cards.png", "Рисунок 3 — Карточки новостей (прогон №1)"),
-    ("06_article_opened.png", "Рисунок 4 — Страница статьи (прогон №1)"),
-    ("08_back_to_news.png", "Рисунок 5 — Возврат в новости (прогон №1)"),
-    ("09_before_show_more.png", "Рисунок 6 — До «Показать еще» (прогон №1, затем FAIL)"),
-    ("10_after_show_more.png", "Рисунок 7 — После «Показать еще» (прогон №2, PASS)"),
-    ("12_home_to_news_menu.png", "Рисунок 8 — Навигация меню (прогон №1)"),
+    ("01_home_opened.png", "Рисунок 1 — Главная VDNH (актуально после прогона №3)"),
+    ("02_news_section_loaded.png", "Рисунок 2 — Раздел /news/"),
+    ("04_news_cards.png", "Рисунок 3 — Карточки новостей"),
+    ("06_article_opened.png", "Рисунок 4 — Страница статьи"),
+    ("08_back_to_news.png", "Рисунок 5 — Возврат в новости"),
+    ("09_before_show_more.png", "Рисунок 6 — До «Показать еще»"),
+    ("10_after_show_more.png", "Рисунок 7 — После «Показать еще»"),
+    ("12_home_to_news_menu.png", "Рисунок 8 — Навигация меню"),
 ]
 
+# ID, автотест, прогон №1, №2, №3
 RESULTS = [
-    ("TC-05-01", "test_home_page_opens", "PASS", "—"),
-    ("TC-05-02", "test_news_section_loads", "PASS", "—"),
-    ("TC-05-03", "test_news_heading_visible", "PASS", "—"),
-    ("TC-05-04", "test_news_cards_have_meaningful_content", "PASS", "—"),
-    ("TC-05-05", "test_news_cards_have_distinct_article_links", "PASS", "—"),
-    ("TC-05-06", "test_open_article_from_card", "PASS", "—"),
-    ("TC-05-07", "test_article_heading_and_details", "PASS", "—"),
-    ("TC-05-08", "test_navigate_back_to_news_section", "PASS", "—"),
-    ("TC-05-09", "test_show_more_loads_additional_cards", "FAIL", "PASS"),
-    ("TC-05-10", "test_news_logo_and_menu_navigation", "PASS", "—"),
+    ("TC-05-01", "test_home_page_opens", "PASS", "—", "PASS"),
+    ("TC-05-02", "test_news_section_loads", "PASS", "—", "PASS"),
+    ("TC-05-03", "test_news_heading_visible", "PASS", "—", "PASS"),
+    ("TC-05-04", "test_news_cards_have_meaningful_content", "PASS", "—", "PASS"),
+    ("TC-05-05", "test_news_cards_have_distinct_article_links", "PASS", "—", "PASS"),
+    ("TC-05-06", "test_open_article_from_card", "PASS", "—", "PASS"),
+    ("TC-05-07", "test_article_heading_and_details", "PASS", "—", "PASS"),
+    ("TC-05-08", "test_navigate_back_to_news_section", "PASS", "—", "PASS"),
+    ("TC-05-09", "test_show_more_loads_additional_cards", "FAIL", "PASS", "PASS"),
+    ("TC-05-10", "test_news_logo_and_menu_navigation", "PASS", "—", "PASS"),
 ]
 
 
@@ -104,7 +105,7 @@ def build() -> Path:
         center=True,
     )
     add_para(doc, "Отчёт по контрольной точке", center=True)
-    add_para(doc, "Дата: 2026-10-09", center=True)
+    add_para(doc, "Дата обновления отчёта: 2026-10-11", center=True)
 
     add_heading(doc, "1. Цель и требования")
     add_para(
@@ -145,22 +146,24 @@ def build() -> Path:
     add_para(doc, "3) Scope + entry/exit — test-plan.md. 4) Сценарии — test-cases.md + таблица ниже.")
     add_para(doc, "5) Исполнение — §7. 6) Дефекты — §8 / defect-analysis.md (баг сайта не подтверждён).")
     add_para(doc, "7) Рекомендации — §11. 8) Итоговый отчёт — данный DOCX.")
+    add_para(doc, "Матрица: docs/kt05/requirements-traceability.md.")
 
-    add_heading(doc, "6. Таблица тест-кейсов (два прогона)")
+    add_heading(doc, "6. Таблица тест-кейсов (три прогона)")
     add_para(
         doc,
-        "Внимание: ниже — результаты двух отдельных запусков. "
-        "Единого прогона «10/10 PASS» не было.",
+        "Внимание: прогоны №1–№2 (2026-10-09) — отдельные исторические запуски "
+        "и не склеиваются в «один 10/10». Прогон №3 (2026-10-11) — новый полный suite.",
         bold=True,
     )
-    table = doc.add_table(rows=1, cols=4)
+    table = doc.add_table(rows=1, cols=5)
     table.style = "Table Grid"
     hdr = table.rows[0].cells
-    hdr[0].text, hdr[1].text, hdr[2].text, hdr[3].text = (
+    hdr[0].text, hdr[1].text, hdr[2].text, hdr[3].text, hdr[4].text = (
         "ID",
         "Автотест",
-        "Прогон №1 (полный)",
-        "Прогон №2 (show_more)",
+        "№1 полный",
+        "№2 show_more",
+        "№3 полный",
     )
     for row in RESULTS:
         cells = table.add_row().cells
@@ -169,21 +172,29 @@ def build() -> Path:
     add_para(doc, "")
 
     add_heading(doc, "7. Фактические результаты прогонов")
-    add_para(doc, "Прогон №1 (полный, ~12:57): 9 PASS / 1 FAIL за 98.63 с, exit code 1.")
+    add_para(doc, "Прогон №1 (полный, 2026-10-09 ~12:57): 9 PASS / 1 FAIL за 98.63 с, exit code 1.")
     add_code(
         doc,
         "FAILED test_show_more_loads_additional_cards\n"
         "TimeoutException in click_show_more() after 35s wait\n"
         "=================== 1 failed, 9 passed in 98.63s ====================",
     )
-    add_para(doc, "Прогон №2 (только show_more, ~13:10): 1 PASS за 11.60 с, exit code 0.")
+    add_para(doc, "Прогон №2 (только show_more, 2026-10-09 ~13:10): 1 PASS за 11.60 с, exit code 0.")
     add_code(
         doc,
         "test_show_more_loads_additional_cards PASSED\n"
         "============================= 1 passed in 11.60s =============================",
     )
+    add_para(doc, "Прогон №3 (полный remediation, 2026-10-11 ~01:16): 10 PASS за 50.63 с, exit code 0.")
+    add_code(
+        doc,
+        "collected 10 items\n"
+        "============================= 10 passed in 50.63s =============================\n"
+        "JUnit: selenium/artifacts/kt05/junit_full_20261011_011634.xml\n"
+        "HTML: selenium/artifacts/kt05/report_full_20261011_011634.html",
+    )
 
-    add_heading(doc, "8. Анализ FAIL и follow-up PASS")
+    add_heading(doc, "8. Анализ FAIL, follow-up и remediation")
     add_para(
         doc,
         "В прогоне №1 кнопка «Показать еще» была на странице; падение — на ожидании "
@@ -194,13 +205,12 @@ def build() -> Path:
         doc,
         "Перед прогоном №2 Page Object уточнён: перепоиск кнопки; успех = больше карточек "
         "ИЛИ новые article links ИЛИ смена URL. Follow-up PASS и скриншот "
-        "10_after_show_more.png (расширенная лента) согласуются с исправлением теста.",
+        "10_after_show_more.png согласуются с исправлением теста.",
     )
     add_para(
         doc,
-        "Остаточная неопределённость: полный suite с новым кодом заново не запускался, "
-        "поэтому вклад кратковременной стабильности сайта/сети полностью не исключён. "
-        "Дефект сайта не подтверждён. Итог не формулируется как «один прогон 10/10».",
+        "Прогон №3 подтвердил полный suite после fix: 10/10 PASS за 50.63 с. "
+        "Дефект сайта не подтверждён. Исторические 9/1 и follow-up сохраняются как отдельные факты.",
     )
 
     add_heading(doc, "9. Архитектура Page Object")
@@ -217,7 +227,7 @@ def build() -> Path:
     add_para(doc, "Продукт: подтверждённых дефектов раздела новостей нет.")
     add_para(
         doc,
-        "Процесс: не склеивать полный и follow-up прогоны; составные условия успеха "
+        "Процесс: не склеивать исторический полный и follow-up прогоны; составные условия успеха "
         "подгрузки; data-testid на динамических кнопках желательны на стороне сайта; "
         "локаторы перепроверять при смене вёрстки. См. docs/kt05/recommendations.md.",
     )
@@ -227,8 +237,9 @@ def build() -> Path:
         doc,
         "КТ 05: 10 функциональных автотестов на https://vdnh.ru/news/, Page Object, "
         "расширенная документация (выбор сайта, методика, дефекты, рекомендации). "
-        "Полный прогон: 9 PASS / 1 FAIL. Show_more подтверждён отдельно PASS (11.60 с). "
-        "Единого прогона 10/10 не было. Дефект сайта не подтверждён.",
+        "История: полный прогон 9 PASS / 1 FAIL; show_more отдельно PASS (11.60 с). "
+        "Remediation 2026-10-11: полный suite 10 passed in 50.63s. "
+        "Дефект сайта не подтверждён. White-box backend не применим.",
     )
 
     doc.save(OUTPUT)
@@ -242,11 +253,12 @@ def verify(path: Path) -> None:
         "КТ №5. Тестирование функционала сайта и составление тестовой документации",
         "9 PASS / 1 FAIL",
         "1 passed in 11.60s",
-        "Единого прогона «10/10 PASS» не было",
+        "10 passed in 50.63s",
         "https://vdnh.ru/news/",
         "Обоснование выбора сайта",
         "Рекомендации",
         "Заключение",
+        "White-box backend: не применим",
     ]
     missing = [r for r in required if r not in text]
     if missing:

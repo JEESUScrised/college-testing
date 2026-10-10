@@ -7,7 +7,9 @@
 - [x] Assertions без жёсткой привязки к конкретным заголовкам новостей
 - [x] Маркеры `kt05` / `smoke`
 - [x] Документация: test-plan, test-cases, checklist, RTM, test-report, website-selection, defect-analysis, recommendations
-- [x] Полный прогон без VPN: **9 PASS / 1 FAIL** (98.63 с)
+- [x] Полный прогон без VPN (исторический): **9 PASS / 1 FAIL** (98.63 с)
+- [x] Целевой follow-up show_more: **1 PASS** (11.60 с)
+- [x] Полный remediation-прогон 2026-10-11: **10 PASS** (50.63 с)
 - [x] Целевой повтор show_more: **PASS** (11.60 с) — отдельно от полного прогона
 - [x] Скриншоты `screenshots/kt05/`
 - [x] `reports/KT05.docx` (оба прогона отражены честно)

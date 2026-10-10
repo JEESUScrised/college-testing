@@ -3,20 +3,21 @@
 Автотесты: `selenium/tests/test_kt05_vdnh_news.py`  
 Сайт: `https://vdnh.ru/news/`
 
-| ID | Автотест | Описание | Прогон №1 (полный) | Прогон №2 (целевой) |
-|---|---|---|---|---|
-| TC-05-01 | `test_home_page_opens` | Открытие главной VDNH | **PASS** | — |
-| TC-05-02 | `test_news_section_loads` | Загрузка `/news/` | **PASS** | — |
-| TC-05-03 | `test_news_heading_visible` | Заголовок раздела | **PASS** | — |
-| TC-05-04 | `test_news_cards_have_meaningful_content` | Карточки с текстом | **PASS** | — |
-| TC-05-05 | `test_news_cards_have_distinct_article_links` | Разные ссылки статей | **PASS** | — |
-| TC-05-06 | `test_open_article_from_card` | Открытие статьи | **PASS** | — |
-| TC-05-07 | `test_article_heading_and_details` | Заголовок статьи | **PASS** | — |
-| TC-05-08 | `test_navigate_back_to_news_section` | Возврат в новости | **PASS** | — |
-| TC-05-09 | `test_show_more_loads_additional_cards` | «Показать ещё» | **FAIL** | **PASS** |
-| TC-05-10 | `test_news_logo_and_menu_navigation` | Логотип + меню | **PASS** | — |
+| ID | Автотест | Описание | №1 полный | №2 show_more | №3 полный (2026-10-11) |
+|---|---|---|---|---|---|
+| TC-05-01 | `test_home_page_opens` | Открытие главной VDNH | **PASS** | — | **PASS** |
+| TC-05-02 | `test_news_section_loads` | Загрузка `/news/` | **PASS** | — | **PASS** |
+| TC-05-03 | `test_news_heading_visible` | Заголовок раздела | **PASS** | — | **PASS** |
+| TC-05-04 | `test_news_cards_have_meaningful_content` | Карточки с текстом | **PASS** | — | **PASS** |
+| TC-05-05 | `test_news_cards_have_distinct_article_links` | Разные ссылки статей | **PASS** | — | **PASS** |
+| TC-05-06 | `test_open_article_from_card` | Открытие статьи | **PASS** | — | **PASS** |
+| TC-05-07 | `test_article_heading_and_details` | Заголовок статьи | **PASS** | — | **PASS** |
+| TC-05-08 | `test_navigate_back_to_news_section` | Возврат в новости | **PASS** | — | **PASS** |
+| TC-05-09 | `test_show_more_loads_additional_cards` | «Показать ещё» | **FAIL** | **PASS** | **PASS** |
+| TC-05-10 | `test_news_logo_and_menu_navigation` | Логотип + меню | **PASS** | — | **PASS** |
 
-> Это **два разных** прогона. Единого прогона «10/10 PASS» не было.
+> Прогоны №1–№2 (2026-10-09) — отдельные исторические запуски; их нельзя склеивать в «один 10/10».  
+> Прогон №3 (2026-10-11): полный suite **10 passed in 50.63s**.
 
 ---
 

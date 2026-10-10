@@ -62,7 +62,7 @@ pixel-perfect, мобильная вёрстка (отдельно — KT09/KT10
 - Документация: plan / cases / RTM / report / selection / defects / recommendations
 - Скриншоты `screenshots/kt05/`
 - Отчёт `reports/KT05.docx`
-- Результаты зафиксированы честно (включая FAIL и отдельные follow-up)
+- Результаты зафиксированы честно (исторический FAIL, follow-up, remediation 10/10)
 
 ## 7. Тестовые данные
 
