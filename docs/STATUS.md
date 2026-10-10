@@ -5,7 +5,7 @@
 | КТ | Статус | Тесты | Отчёт | Примечания |
 |---|---|---|---|---|
 | 01 | DONE | PASS | DONE | `reports/KT01.docx` |
-| 02 | DONE | PASS | DONE | `reports/KT02.docx` |
+| 02 | DONE | PASS | DONE | Local windows/iframe 6 PASS + public Sauce **11 PASS** (49.34 с); `reports/KT02.docx` |
 | 03 | DONE | PASS | DONE | `reports/KT03.docx` |
 | 04 | DONE | MIXED | DONE | seeded FAIL; Issues #1–#3; `reports/KT04.docx` |
 | 05 | DONE | MIXED | DONE | VDNH; полный прогон **9 PASS / 1 FAIL** (98.63 с); целевой show_more **PASS** (11.60 с) — отдельно; **не** один прогон 10/10; `reports/KT05.docx` |
@@ -122,6 +122,13 @@
 
 Campus Portal Demo; 2 PASS / 3 FAIL (seeded); Issues #1–#3 Open; `reports/KT04.docx`.
 
-## КТ 01–03
+## КТ 02 — Функциональные техники (remediation 2026-10-10)
 
-См. `reports/KT01.docx` … `KT03.docx`.
+- Исторический слой: windows/iframe **6 PASS / 21.49 с** (сохранён).
+- Новое: публичный Sauce Demo **11 PASS / 49.34 с** (pos/neg/boundary/locators/cookies/windows).
+- Код: `selenium/tests/test_kt02_sauce_public.py`, PO `selenium/pages/sauce/`.
+- Скриншоты: `screenshots/kt02/public/`; docs: `docs/kt02/`; отчёт `reports/KT02.docx`.
+
+## КТ 01 / КТ 03
+
+См. `reports/KT01.docx`, `reports/KT03.docx`.
