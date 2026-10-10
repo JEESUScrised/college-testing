@@ -2,8 +2,9 @@
 
 ## Status: BLOCKED — no authorized Jira workspace access in this session
 
-No Atlassian/Jira connector or logged-in session was available to the agent.
+Rechecked **2026-10-11**: browser tabs empty; no Atlassian/Jira MCP session.
 **No real Jira project/issues/comments were created** (would require user approval + login).
+Local lifecycle remediation (`kt04_lifecycle/`, 3 PASS) remains valid without Jira.
 
 ## Planned project (ready to create when authorized)
 
