@@ -5,11 +5,8 @@ from __future__ import annotations
 from pathlib import Path
 
 from docx import Document
-from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.opc.constants import RELATIONSHIP_TYPE as RT
-from docx.oxml.ns import qn
-from docx.shared import Cm, Pt
 
+from docx_helpers import setup_a4, add_heading, add_para, add_code, add_shot, add_table, set_run_font
 from report_title import add_title_fields
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -47,56 +44,9 @@ RESULTS = [
 ]
 
 
-def set_run_font(run, size_pt: float = 12, bold: bool = False, name: str = "Times New Roman") -> None:
-    run.bold = bold
-    run.font.size = Pt(size_pt)
-    run.font.name = name
-    run._element.rPr.rFonts.set(qn("w:eastAsia"), name)
-
-
-def add_heading(doc: Document, text: str, level: int = 1) -> None:
-    p = doc.add_heading(text, level=level)
-    for run in p.runs:
-        set_run_font(run, size_pt=14 if level == 1 else 13, bold=True)
-
-
-def add_para(doc: Document, text: str, *, bold: bool = False, center: bool = False) -> None:
-    p = doc.add_paragraph()
-    if center:
-        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = p.add_run(text)
-    set_run_font(run, bold=bold)
-    p.paragraph_format.space_after = Pt(6)
-    p.paragraph_format.line_spacing = 1.15
-
-
-def add_code(doc: Document, code: str) -> None:
-    for line in code.strip("\n").splitlines():
-        p = doc.add_paragraph()
-        run = p.add_run(line if line else " ")
-        set_run_font(run, size_pt=9, name="Consolas")
-        p.paragraph_format.space_after = Pt(0)
-        p.paragraph_format.space_before = Pt(0)
-
-
-def add_shot(doc: Document, path: Path, caption: str) -> None:
-    if not path.is_file():
-        add_para(doc, f"[Скриншот отсутствует: {path.name}]")
-        return
-    doc.add_picture(str(path), width=Cm(12))
-    p = doc.add_paragraph()
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = p.add_run(caption)
-    set_run_font(run, size_pt=11)
-
-
 def build() -> Path:
     doc = Document()
-    section = doc.sections[0]
-    section.top_margin = Cm(2)
-    section.bottom_margin = Cm(2)
-    section.left_margin = Cm(2.5)
-    section.right_margin = Cm(1.5)
+    setup_a4(doc)
 
     add_title_fields(doc, add_para)
     add_para(doc, "")
@@ -112,23 +62,25 @@ def build() -> Path:
     add_heading(doc, "1. Цель и требования")
     add_para(
         doc,
-        "Организовать Selenium Grid 4, выполнять браузерные тесты через "
-        "RemoteWebDriver и подтвердить работу режимов Standalone и Hub + Node "
-        "с реальными сессиями, логами и скриншотами.",
+        "Нужно было поднять Selenium Grid 4 у себя на машине, гонять браузерные "
+        "тесты через RemoteWebDriver и показать, что работают и Standalone, "
+        "и схема Hub + Node. Без реальных сессий, логов и скриншотов отчёт "
+        "бы не закрыл.",
     )
 
     add_heading(doc, "2. Архитектура Selenium Grid")
     add_para(
         doc,
-        "Standalone объединяет Router, Distributor, Session Map, Queue и Node "
-        "в одном процессе. Hub + Node разделяет точку входа (Hub) и исполнитель "
-        "браузеров (Node). Клиент всегда подключается к http://127.0.0.1:4444.",
+        "В Standalone Router, Distributor, Session Map, Queue и Node живут "
+        "в одном процессе — удобно для старта. В режиме Hub + Node точка входа "
+        "отдельная (Hub), а браузеры крутит Node. Клиент в обоих случаях "
+        "ходит на http://127.0.0.1:4444.",
     )
     add_para(
         doc,
-        "Важно: RemoteWebDriver на localhost — это удалённый протокол Grid, "
-        "даже если Hub и браузер на одной машине. Кросс-машинный кластер в этой "
-        "работе не разворачивался.",
+        "Важный момент: RemoteWebDriver на localhost — это всё равно удалённый "
+        "протокол Grid, даже если Hub и браузер на одном ПК. Кластер из "
+        "нескольких машин я не поднимал и на мультимашинность не претендую.",
         bold=True,
     )
 
@@ -138,8 +90,9 @@ def build() -> Path:
     add_para(doc, "Grid bind: 127.0.0.1. Node port: 5556 (5555 занят Android emulator/qemu).")
     add_para(
         doc,
-        "Event Bus Hub/Node явно на tcp://127.0.0.1:4442 и :4443 — иначе Grid "
-        "рекламировал VPN-IP (26.x) и Node не регистрировался.",
+        "Event Bus у Hub и Node явно повесил на tcp://127.0.0.1:4442 и :4443. "
+        "Без этого Grid начинал светить VPN-IP (26.x), и Node просто "
+        "не регистрировался — долго ловил этот момент.",
     )
 
     add_heading(doc, "4. Команды запуска")
@@ -161,8 +114,9 @@ def build() -> Path:
     add_para(
         doc,
         "Фикстура grid_driver создаёт webdriver.Remote(command_executor=grid_url, "
-        "options=ChromeOptions()) и не заменяет локальный driver KT01–KT05. "
-        "Фикстуры отдаются HTTP-сервером (не file://).",
+        "options=ChromeOptions()) и не трогает локальный driver из KT01–KT05. "
+        "HTML-фикстуры отдаёт обычный HTTP-сервер, не file:// — иначе Grid "
+        "иногда капризничает.",
     )
     add_code(
         doc,
@@ -173,33 +127,32 @@ def build() -> Path:
     )
 
     add_heading(doc, "6. Результаты Standalone suite")
-    add_para(doc, "Диагностика: 1 PASS. Полный suite: 5 passed in 4.88s, exit 0.")
-    table = doc.add_table(rows=1, cols=3)
-    table.style = "Table Grid"
-    hdr = table.rows[0].cells
-    hdr[0].text, hdr[1].text, hdr[2].text = "ID", "Автотест", "Результат"
-    for row in RESULTS:
-        cells = table.add_row().cells
-        for i, val in enumerate(row):
-            cells[i].text = val
-    add_para(doc, "")
+    add_para(
+        doc,
+        "Диагностику начал с одного кейса — PASS. Потом полный suite: "
+        "5 passed in 4.88s, exit 0.",
+    )
+    add_table(doc, ["ID", "Автотест", "Результат"], RESULTS)
     add_code(doc, "============================== 5 passed in 4.88s ==============================")
 
     add_heading(doc, "7. Hub + Node")
     add_para(
         doc,
-        "После остановки Standalone запущены Hub (:4444) и Node (:5556). "
+        "Standalone остановил и поднял Hub на :4444 плюс Node на :5556. "
         "Статус: ready=true, nodes=1, uri Node = http://127.0.0.1:5556. "
-        "Доказательство сессий: 2 PASS (session + navigate).",
+        "Что сессии реально идут через Node, проверил двумя тестами "
+        "(session + navigate) — оба PASS.",
     )
 
     add_heading(doc, "8. Remediation: Hub + 2 Nodes + parallel (2026-10-10)")
     add_para(
         doc,
-        "Добавлен режим Hub + Node A (:5556) + Node B (:5557). "
-        "Статус Grid: ready=true, nodes=2. Multi-browser suite Chrome+Firefox: "
-        "4 passed in 7.72s. Параллельный proof: simultaneous Chrome+Firefox "
-        "Remote-сессии с пересечением hold-интервалов (parallel_overlap=true).",
+        "Дальше добавил режим Hub + Node A (:5556) + Node B (:5557). "
+        "В статусе Grid было ready=true, nodes=2. Multi-browser suite "
+        "Chrome+Firefox: 4 passed in 7.72s. Параллельный proof: одновременно "
+        "держались Chrome и Firefox Remote-сессии, интервалы hold пересеклись "
+        "(parallel_overlap=true). Это как раз и показывает, что Grid раздаёт "
+        "сессии параллельно, а не «по очереди втихую».",
     )
     add_code(
         doc,
@@ -216,18 +169,22 @@ def build() -> Path:
 
     add_heading(doc, "9. Скриншоты — исторический Standalone")
     for name, caption in SCREENSHOTS:
-        add_shot(doc, SHOTS / name, caption)
+        add_shot(doc, SHOTS / name, caption, width_cm=12.0)
 
     add_heading(doc, "10. Скриншоты — multi-node / parallel")
     for path, caption in MULTI_SHOTS:
-        add_shot(doc, path, caption)
+        add_shot(doc, path, caption, width_cm=12.0)
 
     add_heading(doc, "11. Заключение")
     add_para(
         doc,
-        "КТ 07: Standalone 5/5 PASS сохранён; remediation добавил Hub+2 Nodes, "
-        "Chrome+Firefox Remote-сессии и доказательство параллельного overlap. "
-        "Grid только на localhost.",
+        "По КТ 07 Standalone остаётся 5 passed in 4.88s. На remediation "
+        "добавил Hub + два Node, прогнал Chrome+Firefox (4 passed in 7.72s) "
+        "и зафиксировал parallel_overlap. Весь Grid сидел на 127.0.0.1 — "
+        "это локальный стенд, не ферма из нескольких ПК. "
+        "Главный практический вывод: без явного Event Bus на localhost Node "
+        "легко «теряется» из-за VPN-интерфейса, и это лучше проверить "
+        "health_check до прогона suite.",
     )
 
     doc.save(OUTPUT)

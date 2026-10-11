@@ -5,11 +5,9 @@ from __future__ import annotations
 from pathlib import Path
 
 from docx import Document
-from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.opc.constants import RELATIONSHIP_TYPE as RT
-from docx.oxml.ns import qn
-from docx.shared import Cm, Pt
 
+from docx_helpers import setup_a4, add_heading, add_para, add_code, add_shot, add_table, set_run_font
 from report_title import add_title_fields
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -46,57 +44,9 @@ RESULTS_FINAL = [
 ]
 
 
-def set_run_font(run, size_pt: float = 12, bold: bool = False, name: str = "Times New Roman") -> None:
-    run.bold = bold
-    run.font.size = Pt(size_pt)
-    run.font.name = name
-    run._element.rPr.rFonts.set(qn("w:eastAsia"), name)
-
-
-def add_heading(doc: Document, text: str, level: int = 1) -> None:
-    p = doc.add_heading(text, level=level)
-    for run in p.runs:
-        set_run_font(run, size_pt=14 if level == 1 else 13, bold=True)
-
-
-def add_para(doc: Document, text: str, *, bold: bool = False, center: bool = False) -> None:
-    p = doc.add_paragraph()
-    if center:
-        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = p.add_run(text)
-    set_run_font(run, bold=bold)
-    p.paragraph_format.space_after = Pt(6)
-    p.paragraph_format.line_spacing = 1.15
-
-
-def add_code(doc: Document, code: str) -> None:
-    for line in code.strip("\n").splitlines():
-        p = doc.add_paragraph()
-        run = p.add_run(line if line else " ")
-        set_run_font(run, size_pt=9, name="Consolas")
-        p.paragraph_format.space_after = Pt(0)
-        p.paragraph_format.space_before = Pt(0)
-
-
-def add_shot(doc: Document, filename: str, caption: str) -> None:
-    path = SHOTS / filename
-    if not path.is_file():
-        add_para(doc, f"[Скриншот отсутствует: {filename}]")
-        return
-    doc.add_picture(str(path), width=Cm(9))
-    p = doc.add_paragraph()
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = p.add_run(caption)
-    set_run_font(run, size_pt=11)
-
-
 def build() -> Path:
     doc = Document()
-    section = doc.sections[0]
-    section.top_margin = Cm(2)
-    section.bottom_margin = Cm(2)
-    section.left_margin = Cm(2.5)
-    section.right_margin = Cm(1.5)
+    setup_a4(doc)
 
     add_title_fields(doc, add_para)
     add_para(doc, "")
@@ -112,14 +62,15 @@ def build() -> Path:
     add_heading(doc, "1. Цель и выбор приложения")
     add_para(
         doc,
-        "Выполнить UI-автотесты официального sample ApiDemos через Appium 3 + UiAutomator2. "
-        "Package io.appium.android.apis, APK v6.0.18.",
+        "Задача КТ — поднять UI-автотесты на официальном sample ApiDemos через "
+        "Appium 3 и UiAutomator2. Package: io.appium.android.apis, APK v6.0.18.",
     )
     add_para(
         doc,
-        "Почему ApiDemos: публичный sample, воспроизводимость, стабильные accessibility id, "
-        "детерминированные экраны. Ограничения: не production — платежи/бизнес-auth "
-        "NOT APPLICABLE. Подробнее: mobile/docs/kt06-test-plan.md.",
+        "Почему именно ApiDemos: это публичный sample, его легко поставить заново, "
+        "accessibility id стабильные, экраны предсказуемые. Минус тоже понятный — "
+        "это не production-приложение, поэтому платежи и бизнес-auth здесь "
+        "NOT APPLICABLE. Подробнее — mobile/docs/kt06-test-plan.md.",
     )
 
     add_heading(doc, "2. Среда выполнения (новый ПК)")
@@ -137,8 +88,9 @@ def build() -> Path:
     )
     add_para(
         doc,
-        "Примечание: AVD KT06_API33 / system image API 33 не создавались "
-        "(вариант B — переиспользование существующего эмулятора).",
+        "Отдельно: AVD KT06_API33 и system image API 33 я не создавал — "
+        "взял уже стоящий эмулятор (вариант B). Физический телефон в этой КТ "
+        "не использовал, всё крутил только на эмуляторе.",
     )
 
     add_heading(doc, "3. Команды запуска")
@@ -150,40 +102,41 @@ def build() -> Path:
     )
 
     add_heading(doc, "4. Хронология прогонов")
-    add_para(doc, "Диагностика (один тест): test_app_starts_and_shows_home — PASS за 14.94 с.")
     add_para(
         doc,
-        "Прогон №1 (полный suite, до правки scroll): 6 PASS / 1 FAIL за 56.33 с. "
-        "FAIL: test_views_textfields_input — TimeoutException на «TextFields» "
-        "(пункт вне видимой области списка Views на API 36).",
+        "Сначала прогнал один диагностический тест: "
+        "test_app_starts_and_shows_home — PASS за 14.94 с. Так убедился, "
+        "что Appium вообще видит приложение.",
     )
     add_para(
         doc,
-        "Диагностика: UiScrollable.scrollIntoView(description=\"TextFields\") "
-        "успешно показывает элемент. В BaseMobilePage добавлен click_menu_item "
-        "со прокруткой при необходимости.",
+        "Прогон №1 (полный suite до правки scroll): 6 PASS / 1 FAIL за 56.33 с. "
+        "Упал test_views_textfields_input — TimeoutException на пункте «TextFields». "
+        "На API 36 он просто был ниже видимой области списка Views.",
     )
-    add_para(doc, "Точечный повтор FAIL-теста после фикса: PASS за 15.13 с.")
     add_para(
         doc,
-        "Прогон №2 (полный suite после фикса, без рестарта эмулятора): "
+        "Разбирался так: UiScrollable.scrollIntoView(description=\"TextFields\") "
+        "элемент показывает. После этого в BaseMobilePage добавил click_menu_item "
+        "с прокруткой, если пункта нет на экране.",
+    )
+    add_para(doc, "Точечный повтор бывшего FAIL: PASS за 15.13 с.")
+    add_para(
+        doc,
+        "Прогон №2 (полный suite после фикса, эмулятор не перезапускал): "
         "7 PASS за 44.63 с, exit 0. Артефакты: "
         "mobile/artifacts/pytest_kt06_20261009_211440.log, "
         "junit_kt06_20261009_211440.xml, report_kt06_20261009_211440.html.",
     )
 
     add_heading(doc, "5. Результаты прогонов")
-    add_para(doc, "Исторический финал (2026-10-09): 7 PASS / 44.63 с — сохранён.")
-    add_para(doc, "Remediation (2026-10-11): 10 PASS / 67.70 с — + Cancel, clear/hint, a11y.")
-    table = doc.add_table(rows=1, cols=3)
-    table.style = "Table Grid"
-    hdr = table.rows[0].cells
-    hdr[0].text, hdr[1].text, hdr[2].text = "ID", "Автотест", "Результат"
-    for row in RESULTS_FINAL:
-        cells = table.add_row().cells
-        for i, val in enumerate(row):
-            cells[i].text = val
-    add_para(doc, "")
+    add_para(
+        doc,
+        "Исторический финал на 2026-10-09: 7 PASS за 44.63 с — эти цифры оставляю. "
+        "Потом на remediation (2026-10-11) докинул Cancel, clear/hint и a11y — "
+        "получилось 10 PASS за 67.70 с.",
+    )
+    add_table(doc, ["ID", "Автотест", "Результат"], RESULTS_FINAL)
     add_code(
         doc,
         "============================= 7 passed in 44.63s =============================\n"
@@ -191,37 +144,70 @@ def build() -> Path:
     )
 
     add_heading(doc, "6. Типы тестирования и платформа")
-    add_para(doc, "Functional: launch, меню, диалоги, ввод, Back, TextFields — исполнены.")
-    add_para(doc, "Negative/dismiss: Cancel Text Entry; clear TextFields (hint остаётся).")
+    add_para(
+        doc,
+        "Functional: запуск, меню, диалоги, ввод, Back, TextFields — всё прогнал.",
+    )
+    add_para(
+        doc,
+        "Negative/dismiss: Cancel в Text Entry; clear в TextFields "
+        "(после очистки остаётся hint — так Android и задумано).",
+    )
     add_para(doc, "Accessibility: content-desc App/Views на Home.")
-    add_para(doc, "Usability: наблюдения по скриншотам/навигации (не отдельная UX-сессия).")
-    add_para(doc, "Performance: 67.70 с / 10 TC как ориентир среды (не SLA продукта).")
-    add_para(doc, "Compatibility: Android API 36 emulator only; real device / другие API — NOT RUN.")
-    add_para(doc, "Эмулятор vs устройство: DPI/тайминги могут отличаться.")
+    add_para(
+        doc,
+        "Usability: смотрел по скриншотам и навигации, отдельную UX-сессию "
+        "не устраивал.",
+    )
+    add_para(
+        doc,
+        "Performance: 67.70 с на 10 кейсов — это ориентир моей среды, "
+        "не SLA продукта.",
+    )
+    add_para(
+        doc,
+        "Compatibility: только эмулятор Android API 36 "
+        "(Medium_Phone_API_36.1). Реальный девайс и другие API — NOT RUN.",
+    )
+    add_para(
+        doc,
+        "На живом телефоне DPI и тайминги могут отличаться, поэтому "
+        "результаты с эмулятора на физическое устройство без проверки "
+        "переносить нельзя.",
+    )
 
     add_heading(doc, "7. Дефекты и рекомендации")
     add_para(
         doc,
-        "Подтверждённых дефектов ApiDemos нет. INC-06-01: FAIL TextFields из-за отсутствия "
-        "scroll в тесте — исправлено в Page Object. После clear EditText показывает hint "
-        "(«hint text») — ожидаемое поведение Android, не баг приложения. "
-        "Рекомендации: real device, доп. API, не заявлять payment/auth для demo.",
+        "Подтверждённых багов в ApiDemos нет. INC-06-01 — это был FAIL на TextFields "
+        "из-за отсутствия scroll в тесте, поправил в Page Object. "
+        "После clear EditText показывает hint («hint text») — ожидаемое поведение "
+        "Android, не баг приложения. На будущее: прогнать на real device и другом API, "
+        "и не писать в отчёте про payment/auth для demo-приложения.",
     )
 
     add_heading(doc, "8. Архитектура")
     add_para(doc, "Page Object: mobile/pages/; тесты: mobile/tests/test_kt06_appium.py.")
-    add_para(doc, "Между тестами: mobile: startActivity → .ApiDemos.")
+    add_para(
+        doc,
+        "Между тестами возвращаю приложение на стартовый экран через "
+        "mobile: startActivity → .ApiDemos, чтобы кейсы меньше влияли друг на друга.",
+    )
 
     add_heading(doc, "9. Скриншоты")
     for name, caption in SCREENSHOTS:
-        add_shot(doc, name, caption)
+        add_shot(doc, SHOTS / name, caption, width_cm=9.0)
 
     add_heading(doc, "10. Заключение")
     add_para(
         doc,
-        "КТ 06: стратегия, типы тестирования, кейсы с actual results, анализ дефектов и "
-        "рекомендации документированы. Исторический suite 7/7 PASS (44.63 с); "
-        "remediation 10/10 PASS (67.70 с) на AVD API 36. Push не выполнялся.",
+        "КТ 06 закрыл на эмуляторе Medium_Phone_API_36.1: стратегия, типы тестирования, "
+        "кейсы с фактическими результатами, разбор дефекта теста и рекомендации — всё "
+        "в документации. Исторически было 7 passed in 44.63s, после remediation — "
+        "10 passed in 67.70s. Платежные сценарии NOT APPLICABLE. "
+        "Физический телефон не подключал; push в репозиторий не делал. "
+        "Самое полезное из этой КТ — понять, что без scrollIntoView на длинных списках "
+        "Appium легко ловит «ложный» FAIL.",
     )
 
     doc.save(OUTPUT)

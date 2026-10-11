@@ -5,11 +5,9 @@ from __future__ import annotations
 from pathlib import Path
 
 from docx import Document
-from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.opc.constants import RELATIONSHIP_TYPE as RT
-from docx.oxml.ns import qn
-from docx.shared import Cm, Pt
 
+from docx_helpers import setup_a4, add_heading, add_para, add_code, add_shot
 from report_title import add_title_fields
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -54,46 +52,6 @@ selenium/tests/test_kt03_sauce_po.py::test_po_menu_logout PASSED
 """
 
 
-def set_run_font(run, size_pt=12, bold=False, name="Times New Roman"):
-    run.bold = bold
-    run.font.size = Pt(size_pt)
-    run.font.name = name
-    run._element.rPr.rFonts.set(qn("w:eastAsia"), name)
-
-
-def add_heading(doc, text, level=1):
-    p = doc.add_heading(text, level=level)
-    for run in p.runs:
-        set_run_font(run, size_pt=14 if level == 1 else 13, bold=True)
-
-
-def add_para(doc, text, *, bold=False, center=False):
-    p = doc.add_paragraph()
-    if center:
-        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = p.add_run(text)
-    set_run_font(run, bold=bold)
-    p.paragraph_format.space_after = Pt(6)
-
-
-def add_code(doc, code):
-    for line in code.strip("\n").splitlines():
-        p = doc.add_paragraph()
-        run = p.add_run(line if line else " ")
-        set_run_font(run, size_pt=9, name="Consolas")
-        p.paragraph_format.space_after = Pt(0)
-
-
-def add_shot(doc, path: Path, caption: str):
-    if not path.is_file():
-        raise FileNotFoundError(path)
-    doc.add_picture(str(path), width=Cm(14))
-    p = doc.add_paragraph()
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = p.add_run(caption)
-    set_run_font(run, size_pt=11)
-
-
 def build() -> Path:
     missing = [n for n, _ in HIST_SHOTS if not (SHOTS / n).is_file()]
     missing += [n for n, _ in PUBLIC_SHOTS if not (PUBLIC / n).is_file()]
@@ -101,29 +59,44 @@ def build() -> Path:
         raise FileNotFoundError(missing)
 
     doc = Document()
-    for s in doc.sections:
-        s.top_margin = Cm(2)
-        s.bottom_margin = Cm(2)
-        s.left_margin = Cm(2.5)
-        s.right_margin = Cm(1.5)
+    setup_a4(doc)
 
     add_title_fields(doc, add_para)
     add_para(doc, "КТ №3. Паттерн Page Object", bold=True, center=True)
     add_para(doc, "Отчёт (включая remediation 2026-10-10)", center=True)
 
-    add_heading(doc, "1. Цель")
+    add_heading(doc, "Зачем мне Page Object")
     add_para(
         doc,
-        "Применить Page Object к публичному сайту Sauce Demo и сохранить исторический "
-        "локальный PO для окон/iframe.",
+        "В КТ №2 локаторы уже начали дублироваться между кейсами. Page Object как раз "
+        "про это: страница = класс, кнопки и поля — поля/методы класса, а в тесте остаётся "
+        "сценарий и assertions. Если на Sauce Demo сменится id кнопки «Add to cart», правка "
+        "одна — в SauceInventoryPage, а не в пяти тестах сразу.",
+    )
+    add_para(
+        doc,
+        "По заданию нужно было применить паттерн. Я сделал публичный PO на "
+        "https://www.saucedemo.com/ и оставил локальный PO для окон/iframe — тот же подход, "
+        "другие страницы.",
     )
 
-    add_heading(doc, "2. Архитектура")
+    add_heading(doc, "Как разложил классы")
+    add_para(
+        doc,
+        "Общий BasePage держит driver, ожидания и мелкие хелперы. Дальше — конкретные "
+        "страницы. Тесты только вызывают методы вроде login_as(...) или add_first_product().",
+    )
     add_para(doc, "• Исторический: BasePage, WindowsMainPage/WindowsSecondaryPage, IframePage")
     add_para(doc, "• Remediation: selenium/pages/sauce/* (Login, Inventory, Product, Cart, Checkout)")
     add_para(doc, "• Тесты: test_kt03_page_object.py + test_kt03_sauce_po.py")
 
-    add_heading(doc, "3. Команды")
+    add_heading(doc, "Что прогонял")
+    add_para(
+        doc,
+        "На Sauce Demo цепочка через PO: login → inventory (сортировка, открытие товара) → "
+        "корзина → checkout → logout из меню. На локальных фикстурах — те же окна и iframe, "
+        "что в КТ 02, только через page-классы.",
+    )
     add_code(
         doc,
         """# Публичный Sauce Demo PO
@@ -133,25 +106,32 @@ def build() -> Path:
 .\\.venv\\Scripts\\python.exe -m pytest selenium\\tests\\test_kt03_page_object.py -v --browser=chrome""",
     )
 
-    add_heading(doc, "4. Результаты")
+    add_heading(doc, "Результаты прогонов")
     add_para(doc, "Публичный PO (2026-10-10):")
     add_code(doc, KT03_PUBLIC)
     add_para(doc, "Исторический PO (сохранён):")
     add_code(doc, KT03_HIST)
+    add_para(
+        doc,
+        "Публичный слой: 5 passed in 21.11s. Локальный PO окон/iframe: 4 passed in 14.90s.",
+    )
 
-    add_heading(doc, "5. Скриншоты — исторический слой")
+    add_heading(doc, "Доказательства — локальный PO")
     for name, caption in HIST_SHOTS:
         add_shot(doc, SHOTS / name, caption)
 
-    add_heading(doc, "6. Скриншоты — публичный Sauce Demo")
+    add_heading(doc, "Доказательства — Sauce Demo через PO")
     for name, caption in PUBLIC_SHOTS:
         add_shot(doc, PUBLIC / name, caption)
 
-    add_heading(doc, "7. Заключение")
+    add_heading(doc, "Заключение")
     add_para(
         doc,
-        "КТ №3: публичный Page Object на Sauce Demo (5 PASS / 21.11 с) при сохранении "
-        "локального PO окон/iframe (4 PASS / 14.90 с).",
+        "Page Object оправдал себя на живом saucedemo: пять сценариев от login до logout "
+        "идут через page-классы, прогон 5 passed in 21.11s. Локальный PO для окон/iframe "
+        "тоже зелёный — 4 passed in 14.90s. Главный плюс для меня: тест читается как "
+        "пользовательский сценарий, а селекторы не размазаны по файлам. Дальше те же "
+        "sauce-страницы удобно переиспользовать в следующих КТ.",
     )
 
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)

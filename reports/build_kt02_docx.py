@@ -5,11 +5,9 @@ from __future__ import annotations
 from pathlib import Path
 
 from docx import Document
-from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.opc.constants import RELATIONSHIP_TYPE as RT
-from docx.oxml.ns import qn
-from docx.shared import Cm, Pt
 
+from docx_helpers import setup_a4, add_heading, add_para, add_code, add_shot
 from report_title import add_title_fields
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -70,49 +68,6 @@ selenium/tests/test_kt02_sauce_public.py::test_kt02_window_handles_public PASSED
 """
 
 
-def set_run_font(run, size_pt: float = 12, bold: bool = False, name: str = "Times New Roman") -> None:
-    run.bold = bold
-    run.font.size = Pt(size_pt)
-    run.font.name = name
-    run._element.rPr.rFonts.set(qn("w:eastAsia"), name)
-
-
-def add_heading(doc: Document, text: str, level: int = 1) -> None:
-    p = doc.add_heading(text, level=level)
-    for run in p.runs:
-        set_run_font(run, size_pt=14 if level == 1 else 13, bold=True)
-
-
-def add_para(doc: Document, text: str, *, bold: bool = False, center: bool = False) -> None:
-    p = doc.add_paragraph()
-    if center:
-        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = p.add_run(text)
-    set_run_font(run, bold=bold)
-    p.paragraph_format.space_after = Pt(6)
-    p.paragraph_format.line_spacing = 1.15
-
-
-def add_code(doc: Document, code: str) -> None:
-    for line in code.strip("\n").splitlines():
-        p = doc.add_paragraph()
-        run = p.add_run(line if line else " ")
-        set_run_font(run, size_pt=9, name="Consolas")
-        p.paragraph_format.space_after = Pt(0)
-        p.paragraph_format.space_before = Pt(0)
-        p.paragraph_format.line_spacing = 1.0
-
-
-def add_shot(doc: Document, path: Path, caption: str) -> None:
-    if not path.is_file():
-        raise FileNotFoundError(path)
-    doc.add_picture(str(path), width=Cm(14))
-    p = doc.add_paragraph()
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = p.add_run(caption)
-    set_run_font(run, size_pt=11)
-
-
 def build() -> Path:
     missing_hist = [n for n, _ in HIST_SHOTS if not (SHOTS / n).is_file()]
     missing_pub = [n for n, _ in PUBLIC_SHOTS if not (PUBLIC / n).is_file()]
@@ -120,34 +75,35 @@ def build() -> Path:
         raise FileNotFoundError(f"Missing screenshots: hist={missing_hist} pub={missing_pub}")
 
     doc = Document()
-    section = doc.sections[0]
-    section.top_margin = Cm(2)
-    section.bottom_margin = Cm(2)
-    section.left_margin = Cm(2.5)
-    section.right_margin = Cm(1.5)
+    setup_a4(doc)
 
     add_title_fields(doc, add_para)
     add_para(doc, "КТ №2. Тестирование функционала веб-приложения с применением техник тестирования", bold=True, center=True)
     add_para(doc, "Отчёт по контрольной точке (включая remediation 2026-10-10)", center=True)
 
-    add_heading(doc, "1. Цель работы")
+    add_heading(doc, "О чём КТ №2")
     add_para(
         doc,
-        "Освоить техники функционального тестирования веб-приложения в Selenium: "
-        "позитивные/негативные/граничные сценарии, разнообразие локаторов, cookies, "
-        "window handles; а также исторический слой — окна/вкладки и iframe.",
+        "Здесь уже не просто «открыть сайт», а техники: positive / negative / boundary, "
+        "разные локаторы, cookies, window handles. Параллельно оставил старый слой на "
+        "локальных HTML — окна/вкладки и iframe. Публичную часть добивал remediation "
+        "2026-10-10 на Sauce Demo.",
     )
 
-    add_heading(doc, "2. Объект тестирования")
-    add_para(doc, "• Публичный сайт remediation: https://www.saucedemo.com/")
-    add_para(doc, "• Исторический слой: локальные HTML-фикстуры selenium/fixtures/kt02/ (окна + iframe)")
+    add_heading(doc, "Где тестировал")
+    add_para(doc, "• Публичный сайт (remediation): https://www.saucedemo.com/")
+    add_para(
+        doc,
+        "• Исторический слой: локальные HTML-фикстуры selenium/fixtures/kt02/ "
+        "(окна + iframe)",
+    )
 
-    add_heading(doc, "3. Среда")
+    add_heading(doc, "Окружение")
     add_para(doc, "• ОС: Windows 10; Python 3.13.2; pytest 8.4.2; Selenium 4.50; Chrome")
-    add_para(doc, "• Page Object: selenium/pages/sauce/")
-    add_para(doc, "• Явные ожидания WebDriverWait / EC.*")
+    add_para(doc, "• Page Object для Sauce: selenium/pages/sauce/")
+    add_para(doc, "• Ждал элементы через WebDriverWait / EC.*, без лишних sleep")
 
-    add_heading(doc, "4. Команды запуска")
+    add_heading(doc, "Команды, которыми гонял")
     add_code(
         doc,
         """# Публичный Sauce Demo (remediation)
@@ -157,33 +113,50 @@ def build() -> Path:
 .\\.venv\\Scripts\\python.exe -m pytest selenium\\tests\\test_kt02_windows.py selenium\\tests\\test_kt02_iframe.py -v --browser=chrome""",
     )
 
-    add_heading(doc, "5. Тест-кейсы remediation (публичный сайт)")
+    add_heading(doc, "Набор кейсов на Sauce Demo")
+    add_para(
+        doc,
+        "Сначала happy path — login, карточка товара, корзина, checkout. Потом ломаю "
+        "вход и checkout пустыми/неверными данными. Boundary — почтовый индекс: пустой "
+        "против минимального «1». Отдельно техники: локаторы, cookies, вторая вкладка.",
+    )
     add_para(doc, "TC02-P01…P03 — positive: login, product/cart, remove+checkout.")
     add_para(doc, "TC02-N01…N04 — negative: empty user/password, bad credentials, checkout required.")
     add_para(doc, "TC02-B01 — boundary: postal code empty vs minimal «1».")
     add_para(doc, "TC02-T01…T03 — locators (ID/CSS/Name/XPath), cookies, window handles.")
 
-    add_heading(doc, "6. Фактические результаты")
+    add_heading(doc, "Цифры с прогонов")
     add_para(doc, "Публичный прогон (2026-10-10):")
     add_code(doc, KT02_PUBLIC)
     add_para(doc, "Исторический прогон окон/iframe (сохранён):")
     add_code(doc, KT02_HIST)
-    add_para(doc, "Итог remediation: 11 passed / 49.34 с. Исторический слой: 6 passed / 21.49 с.")
+    add_para(
+        doc,
+        "Итог remediation: 11 passed in 49.34s. Исторический слой: 6 passed in 21.49s. "
+        "Оба набора зелёные.",
+    )
 
-    add_heading(doc, "7. Скриншоты — исторический слой")
+    add_heading(doc, "Скриншоты старого слоя (окна / iframe)")
+    add_para(
+        doc,
+        "Сначала переключение по window_handles, потом switch_to.frame и возврат через "
+        "default_content(). Скриншоты из screenshots/kt02/.",
+    )
     for name, caption in HIST_SHOTS:
         add_shot(doc, SHOTS / name, caption)
 
-    add_heading(doc, "8. Скриншоты — публичный Sauce Demo")
+    add_heading(doc, "Скриншоты Sauce Demo")
+    add_para(doc, "Файлы лежат в screenshots/kt02/public/ — positive, negative, boundary и техники.")
     for name, caption in PUBLIC_SHOTS:
         add_shot(doc, PUBLIC / name, caption)
 
-    add_heading(doc, "9. Заключение")
+    add_heading(doc, "Заключение")
     add_para(
         doc,
-        "КТ №2 дополнена публичным функциональным набором техник на Sauce Demo "
-        "при сохранении исторических тестов окон/iframe. Assertions и явные ожидания "
-        "использованы; скриншоты подлинные.",
+        "На Sauce Demo закрыл техники тестирования: 11 passed in 49.34s, скрины по "
+        "каждому типу кейсов. Старые тесты окон/iframe не выкидывал — 6 passed in 21.49s, "
+        "они всё ещё показывают switch_to.window и работу с iframe. Для сдачи важны оба "
+        "слоя: публичный функционал и исторические handles/frames.",
     )
 
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)

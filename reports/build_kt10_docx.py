@@ -1,14 +1,12 @@
-"""Generate reports/KT10.docx — historical functional + responsive remediation."""
+"""Generate reports/KT10.docx — cross-browser + responsive SauceDemo."""
 
 from __future__ import annotations
 
 from pathlib import Path
 
 from docx import Document
-from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.oxml.ns import qn
-from docx.shared import Cm, Pt
 
+from docx_helpers import setup_a4, add_heading, add_para, add_code, add_shot, add_table
 from report_title import add_title_fields
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -17,138 +15,117 @@ RESP = SHOTS / "responsive"
 OUTPUT = Path(__file__).resolve().parent / "KT10.docx"
 
 HIST = [
-    ("TC-10-01", "title/URL", "chrome/firefox", "PASS"),
-    ("TC-10-02", "DOM click", "chrome/firefox", "PASS"),
-    ("TC-10-03", "form validation", "chrome/firefox", "PASS"),
-    ("TC-10-04", "window switch", "chrome/firefox", "PASS"),
-    ("TC-10-05", "iframe switch", "chrome/firefox", "PASS"),
+    ("TC-10-01", "title / URL", "chrome + firefox", "PASS"),
+    ("TC-10-02", "клик по DOM", "chrome + firefox", "PASS"),
+    ("TC-10-03", "валидация формы", "chrome + firefox", "PASS"),
+    ("TC-10-04", "переключение окон", "chrome + firefox", "PASS"),
+    ("TC-10-05", "iframe", "chrome + firefox", "PASS"),
 ]
 
 RESP_CASES = [
-    ("TC10-R01", "layout / overflow"),
-    ("TC10-R02", "login form"),
-    ("TC10-R03", "inventory"),
+    ("TC10-R01", "раскладка / overflow"),
+    ("TC10-R02", "форма логина"),
+    ("TC10-R03", "каталог"),
     ("TC10-R04", "burger menu"),
-    ("TC10-R05", "cart"),
-    ("TC10-R06", "checkout form"),
+    ("TC10-R05", "корзина"),
+    ("TC10-R06", "форма checkout"),
 ]
 
 COMPLIANCE = [
     ("Публичное адаптивное приложение", "Sauce Demo", "PASS"),
     ("Разные браузеры", "Chrome + Firefox", "PASS"),
-    ("Desktop/tablet/phone", "1440×900 / 768×1024 / 390×844", "PASS"),
-    ("Меню/кнопки/формы", "R02–R06", "PASS"),
+    ("Desktop / tablet / phone", "1440×900 / 768×1024 / 390×844", "PASS"),
+    ("Меню, кнопки, формы", "R02–R06", "PASS"),
     ("Адаптация размеров", "viewport JSONL + screenshots", "PASS"),
-    ("Документирование проблем", "overflow: none observed", "PASS"),
+    ("Документирование проблем", "horizontal overflow: none observed", "PASS"),
     ("Отчёт с рекомендациями", "KT10.docx + docs/kt10/", "PASS"),
 ]
 
 
-def set_run_font(run, size_pt=12, bold=False, name="Times New Roman"):
-    run.bold = bold
-    run.font.size = Pt(size_pt)
-    run.font.name = name
-    run._element.rPr.rFonts.set(qn("w:eastAsia"), name)
-
-
-def add_heading(doc, text, level=1):
-    p = doc.add_heading(text, level=level)
-    for run in p.runs:
-        set_run_font(run, size_pt=14 if level == 1 else 13, bold=True)
-
-
-def add_para(doc, text, *, bold=False, center=False):
-    p = doc.add_paragraph()
-    if center:
-        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = p.add_run(text)
-    set_run_font(run, bold=bold)
-    p.paragraph_format.space_after = Pt(6)
-
-
-def add_code(doc, code):
-    for line in code.strip("\n").splitlines():
-        p = doc.add_paragraph()
-        run = p.add_run(line if line else " ")
-        set_run_font(run, size_pt=9, name="Consolas")
-        p.paragraph_format.space_after = Pt(0)
-
-
-def add_shot(doc, path: Path, caption: str, w=9.0):
-    if not path.is_file():
-        add_para(doc, f"[Нет файла: {path.name}]")
-        return
-    doc.add_picture(str(path), width=Cm(w))
-    p = doc.add_paragraph()
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = p.add_run(caption)
-    set_run_font(run, size_pt=10)
-
-
-def add_table(doc, headers, rows):
-    t = doc.add_table(rows=1, cols=len(headers))
-    t.style = "Table Grid"
-    for i, h in enumerate(headers):
-        t.rows[0].cells[i].text = h
-    for row in rows:
-        cells = t.add_row().cells
-        for i, v in enumerate(row):
-            cells[i].text = v
-    add_para(doc, "")
-
-
 def build() -> Path:
     doc = Document()
-    for s in doc.sections:
-        s.top_margin = Cm(2)
-        s.bottom_margin = Cm(2)
-        s.left_margin = Cm(2.5)
-        s.right_margin = Cm(1.5)
+    setup_a4(doc, left=2.5, right=1.5)
 
     add_title_fields(doc, add_para)
-    add_para(doc, "КТ №10. Кроссбраузерное / адаптивное тестирование", bold=True, center=True)
-    add_para(doc, "Дата remediation: 2026-10-10", center=True)
-
-    add_heading(doc, "1. Цель (оригинал презентации)")
+    add_para(doc, "")
     add_para(
         doc,
-        "Протестировать публичное адаптивное веб-приложение в разных браузерах "
-        "с эмуляцией desktop/tablet/smartphone, проверить меню/формы/раскладку, "
-        "зафиксировать проблемы и подготовить отчёт.",
+        "КТ №10. Кроссбраузерное и адаптивное тестирование",
+        bold=True,
+        center=True,
+    )
+    add_para(doc, "Отчёт по контрольной точке", center=True)
+    add_para(doc, "Дата: 2026-10-10", center=True)
+
+    add_heading(doc, "1. Цель")
+    add_para(
+        doc,
+        "По заданию нужно было взять публичный адаптивный сайт, прогнать его "
+        "в Chrome и Firefox, посмотреть desktop / tablet / phone вьюпорты, "
+        "проверить меню и формы, записать, если что-то поедет, и оформить отчёт.",
     )
 
-    add_heading(doc, "2. Публичный сайт")
-    add_para(doc, "https://www.saucedemo.com/ — login, inventory, menu, cart, checkout.")
+    add_heading(doc, "2. Какой сайт взял")
+    add_para(
+        doc,
+        "Опять https://www.saucedemo.com/ — логин, каталог, меню, корзина, checkout. "
+        "Знакомый DOM, удобно сравнивать с предыдущими КТ.",
+    )
 
-    add_heading(doc, "3. Responsive матрица (новое)")
-    add_para(doc, "Chrome CDP (tablet/phone) + window resize; Firefox — только resize.")
+    add_heading(doc, "3. Responsive-матрица")
+    add_para(
+        doc,
+        "Три вьюпорта: 1440×900 (desktop), 768×1024 (tablet), 390×844 (phone). "
+        "В Chrome для tablet/phone крутил CDP-эмуляцию плюс resize окна, "
+        "в Firefox — только resize (там CDP device metrics нет). "
+        "Это эмуляция вьюпорта, не физические телефоны — на реальном железе "
+        "пиксели и жесты могут отличаться.",
+    )
     add_table(doc, ["ID", "Сценарий"], RESP_CASES)
+    add_para(doc, "Прогон responsive suite:")
     add_code(doc, "============================= 6 passed in 42.73s ==============================")
-    add_para(doc, "36 evidence rows; horizontal overflow: none observed.")
+    add_para(
+        doc,
+        "В evidence 36 строк по комбинациям браузер×вьюпорт×шаг. "
+        "Горизонтальный overflow нигде не всплыл (none observed).",
+    )
     for name, cap in [
-        ("chrome_phone_r02_login_form.png", "Chrome phone — login"),
-        ("firefox_phone_r03_inventory.png", "Firefox phone — inventory"),
-        ("chrome_tablet_r04_menu_open.png", "Chrome tablet — menu"),
-        ("chrome_desktop_r06_checkout.png", "Chrome desktop — checkout validation"),
+        ("chrome_phone_r02_login_form.png", "Chrome phone 390×844 — форма логина"),
+        ("firefox_phone_r03_inventory.png", "Firefox phone — каталог"),
+        ("chrome_tablet_r04_menu_open.png", "Chrome tablet 768×1024 — открытое меню"),
+        ("chrome_desktop_r06_checkout.png", "Chrome desktop 1440×900 — checkout / валидация"),
     ]:
-        add_shot(doc, RESP / name, cap)
+        add_shot(doc, RESP / name, cap, width_cm=9.0)
 
-    add_heading(doc, "4. Исторический functional suite (сохранён)")
-    add_para(doc, "Локальные фикстуры + EventFiringWebDriver listener. Не перезапускался в remediation.")
-    add_table(doc, ["ID", "Сценарий", "Browsers", "Status"], HIST)
+    add_heading(doc, "4. Старый functional suite (не трогал в remediation)")
+    add_para(
+        doc,
+        "Раньше уже был набор на локальных фикстурах с EventFiringWebDriver listener. "
+        "При доработке responsive его заново не гонял — оставляю исторический результат "
+        "как есть: 10 passed in 52.92s (по пять сценариев × Chrome/Firefox).",
+    )
+    add_table(doc, ["ID", "Сценарий", "Браузеры", "Статус"], HIST)
     add_code(doc, "============================= 10 passed in 52.92s ==============================")
-    add_shot(doc, SHOTS / "chrome_01_home_title.png", "Исторический Chrome home", 8)
-    add_shot(doc, SHOTS / "firefox_01_home_title.png", "Исторический Firefox home", 8)
+    add_shot(doc, SHOTS / "chrome_01_home_title.png", "Исторический прогон — Chrome home", width_cm=8.0)
+    add_shot(doc, SHOTS / "firefox_01_home_title.png", "Исторический прогон — Firefox home", width_cm=8.0)
 
     add_heading(doc, "5. Compliance")
+    add_para(
+        doc,
+        "Сверка с пунктами из задания — что закрыл и чем подтверждаю:",
+    )
     add_table(doc, ["Требование", "Реализация", "Статус"], COMPLIANCE)
 
     add_heading(doc, "6. Заключение")
     add_para(
         doc,
-        "Добавлена responsive матрица Sauce Demo (6/6 PASS, 42.73 с). "
-        "Критичных проблем раскладки не обнаружено. Listener/functional suite сохранены.",
+        "Добавил responsive-матрицу на Sauce Demo: Chrome и Firefox, три вьюпорта "
+        "(1440×900 / 768×1024 / 390×844), шесть сценариев — 6 passed in 42.73s. "
+        "Кривой раскладки и overflow не нашёл. Старый listener/functional suite "
+        "сохранён (10 passed in 52.92s). Помню ограничение: viewport emulation "
+        "в DevTools — это не замена теста на настоящем телефоне.",
     )
+
     doc.save(OUTPUT)
     return OUTPUT
 

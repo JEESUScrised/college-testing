@@ -5,11 +5,9 @@ from __future__ import annotations
 from pathlib import Path
 
 from docx import Document
-from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.opc.constants import RELATIONSHIP_TYPE as RT
-from docx.oxml.ns import qn
-from docx.shared import Cm, Pt
 
+from docx_helpers import setup_a4, add_heading, add_para, add_code, add_shot, add_table
 from report_title import add_title_fields
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -42,55 +40,9 @@ JIRA_SHOTS = [
 ]
 
 
-def set_run_font(run, size_pt: float = 12, bold: bool = False, name: str = "Times New Roman") -> None:
-    run.bold = bold
-    run.font.size = Pt(size_pt)
-    run.font.name = name
-    run._element.rPr.rFonts.set(qn("w:eastAsia"), name)
-
-
-def add_heading(doc: Document, text: str, level: int = 1) -> None:
-    p = doc.add_heading(text, level=level)
-    for run in p.runs:
-        set_run_font(run, size_pt=14 if level == 1 else 13, bold=True)
-
-
-def add_para(doc: Document, text: str, *, bold: bool = False, center: bool = False) -> None:
-    p = doc.add_paragraph()
-    if center:
-        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = p.add_run(text)
-    set_run_font(run, bold=bold)
-    p.paragraph_format.space_after = Pt(6)
-    p.paragraph_format.line_spacing = 1.15
-
-
-def add_code(doc: Document, code: str) -> None:
-    for line in code.strip("\n").splitlines():
-        p = doc.add_paragraph()
-        run = p.add_run(line if line else " ")
-        set_run_font(run, size_pt=9, name="Consolas")
-        p.paragraph_format.space_after = Pt(0)
-
-
-def add_shot(doc: Document, path: Path, caption: str) -> None:
-    if not path.is_file():
-        add_para(doc, f"[Скриншот отсутствует: {path.name}]")
-        return
-    doc.add_picture(str(path), width=Cm(14))
-    p = doc.add_paragraph()
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = p.add_run(caption)
-    set_run_font(run, size_pt=11)
-
-
 def build() -> Path:
     doc = Document()
-    section = doc.sections[0]
-    section.top_margin = Cm(2)
-    section.bottom_margin = Cm(2)
-    section.left_margin = Cm(2.5)
-    section.right_margin = Cm(1.5)
+    setup_a4(doc)
 
     add_title_fields(doc, add_para)
     add_para(doc, "")
@@ -103,15 +55,16 @@ def build() -> Path:
     add_para(doc, "Отчёт по контрольной точке", center=True)
     add_para(doc, "Дата обновления: 2026-10-11 (remote Jira verification)", center=True)
 
-    add_heading(doc, "1. Цель работы")
+    add_heading(doc, "Что нужно было закрыть")
     add_para(
         doc,
-        "Ознакомиться с Jira; создать проект; настроить типы/приоритеты/workflow; "
-        "оформить баг-репорты; назначить; провести по стадиям; исправить; ретест; закрыть; "
-        "показать статистику и отчёты Jira.",
+        "КТ про баг-трекер: завести проект в Jira, настроить типы/приоритеты/workflow, "
+        "оформить баг-репорты, назначить, провести по стадиям, «починить», сделать retest "
+        "и закрыть. В конце — фильтр, summary и dashboard со статистикой. Я делал это на "
+        "реальном облачном сайте, не на скриншотах из учебника.",
     )
 
-    add_heading(doc, "2. Реальный проект Jira")
+    add_heading(doc, "Мой проект в Jira")
     add_para(doc, "Site: https://collegeqakt04.atlassian.net")
     add_para(doc, "Project: College QA Defect Lifecycle, key KAN (team-managed / next-gen).")
     add_para(doc, "Board: https://collegeqakt04.atlassian.net/jira/software/projects/KAN/boards/2")
@@ -119,13 +72,19 @@ def build() -> Path:
     add_para(doc, "Workflow: Open → In Progress → Ready for Testing → Done.")
     add_para(
         doc,
-        "Components: UNAVAILABLE on team-managed KAN — POST /components returns 405; "
-        "editmeta has no components field. Labels authentication / registration / "
-        "order-processing used as substitute (not claimed as native Components). "
-        "Project not migrated solely for Components.",
+        "С Components вышла засада: на team-managed проекте KAN они UNAVAILABLE. "
+        "POST /components отдаёт 405, в editmeta поля components нет. Вместо Components "
+        "поставил labels: authentication / registration / order-processing — это замена, "
+        "а не «настоящие» Components. Проект ради Components на company-managed не "
+        "мигрировал: ключ KAN уже заведён, баги на нём.",
     )
 
-    add_heading(doc, "3. Три реальных Jira Bug (REST verified)")
+    add_heading(doc, "Три бага: KAN-4, KAN-5, KAN-6")
+    add_para(
+        doc,
+        "Все три заведены как тип Баг, прогнаны по workflow до Done, у каждого по три "
+        "комментария (triage / fix / retest). Проверял через REST.",
+    )
     add_para(doc, "KAN-4 — Login accepts empty password — High — Done — assignee JEESUS — 3 comments")
     add_para(doc, "https://collegeqakt04.atlassian.net/browse/KAN-4")
     add_para(doc, "KAN-5 — Registration accepts email without TLD — High — Done — 3 comments")
@@ -135,33 +94,49 @@ def build() -> Path:
     add_para(doc, "Changelog KAN-4: Open→In Progress→Ready for Testing→Done.")
     add_para(doc, "GitHub #1–#3 сохранены как исторические записи.")
 
-    add_heading(doc, "4. Исторический seeded suite (не переписывался)")
+    add_heading(doc, "Seeded suite до фиксов (исторический)")
+    add_para(
+        doc,
+        "Campus Portal на fixtures/kt04 специально «дырявый»: два валидных сценария "
+        "проходят, три seed-бага падают — так и задумано для учебного FAIL.",
+    )
     add_para(doc, "Campus Portal fixtures/kt04: 2 PASS / 3 FAIL (ожидаемые учебные FAIL).")
     add_code(doc, "======================== 3 failed, 2 passed in 18.08s =========================")
 
-    add_heading(doc, "5. Скриншоты seeded suite")
+    add_heading(doc, "Скриншоты seeded suite")
     for name, caption in SCREENSHOTS:
         add_shot(doc, SHOTS / name, caption)
 
-    add_heading(doc, "6. Lifecycle copy + Selenium retest")
+    add_heading(doc, "Lifecycle-фиксы и Selenium retest")
+    add_para(
+        doc,
+        "В fixtures/kt04_lifecycle закрыл дыры: пустой пароль больше не принимается, "
+        "email без TLD режется, qty должен быть > 0. После этого retest зелёный.",
+    )
     add_para(doc, "fixtures/kt04_lifecycle: empty password / email TLD / qty>0. Retest 3 passed in 8.74s.")
     add_code(doc, "============================== 3 passed in 8.74s ==============================")
     for path, caption in LIFE_SHOTS:
         add_shot(doc, path, caption)
 
-    add_heading(doc, "7. Jira assignments, comments, transitions")
+    add_heading(doc, "Назначения, комментарии, переходы")
     add_para(
         doc,
         "На каждом баге: assign JEESUS; 3 комментария (triage / fix / retest); "
         "переходы Open→In Progress→Ready for Testing→Done. "
-        "Все роли на одном аккаунте JEESUS Cursor-агентом (образовательная симуляция).",
+        "Все роли на одном аккаунте JEESUS Cursor-агентом (образовательная симуляция) — "
+        "отдельных «разработчика» и «тестировщика» в учебном проекте нет.",
     )
 
-    add_heading(doc, "8. Скриншоты Jira (включая final verification)")
+    add_heading(doc, "Скриншоты из Jira")
+    add_para(
+        doc,
+        "Доска, карточка KAN-4 с комментариями, saved filter, project summary и "
+        "dashboard с графиками — всё с remote verification 2026-10-11.",
+    )
     for path, caption in JIRA_SHOTS:
         add_shot(doc, path, caption)
 
-    add_heading(doc, "9. Отчёты / статистика Jira (native)")
+    add_heading(doc, "Фильтры, summary, dashboard")
     add_para(doc, "Saved filter: https://collegeqakt04.atlassian.net/issues/?filter=10002")
     add_para(doc, "Dashboard: https://collegeqakt04.atlassian.net/jira/dashboards/10001")
     add_para(doc, "Summary: https://collegeqakt04.atlassian.net/jira/software/projects/KAN/summary")
@@ -173,35 +148,34 @@ def build() -> Path:
     )
     add_para(doc, "Limitation: native Components unavailable (405); Components breakdown N/A.")
 
-    add_heading(doc, "10. Матрица соответствия")
-    table = doc.add_table(rows=1, cols=3)
-    table.style = "Table Grid"
-    hdr = table.rows[0].cells
-    hdr[0].text, hdr[1].text, hdr[2].text = "Требование", "Статус", "Доказательство"
-    for row in [
-        ("Ознакомление с Jira", "PASS", "collegeqakt04 + REST verify"),
-        ("Создание проекта", "PASS", "KAN College QA Defect Lifecycle"),
-        ("Типы/приоритеты/workflow", "PASS", "Баг + Ready for Testing"),
-        ("Детальные баг-репорты", "PASS", "KAN-4/5/6 descriptions"),
-        ("Назначения / комментарии", "PASS", "JEESUS + 3 comments/issue"),
-        ("Переходы workflow", "PASS", "changelog → Done"),
-        ("Исправление + retest", "PASS", "kt04_lifecycle 3/3"),
-        ("Закрытие в Jira", "PASS", "Готово"),
-        ("Native Components", "PARTIAL", "UNAVAILABLE on team-managed; labels substitute"),
-        ("Статистика / reports", "PASS", "filter + configured dashboard charts"),
-    ]:
-        cells = table.add_row().cells
-        for i, val in enumerate(row):
-            cells[i].text = val
-    add_para(doc, "")
+    add_heading(doc, "Сверка с требованиями")
+    add_table(
+        doc,
+        ["Требование", "Статус", "Доказательство"],
+        [
+            ("Ознакомление с Jira", "PASS", "collegeqakt04 + REST verify"),
+            ("Создание проекта", "PASS", "KAN College QA Defect Lifecycle"),
+            ("Типы/приоритеты/workflow", "PASS", "Баг + Ready for Testing"),
+            ("Детальные баг-репорты", "PASS", "KAN-4/5/6 descriptions"),
+            ("Назначения / комментарии", "PASS", "JEESUS + 3 comments/issue"),
+            ("Переходы workflow", "PASS", "changelog → Done"),
+            ("Исправление + retest", "PASS", "kt04_lifecycle 3/3"),
+            ("Закрытие в Jira", "PASS", "Готово"),
+            ("Native Components", "PARTIAL", "UNAVAILABLE on team-managed; labels substitute"),
+            ("Статистика / reports", "PASS", "filter + configured dashboard charts"),
+        ],
+    )
 
-    add_heading(doc, "11. Заключение")
+    add_heading(doc, "Заключение")
     add_para(
         doc,
-        "КТ 04: реальный Jira проект KAN с тремя Bugs (KAN-4/5/6), полный lifecycle до Done, "
-        "локальные lifecycle-фиксы и Selenium retest 3/3 PASS. "
-        "Исторический seeded 2/3 FAIL и GitHub #1–#3 сохранены. "
-        "Ограничения: ключ KAN; native Components UNAVAILABLE on team-managed (labels substitute).",
+        "В Jira на collegeqakt04.atlassian.net лежат три бага KAN-4 / KAN-5 / KAN-6 — "
+        "все Done, у каждого assignee, три комментария и полный проход "
+        "Open→In Progress→Ready for Testing→Done. Локально после фиксов в "
+        "kt04_lifecycle Selenium retest дал 3 passed in 8.74s. Исторический seeded прогон "
+        "3 failed, 2 passed и GitHub #1–#3 не трогал — это «до» исправлений. "
+        "Единственное честное ограничение: Components на team-managed UNAVAILABLE, "
+        "поэтому метки labels вместо Components.",
     )
 
     doc.save(OUTPUT)

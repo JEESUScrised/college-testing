@@ -5,10 +5,9 @@ from __future__ import annotations
 from pathlib import Path
 
 from docx import Document
-from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.oxml.ns import qn
-from docx.shared import Cm, Pt
+from docx.opc.constants import RELATIONSHIP_TYPE as RT
 
+from docx_helpers import setup_a4, add_heading, add_para, add_code, add_shot
 from report_title import add_title_fields
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -62,49 +61,12 @@ def test_open_ya_ru(driver, save_screenshot):
 """
 
 
-def set_run_font(run, size_pt: float = 12, bold: bool = False, name: str = "Times New Roman") -> None:
-    run.bold = bold
-    run.font.size = Pt(size_pt)
-    run.font.name = name
-    run._element.rPr.rFonts.set(qn("w:eastAsia"), name)
-
-
-def add_heading(doc: Document, text: str, level: int = 1) -> None:
-    p = doc.add_heading(text, level=level)
-    for run in p.runs:
-        set_run_font(run, size_pt=14 if level == 1 else 13, bold=True)
-
-
-def add_para(doc: Document, text: str, *, bold: bool = False, center: bool = False) -> None:
-    p = doc.add_paragraph()
-    if center:
-        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = p.add_run(text)
-    set_run_font(run, bold=bold)
-    p.paragraph_format.space_after = Pt(6)
-    p.paragraph_format.line_spacing = 1.15
-
-
-def add_code(doc: Document, code: str) -> None:
-    for line in code.strip("\n").splitlines():
-        p = doc.add_paragraph()
-        run = p.add_run(line if line else " ")
-        set_run_font(run, size_pt=9, name="Consolas")
-        p.paragraph_format.space_after = Pt(0)
-        p.paragraph_format.space_before = Pt(0)
-        p.paragraph_format.line_spacing = 1.0
-
-
 def build() -> Path:
     if not SCREENSHOT.is_file():
         raise FileNotFoundError(f"Screenshot not found: {SCREENSHOT}")
 
     doc = Document()
-    section = doc.sections[0]
-    section.top_margin = Cm(2)
-    section.bottom_margin = Cm(2)
-    section.left_margin = Cm(2.5)
-    section.right_margin = Cm(1.5)
+    setup_a4(doc)
 
     add_title_fields(doc, add_para)
     add_para(doc, "")
@@ -112,34 +74,35 @@ def build() -> Path:
     add_para(doc, "Отчёт по контрольной точке", center=True)
     add_para(doc, "Дата выполнения: 2026-10-09", center=True)
 
-    add_heading(doc, "1. Цель работы")
+    add_heading(doc, "Зачем я это делал")
     add_para(
         doc,
-        "Цель контрольной точки №1 — освоить базовый запуск Selenium WebDriver 4 "
-        "в браузере Google Chrome, открыть сайт https://ya.ru и подтвердить успешную "
-        "навигацию проверяемыми утверждениями (assertions).",
+        "Первая КТ — просто поднять Selenium WebDriver 4 и убедиться, что браузер "
+        "реально открывается из Python. Задача небольшая: Chrome, переход на "
+        "https://ya.ru, пара assertions и скриншот. Без Page Object и сложных сценариев — "
+        "сначала проверить, что связка pytest + Selenium вообще живая.",
     )
 
-    add_heading(doc, "2. Требования задания")
-    add_para(doc, "Согласно постановке задания (КТ 01, 5 баллов):")
-    add_para(doc, "• реализовать автотест на Python с использованием pytest и Selenium 4;")
-    add_para(doc, "• запустить Google Chrome через WebDriver;")
-    add_para(doc, "• открыть адрес https://ya.ru;")
-    add_para(doc, "• проверить успешность перехода осмысленными assertions;")
-    add_para(doc, "• зафиксировать результат реальным скриншотом и отчётом.")
+    add_heading(doc, "Что требовалось по заданию")
+    add_para(doc, "КТ 01, 5 баллов. По сути:")
+    add_para(doc, "• автотест на Python (pytest + Selenium 4);")
+    add_para(doc, "• запуск Google Chrome через WebDriver;")
+    add_para(doc, "• открыть https://ya.ru;")
+    add_para(doc, "• проверить переход нормальными assertions;")
+    add_para(doc, "• сохранить скриншот и оформить отчёт.")
 
-    add_heading(doc, "3. Программное обеспечение и тестовая среда")
-    add_para(doc, "• Операционная система: Windows 11 (10.0.26100)")
-    add_para(doc, "• Интерпретатор: Python 3.13.9")
-    add_para(doc, "• Фреймворк тестов: pytest 8.4.2")
-    add_para(doc, "• Библиотека автоматизации: Selenium 4.50.0")
-    add_para(doc, "• Браузер: Google Chrome 154.0.8037.98")
-    add_para(doc, "• Управление драйвером: Selenium Manager (в составе Selenium 4)")
-    add_para(doc, "• Целевой URL: https://ya.ru")
-    add_para(doc, "• Каталог автотеста: selenium/")
+    add_heading(doc, "На чём гонял")
+    add_para(doc, "• ОС: Windows 11 (10.0.26100)")
+    add_para(doc, "• Python 3.13.9")
+    add_para(doc, "• pytest 8.4.2")
+    add_para(doc, "• Selenium 4.50.0")
+    add_para(doc, "• Google Chrome 154.0.8037.98")
+    add_para(doc, "• драйвер подтянул Selenium Manager (идёт с Selenium 4)")
+    add_para(doc, "• URL: https://ya.ru")
+    add_para(doc, "• код лежит в selenium/")
 
-    add_heading(doc, "4. Установка и порядок выполнения")
-    add_para(doc, "Подготовка виртуального окружения и зависимостей:")
+    add_heading(doc, "Как ставил и запускал")
+    add_para(doc, "Сначала venv и зависимости:")
     add_code(
         doc,
         """py -m venv .venv
@@ -147,70 +110,62 @@ def build() -> Path:
 python -m pip install --upgrade pip
 pip install -r selenium\\requirements.txt""",
     )
-    add_para(doc, "Запуск теста КТ 01:")
+    add_para(doc, "Сам тест КТ 01:")
     add_code(doc, "pytest selenium\\tests\\test_kt01_ya_ru.py -v --browser=chrome")
     add_para(
         doc,
-        "Параметр --browser=chrome выбирает браузер через общую фикстуру. "
-        "Скриншот сохраняется в файл screenshots/kt01/ya_ru_opened.png.",
+        "Через --browser=chrome фикстура выбирает браузер. Скриншот пишется в "
+        "screenshots/kt01/ya_ru_opened.png.",
     )
 
-    add_heading(doc, "5. Фикстура браузера и assertions")
+    add_heading(doc, "Фикстура и что именно проверяю")
     add_para(
         doc,
-        "Общая фикстура driver создаётся в selenium/conftest.py. Она читает CLI-опцию "
-        "--browser, запускает Chrome (по умолчанию), задаёт таймауты загрузки страницы "
-        "(30 с), неявного ожидания (5 с) и выполнения скриптов (30 с), после теста "
-        "корректно закрывает WebDriver. Фикстура save_screenshot сохраняет PNG "
-        "в каталог screenshots/<кт>/.",
+        "Фикстура driver — в selenium/conftest.py. Читает --browser, по умолчанию "
+        "стартует Chrome, выставляет page load 30 с, implicit wait 5 с, script timeout "
+        "30 с, в finally зовёт quit(). save_screenshot кладёт PNG в screenshots/<кт>/.",
     )
-    add_para(doc, "Фрагмент фикстуры (сокращённо):")
+    add_para(doc, "Кусок фикстуры:")
     add_code(doc, FIXTURE_CODE)
     add_para(
         doc,
-        "Тест test_open_ya_ru выполняет переход на https://ya.ru и проверяет: "
-        "1) итоговый host относится к семейству ya.ru / yandex (с учётом возможного "
-        "редиректа); 2) заголовок страницы непустой; 3) document.readyState равен "
-        "complete; 4) скриншот создан и имеет ненулевой размер.",
+        "test_open_ya_ru идёт на https://ya.ru и смотрит четыре вещи: host — ya.ru или "
+        "yandex (редирект бывает), title не пустой, document.readyState == complete, "
+        "скриншот существует и размер > 0.",
     )
-    add_para(doc, "Фрагмент теста (сокращённо):")
+    add_para(doc, "Кусок теста:")
     add_code(doc, TEST_CODE)
 
-    add_heading(doc, "6. Фактический результат выполнения")
+    add_heading(doc, "Что получилось на прогоне")
     add_para(
         doc,
-        "Повторный прогон после добавления pytest.ini (регистрация маркера kt01) "
-        "выполнен 2026-10-09. Предупреждений нет. Результат: PASSED.",
+        "После того как добавил pytest.ini (маркер kt01), прогнал ещё раз 2026-10-09. "
+        "Предупреждений не было. Результат — PASSED.",
     )
     add_para(doc, "Вывод терминала:")
     add_code(doc, TEST_OUTPUT)
-    add_para(doc, "Итог: 1 passed за 4.99 с. Exit code: 0.")
+    add_para(doc, "Итог: 1 passed in 4.99s. Exit code: 0.")
 
-    add_heading(doc, "7. Скриншот фактического запуска")
+    add_heading(doc, "Скриншот")
     add_para(
         doc,
-        "Ниже приведён подлинный скриншот, сделанный WebDriver после успешной "
-        "навигации на https://ya.ru (файл screenshots/kt01/ya_ru_opened.png).",
+        "Скриншот снял сам WebDriver после открытия ya.ru — файл "
+        "screenshots/kt01/ya_ru_opened.png.",
     )
-    doc.add_picture(str(SCREENSHOT), width=Cm(15))
-    caption = doc.add_paragraph()
-    caption.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = caption.add_run("Рисунок 1 — Главная страница ya.ru после запуска WebDriver")
-    set_run_font(run, size_pt=11)
+    add_shot(doc, SCREENSHOT, "Рисунок 1 — Главная страница ya.ru после запуска WebDriver", width_cm=15.0)
 
-    add_heading(doc, "8. Заключение")
+    add_heading(doc, "Заключение")
     add_para(
         doc,
-        "Контрольная точка №1 выполнена: настроены зависимости pytest и Selenium 4, "
-        "реализована переиспользуемая фикстура браузера с параметром --browser=chrome, "
-        "автотест успешно открывает https://ya.ru и подтверждает корректную навигацию "
-        "assertions. Получены воспроизводимые команды запуска, лог PASS и реальный "
-        "скриншот. Отчётный файл DOCX сформирован на основании фактического прогона.",
+        "Для первой КТ этого хватило: venv, Selenium 4, фикстура с --browser=chrome, "
+        "один тест на https://ya.ru. Прогон дал 1 passed in 4.99s, скриншот "
+        "ya_ru_opened.png на месте. Дальше уже можно наращивать сценарии — база для "
+        "WebDriver у меня есть.",
     )
     add_para(
         doc,
-        "Ограничения: внешний сайт может менять вёрстку или показывать баннеры; "
-        "тест проверяет факт успешной загрузки, а не полный функционал поиска.",
+        "Минус: ya.ru может менять вёрстку и показывать баннеры. Мой тест смотрит только "
+        "на факт загрузки, а не на поиск или весь UI.",
     )
 
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
@@ -218,6 +173,27 @@ pip install -r selenium\\requirements.txt""",
     return OUTPUT
 
 
+def verify(path: Path) -> None:
+    doc = Document(str(path))
+    text = "\n".join(p.text for p in doc.paragraphs if p.text.strip())
+    required = [
+        "КТ №1. Запуск и работа с WebDriver в Selenium",
+        "1 passed in 4.99s",
+        "ya.ru",
+        "ya_ru_opened.png",
+        "Заключение",
+    ]
+    missing = [item for item in required if item not in text]
+    if missing:
+        raise AssertionError(f"DOCX missing sections: {missing}")
+    if len(list(doc.inline_shapes)) < 1:
+        raise AssertionError("Expected at least 1 picture")
+    if not any(rel.reltype == RT.IMAGE for rel in doc.part.rels.values()):
+        raise AssertionError("No embedded image parts found")
+    print(f"VERIFY_OK size={path.stat().st_size} pictures={len(list(doc.inline_shapes))}")
+
+
 if __name__ == "__main__":
-    path = build()
-    print(f"Wrote {path}")
+    out = build()
+    print(f"Wrote {out}")
+    verify(out)

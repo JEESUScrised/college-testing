@@ -5,10 +5,8 @@ from __future__ import annotations
 from pathlib import Path
 
 from docx import Document
-from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.oxml.ns import qn
-from docx.shared import Cm, Pt
 
+from docx_helpers import setup_a4, add_heading, add_para, add_code, add_shot, add_table, set_run_font
 from report_title import add_title_fields
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -43,66 +41,9 @@ COMPLIANCE = [
 ]
 
 
-def set_run_font(run, size_pt=12, bold=False, name="Times New Roman"):
-    run.bold = bold
-    run.font.size = Pt(size_pt)
-    run.font.name = name
-    run._element.rPr.rFonts.set(qn("w:eastAsia"), name)
-
-
-def add_heading(doc, text, level=1):
-    p = doc.add_heading(text, level=level)
-    for run in p.runs:
-        set_run_font(run, size_pt=14 if level == 1 else 13, bold=True)
-
-
-def add_para(doc, text, *, bold=False, center=False):
-    p = doc.add_paragraph()
-    if center:
-        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = p.add_run(text)
-    set_run_font(run, bold=bold)
-    p.paragraph_format.space_after = Pt(6)
-
-
-def add_code(doc, code):
-    for line in code.strip("\n").splitlines():
-        p = doc.add_paragraph()
-        run = p.add_run(line if line else " ")
-        set_run_font(run, size_pt=9, name="Consolas")
-        p.paragraph_format.space_after = Pt(0)
-
-
-def add_shot(doc, path: Path, caption: str, width_cm=11.0):
-    if not path.is_file():
-        add_para(doc, f"[Нет файла: {path}]")
-        return
-    doc.add_picture(str(path), width=Cm(width_cm))
-    p = doc.add_paragraph()
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = p.add_run(caption)
-    set_run_font(run, size_pt=11)
-
-
-def add_table(doc, headers, rows):
-    table = doc.add_table(rows=1, cols=len(headers))
-    table.style = "Table Grid"
-    for i, h in enumerate(headers):
-        table.rows[0].cells[i].text = h
-    for row in rows:
-        cells = table.add_row().cells
-        for i, val in enumerate(row):
-            cells[i].text = val
-    add_para(doc, "")
-
-
 def build() -> Path:
     doc = Document()
-    section = doc.sections[0]
-    section.top_margin = Cm(2)
-    section.bottom_margin = Cm(2)
-    section.left_margin = Cm(2.5)
-    section.right_margin = Cm(1.5)
+    setup_a4(doc)
 
     add_title_fields(doc, add_para)
     add_para(doc, "")
@@ -118,23 +59,25 @@ def build() -> Path:
     add_heading(doc, "1. Цель задания (из презентации преподавателя)")
     add_para(
         doc,
-        "Изучить скриншотное тестирование веб-приложений и интегрировать результаты "
-        "тестирования с Allure reporting: выбрать публичный сайт, настроить Selenium, "
-        "подключить Allure, выполнить скриншотные автотесты, собрать отчёт Allure и "
-        "подготовить аналитический отчёт.",
+        "По презентации нужно разобраться со скриншотным тестированием веб-приложений "
+        "и связать результаты с Allure: выбрать публичный сайт, настроить Selenium, "
+        "подключить Allure, прогнать скриншотные автотесты, собрать HTML-отчёт "
+        "и написать свой разбор.",
     )
 
     add_heading(doc, "2. Публичный сайт и обоснование")
     add_para(
         doc,
-        "Выбран https://www.saucedemo.com/ — публичное demo-приложение Swag Labs "
-        "(login, каталог, dropdown сортировки, корзина).",
+        "Выбрал https://www.saucedemo.com/ — публичное demo Swag Labs. "
+        "Там есть login, каталог, dropdown сортировки и корзина: как раз то, "
+        "что удобно снимать скриншотами и вешать в Allure.",
     )
     add_para(
         doc,
-        "Кандидат https://the-internet.herokuapp.com/ недоступен для Chrome automation "
-        "на данной машине: после get() DOM остаётся пустым (challenge/bot script). "
-        "Отклонение задокументировано; localhost не подменял требование публичного сайта.",
+        "Сначала смотрел https://the-internet.herokuapp.com/, но под Chrome automation "
+        "на моей машине он не открылся нормально: после get() DOM оставался пустым "
+        "(challenge/bot script). В отчёт это записал отдельно. Localhost вместо "
+        "публичного сайта не подставлял — требование презентации так не закрыть.",
         bold=True,
     )
 
@@ -142,16 +85,19 @@ def build() -> Path:
     add_table(doc, ["ID", "Сценарий", "Статус"], PUBLIC_RESULTS)
     add_para(
         doc,
-        "Файл: selenium/tests/test_kt08_public_allure.py. Viewport 1400×1000, "
-        "pageLoadStrategy=eager, явные ожидания без Sleep.",
+        "Файл: selenium/tests/test_kt08_public_allure.py. Viewport зафиксировал "
+        "1400×1000, pageLoadStrategy=eager, ждал через явные ожидания, "
+        "без time.sleep.",
     )
 
     add_heading(doc, "4. Архитектура Allure")
     add_para(
         doc,
-        "allure-pytest 2.16.2 пишет результаты в selenium/artifacts/kt08/allure-results/. "
-        "Allure CLI 2.37.0 (Java 21) генерирует HTML: allure generate … -o allure-report. "
-        "В тестах: @allure.title/description/severity/step + allure.attach.file(PNG).",
+        "allure-pytest 2.16.2 пишет сырые результаты в "
+        "selenium/artifacts/kt08/allure-results/. "
+        "Allure CLI 2.37.0 на Java 21 собирает HTML: allure generate … -o allure-report. "
+        "В тестах использую @allure.title/description/feature/step и "
+        "allure.attach.file для PNG — так скриншот виден прямо в шаге.",
     )
     add_code(
         doc,
@@ -171,8 +117,9 @@ def build() -> Path:
     add_heading(doc, "6. Allure attachments и HTML-отчёт")
     add_para(
         doc,
-        "В allure-results: 9 test result JSON; PNG/text attachments во вложенных steps "
-        "(проверено парсером). HTML-отчёт открывается (title «Allure Report»).",
+        "В allure-results лежит 9 test result JSON; PNG и text attachments "
+        "сидят во вложенных steps — это я отдельно проверял парсером. "
+        "HTML-отчёт открывается, в title написано «Allure Report».",
     )
     add_shot(doc, SHOTS / "allure_01_overview.png", "Рис. A1 — Allure overview")
     add_shot(doc, SHOTS / "allure_02_suites.png", "Рис. A2 — Allure suites/navigation")
@@ -183,36 +130,41 @@ def build() -> Path:
     add_code(doc, "============================= 9 passed in 34.64s ==============================")
     add_para(
         doc,
-        "Full suite (Pillow + Public), 2026-10-10. "
+        "Full suite (Pillow + Public) от 2026-10-10. "
         "Лог: pytest_kt08_20261010_144813.log.",
     )
 
     add_heading(doc, "8. Анализ UI Sauce Demo")
     add_para(
         doc,
-        "Login page: явные поля user-name/password и подсказка accepted usernames — удобно "
-        "для обучения. Inventory: стабильные data-test атрибуты; сортировка через native "
-        "<select>. Корзина обновляет badge. Наблюдение: после select React перерисовывает "
-        "DOM (нужен re-find); the-internet.herokuapp.com непригоден под automation здесь.",
+        "На login page сразу видны поля user-name/password и подсказка "
+        "accepted usernames — для учёбы удобно, не надо искать тестовые учётки. "
+        "В inventory стабильные data-test атрибуты, сортировка через обычный "
+        "<select>, badge корзины обновляется после Add to cart. "
+        "Нюанс: после select React перерисовывает DOM, элемент надо искать заново. "
+        "the-internet.herokuapp.com у меня под automation не зашёл — оставляю "
+        "как ограничение среды.",
     )
     add_para(
         doc,
-        "Рекомендации: для скриншотных тестов предпочитать сайты без bot-challenge; "
-        "фиксировать viewport; крепить PNG в Allure steps, а не только в файловую систему.",
+        "Из практики: для скриншотных тестов лучше брать сайты без bot-challenge, "
+        "фиксировать viewport и крепить PNG в шаги Allure, а не только класть "
+        "файлы в папку screenshots.",
     )
 
     add_heading(doc, "9. Сохранённый контур Pillow (исторический)")
     add_para(
         doc,
-        "Локальные HTML-фикстуры + compare.py. Исторический прогон: 5 passed in 13.71s "
-        "(2026-10-09). В remediation Pillow-тесты сохранены и прошли в Full suite; "
-        "diff/overlay также аттачатся в Allure.",
+        "Параллельно оставил локальные HTML-фикстуры и compare.py на Pillow. "
+        "Исторический прогон: 5 passed in 13.71s (2026-10-09). "
+        "В remediation эти пять кейсов тоже вошли в Full suite и снова прошли; "
+        "diff/overlay дополнительно аттачатся в Allure.",
     )
     add_table(doc, ["ID", "Сценарий", "Diff%", "Статус"], PILLOW_RESULTS)
-    add_shot(doc, BASELINES / "home_baseline.png", "Рис. L1 — Approved baseline", 9)
-    add_shot(doc, SHOTS / "01_home_actual.png", "Рис. L2 — Actual match", 9)
+    add_shot(doc, BASELINES / "home_baseline.png", "Рис. L1 — Approved baseline", width_cm=9.0)
+    add_shot(doc, SHOTS / "01_home_actual.png", "Рис. L2 — Actual match", width_cm=9.0)
     if (ARTIFACTS / "02_text_color_overlay.png").is_file():
-        add_shot(doc, ARTIFACTS / "02_text_color_overlay.png", "Рис. L3 — Overlay text/color", 9)
+        add_shot(doc, ARTIFACTS / "02_text_color_overlay.png", "Рис. L3 — Overlay text/color", width_cm=9.0)
 
     add_heading(doc, "10. Compliance checklist (7 требований)")
     add_table(doc, ["Требование", "Реализация", "Доказательство", "Статус"], COMPLIANCE)
@@ -220,9 +172,13 @@ def build() -> Path:
     add_heading(doc, "11. Заключение")
     add_para(
         doc,
-        "КТ 08 приведена в соответствие с оригинальной презентацией: публичный сайт, "
-        "Allure HTML со скриншотами, 9/9 PASS в полном прогоне. Локальный Pillow-контур "
-        "сохранён как дополнительная детерминированная проверка.",
+        "КТ 08 закрыл под требования презентации: публичный saucedemo.com, "
+        "Allure HTML со скриншотами в шагах, полный прогон 9 passed in 34.64s. "
+        "Локальный Pillow-контур (5 passed in 13.71s) оставил как детерминированную "
+        "проверку сравнения картинок — на публичном сайте верстка может чуть "
+        "плавать, а локальные фикстуры для diff удобнее. "
+        "Если коротко увиденное: Allure полезен именно когда PNG висят в steps, "
+        "иначе отчёт превращается в сухой список PASS без контекста.",
     )
 
     doc.save(OUTPUT)

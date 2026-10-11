@@ -5,11 +5,9 @@ from __future__ import annotations
 from pathlib import Path
 
 from docx import Document
-from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.opc.constants import RELATIONSHIP_TYPE as RT
-from docx.oxml.ns import qn
-from docx.shared import Cm, Pt
 
+from docx_helpers import setup_a4, add_heading, add_para, add_code, add_shot, add_table, set_run_font
 from report_title import add_title_fields
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -42,57 +40,9 @@ RESULTS = [
 ]
 
 
-def set_run_font(run, size_pt: float = 12, bold: bool = False, name: str = "Times New Roman") -> None:
-    run.bold = bold
-    run.font.size = Pt(size_pt)
-    run.font.name = name
-    run._element.rPr.rFonts.set(qn("w:eastAsia"), name)
-
-
-def add_heading(doc: Document, text: str, level: int = 1) -> None:
-    p = doc.add_heading(text, level=level)
-    for run in p.runs:
-        set_run_font(run, size_pt=14 if level == 1 else 13, bold=True)
-
-
-def add_para(doc: Document, text: str, *, bold: bool = False, center: bool = False) -> None:
-    p = doc.add_paragraph()
-    if center:
-        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = p.add_run(text)
-    set_run_font(run, bold=bold)
-    p.paragraph_format.space_after = Pt(6)
-    p.paragraph_format.line_spacing = 1.15
-
-
-def add_code(doc: Document, code: str) -> None:
-    for line in code.strip("\n").splitlines():
-        p = doc.add_paragraph()
-        run = p.add_run(line if line else " ")
-        set_run_font(run, size_pt=9, name="Consolas")
-        p.paragraph_format.space_after = Pt(0)
-        p.paragraph_format.space_before = Pt(0)
-
-
-def add_shot(doc: Document, filename: str, caption: str) -> None:
-    path = SHOTS / filename
-    if not path.is_file():
-        add_para(doc, f"[Скриншот отсутствует: {filename}]")
-        return
-    doc.add_picture(str(path), width=Cm(14))
-    p = doc.add_paragraph()
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = p.add_run(caption)
-    set_run_font(run, size_pt=11)
-
-
 def build() -> Path:
     doc = Document()
-    section = doc.sections[0]
-    section.top_margin = Cm(2)
-    section.bottom_margin = Cm(2)
-    section.left_margin = Cm(2.5)
-    section.right_margin = Cm(1.5)
+    setup_a4(doc)
 
     add_title_fields(doc, add_para)
     add_para(doc, "")
@@ -108,82 +58,121 @@ def build() -> Path:
     add_heading(doc, "1. Цель и требования")
     add_para(
         doc,
-        "Выполнить функциональное тестирование публичного раздела новостей ВДНХ "
-        "и подготовить тестовую документацию. Референс: "
-        "https://github.com/sa-teach/selenium-tests (структура; локаторы сверены с актуальной вёрсткой).",
+        "В этой КТ мне нужно было прогнать функциональные сценарии по публичному "
+        "разделу новостей ВДНХ и оформить нормальную тестовую документацию. "
+        "Как ориентир по структуре смотрел репозиторий "
+        "https://github.com/sa-teach/selenium-tests — локаторы, понятное дело, "
+        "сверял уже с живой вёрсткой сайта.",
     )
 
     add_heading(doc, "2. Обоснование выбора сайта")
     add_para(doc, "URL: https://vdnh.ru/ и https://vdnh.ru/news/")
     add_para(
         doc,
-        "Выбран публичный информационный портал ВДНХ: read-only сценарии без регистрации, "
-        "реальная лента новостей с подгрузкой, достаточная сложность для Page Object, "
-        "этичные ограничения (без нагрузки). Подробнее: docs/kt05/website-selection.md.",
+        "Взял портал ВДНХ, потому что там можно спокойно гонять read-only сценарии "
+        "без регистрации. Лента новостей настоящая, есть подгрузка «Показать ещё», "
+        "и по сложности хватает, чтобы нормально разложить Page Object. "
+        "Нагружать чужой сайт не стал — смысла нет и этически так нельзя. "
+        "Подробнее расписал в docs/kt05/website-selection.md.",
     )
     add_para(
         doc,
-        "Бизнес-назначение: информирование посетителей о событиях; критичны доступность "
-        "ленты, кликабельность карточек, читаемость статей и подгрузка «Показать ещё».",
+        "По смыслу сайт информирует посетителей о событиях. Для меня критично было "
+        "проверить, что лента открывается, карточки кликаются, статья читается "
+        "и подгрузка дополнительных новостей реально работает.",
     )
 
     add_heading(doc, "3. Среда и инструменты")
     add_para(doc, "Windows; Python 3.13; pytest 8.4.2; Selenium 4.50.0; Chrome headed.")
-    add_para(doc, "pageLoadStrategy=none + DOM waits; запуск без VPN: scripts/run_kt05_no_vpn.ps1.")
-    add_para(doc, "Page Object: selenium/pages/vdnh_pages.py; тесты: selenium/tests/test_kt05_vdnh_news.py.")
+    add_para(
+        doc,
+        "Чтобы не зависать на тяжёлой загрузке, поставил pageLoadStrategy=none "
+        "и ждал готовности через DOM. Запускал без VPN скриптом "
+        "scripts/run_kt05_no_vpn.ps1 — с VPN сайт иногда вёл себя странно.",
+    )
+    add_para(
+        doc,
+        "Page Object лежит в selenium/pages/vdnh_pages.py, тесты — "
+        "selenium/tests/test_kt05_vdnh_news.py.",
+    )
 
     add_heading(doc, "4. Методика и критерии")
-    add_para(doc, "Black-box — пользовательские сценарии. Gray-box — DOM/CSS/URL/readyState.")
+    add_para(
+        doc,
+        "Black-box — обычные пользовательские сценарии: открыл, кликнул, прочитал. "
+        "Gray-box — смотрел DOM, CSS, URL и readyState, когда нужно было понять, "
+        "что страница уже догрузилась.",
+    )
     add_para(doc, "White-box backend: не применим (закрытый сервер VDNH).")
-    add_para(doc, "Risk-based: P0 лента/статья; P1 show_more; P2 logo/menu.")
-    add_para(doc, "Вход: Chrome, venv, сайт доступен. Выход: ≥8 автотестов, docs/kt05/, DOCX, честные результаты.")
-    add_para(doc, "Подробный план: docs/kt05/test-plan.md.")
+    add_para(
+        doc,
+        "По рискам расставил так: P0 — лента и статья, P1 — show_more, "
+        "P2 — логотип и меню.",
+    )
+    add_para(
+        doc,
+        "Входные условия: Chrome, venv, сайт доступен. Выход: не меньше 8 автотестов, "
+        "папка docs/kt05/, DOCX и честные результаты без подгона. "
+        "План целиком — в docs/kt05/test-plan.md.",
+    )
 
     add_heading(doc, "5. Трассируемость требований преподавателя")
-    add_para(doc, "1) Выбор сайта — website-selection.md / §2. 2) Подходы black/gray/white — §4.")
-    add_para(doc, "3) Scope + entry/exit — test-plan.md. 4) Сценарии — test-cases.md + таблица ниже.")
-    add_para(doc, "5) Исполнение — §7. 6) Дефекты — §8 / defect-analysis.md (баг сайта не подтверждён).")
-    add_para(doc, "7) Рекомендации — §11. 8) Итоговый отчёт — данный DOCX.")
-    add_para(doc, "Матрица: docs/kt05/requirements-traceability.md.")
+    add_para(
+        doc,
+        "1) Выбор сайта — website-selection.md и §2. "
+        "2) Подходы black/gray/white — §4. "
+        "3) Scope и entry/exit — test-plan.md. "
+        "4) Сценарии — test-cases.md плюс таблица ниже.",
+    )
+    add_para(
+        doc,
+        "5) Исполнение — §7. 6) Дефекты — §8 и defect-analysis.md "
+        "(баг самого сайта в итоге не подтвердился). "
+        "7) Рекомендации — §11. 8) Итоговый отчёт — этот DOCX. "
+        "Матрица: docs/kt05/requirements-traceability.md.",
+    )
 
     add_heading(doc, "6. Таблица тест-кейсов (три прогона)")
     add_para(
         doc,
-        "Внимание: прогоны №1–№2 (2026-10-09) — отдельные исторические запуски "
-        "и не склеиваются в «один 10/10». Прогон №3 (2026-10-11) — новый полный suite.",
+        "Важно: прогоны №1 и №2 от 2026-10-09 — это два отдельных запуска. "
+        "Их нельзя склеивать в один «красивый» 10/10. "
+        "Прогон №3 от 2026-10-11 — уже новый полный suite после правки теста.",
         bold=True,
     )
-    table = doc.add_table(rows=1, cols=5)
-    table.style = "Table Grid"
-    hdr = table.rows[0].cells
-    hdr[0].text, hdr[1].text, hdr[2].text, hdr[3].text, hdr[4].text = (
-        "ID",
-        "Автотест",
-        "№1 полный",
-        "№2 show_more",
-        "№3 полный",
+    add_table(
+        doc,
+        ["ID", "Автотест", "№1 полный", "№2 show_more", "№3 полный"],
+        RESULTS,
     )
-    for row in RESULTS:
-        cells = table.add_row().cells
-        for i, val in enumerate(row):
-            cells[i].text = val
-    add_para(doc, "")
 
     add_heading(doc, "7. Фактические результаты прогонов")
-    add_para(doc, "Прогон №1 (полный, 2026-10-09 ~12:57): 9 PASS / 1 FAIL за 98.63 с, exit code 1.")
+    add_para(
+        doc,
+        "Прогон №1 (полный, 2026-10-09 примерно в 12:57): "
+        "9 PASS / 1 FAIL за 98.63 с, exit code 1.",
+    )
     add_code(
         doc,
         "FAILED test_show_more_loads_additional_cards\n"
         "TimeoutException in click_show_more() after 35s wait\n"
         "=================== 1 failed, 9 passed in 98.63s ====================",
     )
-    add_para(doc, "Прогон №2 (только show_more, 2026-10-09 ~13:10): 1 PASS за 11.60 с, exit code 0.")
+    add_para(
+        doc,
+        "Прогон №2 (только show_more, 2026-10-09 примерно в 13:10): "
+        "1 PASS за 11.60 с, exit code 0.",
+    )
     add_code(
         doc,
         "test_show_more_loads_additional_cards PASSED\n"
         "============================= 1 passed in 11.60s =============================",
     )
-    add_para(doc, "Прогон №3 (полный remediation, 2026-10-11 ~01:16): 10 PASS за 50.63 с, exit code 0.")
+    add_para(
+        doc,
+        "Прогон №3 (полный после remediation, 2026-10-11 примерно в 01:16): "
+        "10 PASS за 50.63 с, exit code 0.",
+    )
     add_code(
         doc,
         "collected 10 items\n"
@@ -195,49 +184,60 @@ def build() -> Path:
     add_heading(doc, "8. Анализ FAIL, follow-up и remediation")
     add_para(
         doc,
-        "В прогоне №1 кнопка «Показать еще» была на странице; падение — на ожидании "
-        "роста контента после клика. Исходная реализация ждала только увеличения "
-        "cards_count; возможен stale element после scroll.",
+        "В первом прогоне кнопка «Показать еще» на странице была — я её видел. "
+        "Упал уже на ожидании, что контент вырастет после клика. "
+        "Старый код смотрел только на cards_count, а после scroll элемент "
+        "иногда становился stale. Типичная ловушка Selenium, если честно.",
     )
     add_para(
         doc,
-        "Перед прогоном №2 Page Object уточнён: перепоиск кнопки; успех = больше карточек "
-        "ИЛИ новые article links ИЛИ смена URL. Follow-up PASS и скриншот "
-        "10_after_show_more.png согласуются с исправлением теста.",
+        "Перед вторым прогоном я поправил Page Object: кнопку ищу заново, "
+        "а успех считаю, если стало больше карточек, появились новые article links "
+        "или сменился URL. Точечный follow-up прошёл, скриншот "
+        "10_after_show_more.png это подтверждает.",
     )
     add_para(
         doc,
-        "Прогон №3 подтвердил полный suite после fix: 10/10 PASS за 50.63 с. "
-        "Дефект сайта не подтверждён. Исторические 9/1 и follow-up сохраняются как отдельные факты.",
+        "Третий прогон уже полный: 10/10 PASS за 50.63 с. "
+        "На баг сайта это не похоже — скорее слабое условие в тесте. "
+        "Исторические 9 PASS / 1 FAIL и отдельный follow-up оставляю как есть, "
+        "без «склейки» цифр.",
     )
 
     add_heading(doc, "9. Архитектура Page Object")
     add_para(doc, "VdnhHomePage — главная и переход в новости.")
     add_para(doc, "VdnhNewsListPage — лента, карточки, «Показать еще», логотип.")
     add_para(doc, "VdnhNewsArticlePage — статья и возврат в /news/.")
-    add_para(doc, "Локаторы/действия в PO; assertions — в тестах.")
+    add_para(
+        doc,
+        "Локаторы и действия держу в PO, а assertions оставляю в тестах — "
+        "так проще читать и править.",
+    )
 
     add_heading(doc, "10. Скриншоты")
     for name, caption in SCREENSHOTS:
-        add_shot(doc, name, caption)
+        add_shot(doc, SHOTS / name, caption)
 
     add_heading(doc, "11. Рекомендации")
-    add_para(doc, "Продукт: подтверждённых дефектов раздела новостей нет.")
+    add_para(doc, "По продукту: подтверждённых дефектов в разделе новостей нет.")
     add_para(
         doc,
-        "Процесс: не склеивать исторический полный и follow-up прогоны; составные условия успеха "
-        "подгрузки; data-testid на динамических кнопках желательны на стороне сайта; "
-        "локаторы перепроверять при смене вёрстки. См. docs/kt05/recommendations.md.",
+        "По процессу: не смешивать исторический полный прогон и точечный follow-up; "
+        "для подгрузки лучше составные условия успеха; сайту не помешали бы "
+        "data-testid на динамических кнопках. Локаторы всё равно приходится "
+        "перепроверять, если вёрстка поедет. См. docs/kt05/recommendations.md.",
     )
 
     add_heading(doc, "12. Заключение")
     add_para(
         doc,
-        "КТ 05: 10 функциональных автотестов на https://vdnh.ru/news/, Page Object, "
-        "расширенная документация (выбор сайта, методика, дефекты, рекомендации). "
-        "История: полный прогон 9 PASS / 1 FAIL; show_more отдельно PASS (11.60 с). "
-        "Remediation 2026-10-11: полный suite 10 passed in 50.63s. "
-        "Дефект сайта не подтверждён. White-box backend не применим.",
+        "По КТ 05 собрал 10 автотестов на https://vdnh.ru/news/ с Page Object "
+        "и нормальной документацией (выбор сайта, методика, дефекты, рекомендации). "
+        "Сначала полный прогон дал 9 PASS / 1 FAIL, потом show_more отдельно "
+        "прошёл (1 passed in 11.60s), а после правки уже весь suite — "
+        "10 passed in 50.63s. Баг сайта не подтвердился. "
+        "White-box backend: не применим. В целом для учебной работы получилось "
+        "достаточно близко к реальному тестированию публичного портала.",
     )
 
     doc.save(OUTPUT)
