@@ -1,60 +1,54 @@
-# Модульное тестирование веб-приложений — КТ №1–12
+# Модульное тестирование веб-приложений — Контрольные точки №1–12
 
-Учебный проект для выполнения 12 контрольных точек колледжа. Стек: **Python 3, pytest, Selenium 4, Appium 3, Robot Framework, gRPC**.
+**Студент:** Прилепов Никита Алексеевич  
+**Группа:** 4P1.23
 
-> Статус (2026-10-11): КТ 01–12 реализованы; readiness **PARTIALLY READY**.  
-> KT04 Jira: **DONE** (KAN-4/5/6); dashboard charts configured; Components **UNAVAILABLE** on team-managed (labels).  
-> Gaps: **KT09 manual PENDING HUMAN VERIFICATION**; personal DOCX fields empty.  
-> Матрица: `docs/compliance/FINAL_REQUIREMENTS_MATRIX.md`.  
-> Сдача: `submission/KT01-KT12_READY_FOR_SUBMISSION.zip`; untracked `KT01-KT12_reports.zip` не трогать.
+Практические работы по автоматизации тестирования: веб, мобильные сценарии, учёт дефектов в Jira и проверка gRPC-сервиса. Все двенадцать контрольных точек выполнены; отчёты лежат в `reports/`.
 
-## Разделы проекта
+## Контрольные точки
 
-| Каталог | Контрольные точки | Назначение |
+| КТ | Содержание | Отчёт |
 |---|---|---|
-| `selenium/` | КТ 1, 2, 3, 5, 7, 8, 10 | WebDriver, iframe/окна, Page Object, Grid, визуальные и кроссбраузерные тесты |
-| `bug-reports/` | КТ 4 | Тестовая документация и баг-репорты, ссылки на задачи в баг-трекере |
-| `mobile/` | КТ 6, 9 | Appium, Android, свайпы и сценарии тестирования |
-| `robot/` | КТ 11 | Не менее 10 тест-кейсов на Robot Framework |
-| `grpc/` | КТ 12 | Демонстрационный gRPC-сервис и не менее 10 тест-кейсов |
-| `docs/` | Все | Требования, план, список сдаваемых материалов |
-| `reports/` | Все | Отдельные отчёты КТ в DOCX/PDF после выполнения |
-| `screenshots/` | Все | Скриншоты фактических запусков |
+| KT01 | Основы Selenium WebDriver | [KT01.docx](reports/KT01.docx) |
+| KT02 | Функциональное тестирование SauceDemo | [KT02.docx](reports/KT02.docx) |
+| KT03 | Паттерн Page Object | [KT03.docx](reports/KT03.docx) |
+| KT04 | Учёт дефектов в Jira | [KT04.docx](reports/KT04.docx) |
+| KT05 | Функциональное тестирование раздела новостей ВДНХ | [KT05.docx](reports/KT05.docx) |
+| KT06 | Мобильное тестирование Android (Appium) | [KT06.docx](reports/KT06.docx) |
+| KT07 | Selenium Grid и параллельный запуск | [KT07.docx](reports/KT07.docx) |
+| KT08 | Скриншотное тестирование, Pillow и Allure | [KT08.docx](reports/KT08.docx) |
+| KT09 | Кроссплатформенное тестирование Windows и Android | [KT09.docx](reports/KT09.docx) |
+| KT10 | Кроссбраузерное и адаптивное тестирование | [KT10.docx](reports/KT10.docx) |
+| KT11 | Robot Framework | [KT11.docx](reports/KT11.docx) |
+| KT12 | Тестирование gRPC-сервиса | [KT12.docx](reports/KT12.docx) |
 
-## План выполнения
+## Инструменты
 
-1. **КТ 1–3:** Selenium WebDriver + Chrome; окна и iframe; Page Object.
-2. **КТ 4–5:** баг-трекер, тест-план, тест-кейсы, автотесты выбранного сайта (учебный пример преподавателя: `https://github.com/sa-teach/selenium-tests`).
-3. **КТ 7, 8, 10:** Selenium Grid, сравнение скриншотов, Chrome/Firefox и отчёты.
-4. **КТ 6 и 9:** Appium на Android и тестирование жестов.
-5. **КТ 11:** 10 тестов в Robot Framework.
-6. **КТ 12:** 10 тестов для gRPC.
+Python, pytest, Selenium 4, Appium, Android Emulator, Selenium Grid, Robot Framework, Pillow, Allure, gRPC, Jira.
 
-## Как работать с Cursor
+## Результаты (кратко)
 
-1. Клонируйте этот репозиторий и откройте папку в Cursor.
-2. Прочитайте `AGENTS.md` — правила реализации, проверки и коммитов.
-3. Посмотрите `docs/ASSIGNMENTS.md` — формулировки и оговорки по каждой КТ.
-4. Выполняйте **одну КТ или связанную группу за раз**, фиксируя результат в `docs/STATUS.md`.
-5. Скриншоты делайте по результатам реального запуска (показать Browser/Appium/Grid + вывод тестов). Не подменяйте их фиктивными результатами.
-6. Перед отправкой на сдачу убедитесь, что у каждой КТ есть исходники, воспроизводимые шаги и отдельный отчёт.
+- **KT04** — в Jira заведены и закрыты дефекты [KAN-4](https://collegeqakt04.atlassian.net/browse/KAN-4), [KAN-5](https://collegeqakt04.atlassian.net/browse/KAN-5), [KAN-6](https://collegeqakt04.atlassian.net/browse/KAN-6); исправления проверены Selenium. На team-managed проекте native Components недоступны (HTTP 405), вместо них использованы labels — подробности в отчёте.
+- **KT05** — последний полный прогон по новостям ВДНХ: **10 PASS**.
+- **KT06** — последний полный прогон Appium / ApiDemos: **10 PASS** (эмулятор Android).
+- **KT08** — полный suite скриншотов: **9 PASS**, отчёт Allure с вложениями.
+- **KT09** — автоматические скриншоты Windows и Android по SauceDemo; Android Chrome DOM: **11 PASS**. Ручная верификация отдельно: **PENDING**.
+- **KT11** — **10** тест-кейсов Robot Framework, все прошли.
+- **KT12** — **10** тест-кейсов gRPC (unary, streaming, ошибки и deadline), все прошли.
 
-## Работа в Windows
+## Структура репозитория
 
-Для базового веб-блока планируется локальное Python-окружение:
+- [reports/](reports/) — отчёты DOCX по каждой КТ
+- [selenium/](selenium/) — веб-автотесты (Selenium, Grid, визуальные проверки)
+- [mobile/](mobile/) — Appium и Android-сценарии
+- [robot/](robot/) — тесты Robot Framework
+- [grpc/](grpc/) — учебный InventoryService и pytest для gRPC
+- [bug-reports/](bug-reports/) — материалы по дефектам (КТ04)
+- [docs/](docs/) — планы, статусы и сопроводительная документация
+- [screenshots/](screenshots/) — скриншоты фактических прогонов
 
-```powershell
-git clone https://github.com/JEESUScrised/college-testing.git
-cd college-testing
-py -m venv .venv
-.\.venv\Scripts\Activate.ps1
-```
+## Сдача
 
-Пакеты и команды запуска добавляем для каждой КТ после реализации, чтобы не устанавливать заранее Appium/Android SDK/gRPC без необходимости.
+Готовые Word-отчёты: каталог [reports/](reports/) (`KT01.docx` … `KT12.docx`).
 
-## Важно
-
-- Формулировки задач из презентаций могут содержать дополнительные требования; их нужно уточнить перед соответствующей КТ.
-- В учебных материалах встречаются устаревшие методы Selenium и Appium — используем современные поддерживаемые API.
-- В `reports/` не пишем `PASS`, пока тест реально не запускался.
-- Не коммитим `.venv`, секреты, токены, SDK, бинарные драйверы и локальные временные файлы.
+Архив для сдачи и релизы: [GitHub Releases](https://github.com/JEESUScrised/college-testing/releases).
