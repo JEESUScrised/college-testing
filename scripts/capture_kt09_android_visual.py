@@ -52,7 +52,7 @@ def _dismiss_pw(drv) -> None:
                 els[0].click()
                 time.sleep(0.3)
                 break
-        web = next
+        web = next(
             (c for c in drv.contexts if "WEBVIEW" in c.upper() or "CHROMIUM" in c.upper()),
             current,
         )

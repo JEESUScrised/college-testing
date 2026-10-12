@@ -40,10 +40,20 @@ def android_chrome_dom(pytestconfig):
     options.new_command_timeout = 180
     options.set_capability("appium:chromedriverExecutable", str(CHROMEDRIVER.resolve()))
     options.set_capability("appium:autoGrantPermissions", True)
-    options.set_capability("appium:nativeWebScreenshot", True)
+    # ChromeDriver web screenshot — avoids emulator GPU compositor corruption
+    # (nativeWebScreenshot=True produced scrambled/glitched PNG evidence).
+    options.set_capability("appium:nativeWebScreenshot", False)
     options.set_capability(
         "appium:chromeOptions",
-        {"args": ["--disable-fre", "--no-first-run", "--no-default-browser-check"]},
+        {
+            "args": [
+                "--disable-fre",
+                "--no-first-run",
+                "--no-default-browser-check",
+                "--disable-features=PasswordLeakDetection,PasswordManagerOnboarding,AutofillServerCommunication",
+                "--password-store=basic",
+            ]
+        },
     )
     udid = (
         pytestconfig.getoption("--udid") or os.environ.get("ANDROID_UDID") or "emulator-5554"
@@ -74,9 +84,68 @@ def wait_dom(android_chrome_dom):
     return WebDriverWait(android_chrome_dom, 25)
 
 
+def _dismiss_chrome_dialogs(drv) -> None:
+    """Dismiss native Chrome / Password Manager overlays before web screenshots."""
+    try:
+        current = drv.current_context
+        drv.switch_to.context("NATIVE_APP")
+        for xpath in (
+            '//*[@text="OK"]',
+            '//*[@text="Ok"]',
+            '//*[@text="Not now"]',
+            '//*[@text="No thanks"]',
+            '//*[@resource-id="android:id/button1"]',
+            '//*[@resource-id="com.android.chrome:id/positive_button"]',
+        ):
+            els = drv.find_elements(By.XPATH, xpath)
+            if els:
+                els[0].click()
+                break
+        web = next(
+            (c for c in drv.contexts if "WEBVIEW" in c.upper() or "CHROMIUM" in c.upper()),
+            current,
+        )
+        drv.switch_to.context(web)
+    except Exception:
+        try:
+            web = next(
+                (c for c in drv.contexts if "WEBVIEW" in c.upper() or "CHROMIUM" in c.upper()),
+                None,
+            )
+            if web:
+                drv.switch_to.context(web)
+        except Exception:
+            pass
+
+
+def _wait_page_settled(drv, css: str, timeout: int = 25) -> None:
+    WebDriverWait(drv, timeout).until(EC.visibility_of_element_located((By.CSS_SELECTOR, css)))
+    WebDriverWait(drv, timeout).until(
+        lambda d: d.execute_script("return document.readyState") == "complete"
+    )
+    # Wait until fonts are ready and at least one image (if any) finished loading.
+    WebDriverWait(drv, timeout).until(
+        lambda d: d.execute_script(
+            "return (document.fonts ? document.fonts.status === 'loaded' : true) && "
+            "Array.from(document.images || []).every(function(i){return i.complete;});"
+        )
+    )
+
+
 def _shot(drv, name: str) -> Path:
     SHOTS.mkdir(parents=True, exist_ok=True)
     path = SHOTS / f"{name}.png"
+    _dismiss_chrome_dialogs(drv)
+    try:
+        WebDriverWait(drv, 12).until(
+            lambda d: d.execute_script(
+                "return document.readyState === 'complete' && "
+                "(document.fonts ? document.fonts.status === 'loaded' : true) && "
+                "Array.from(document.images || []).every(function(i){return i.complete;});"
+            )
+        )
+    except Exception:
+        pass
     assert drv.save_screenshot(str(path)), path
     return path
 

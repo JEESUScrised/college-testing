@@ -30,9 +30,25 @@ def _wait(drv, css: str, timeout: int = 25):
     return WebDriverWait(drv, timeout).until(EC.visibility_of_element_located((By.CSS_SELECTOR, css)))
 
 
+def _settle(drv, timeout: int = 15) -> None:
+    WebDriverWait(drv, timeout).until(
+        lambda d: d.execute_script("return document.readyState") == "complete"
+    )
+    try:
+        WebDriverWait(drv, timeout).until(
+            lambda d: d.execute_script(
+                "return (document.fonts ? document.fonts.status === 'loaded' : true) && "
+                "Array.from(document.images || []).every(function(i){return i.complete;});"
+            )
+        )
+    except Exception:
+        pass
+
+
 def _shot(drv, out: Path, name: str) -> Path:
     out.mkdir(parents=True, exist_ok=True)
     path = out / f"{name}.png"
+    _settle(drv)
     assert drv.get_screenshot_as_file(str(path)), path
     assert path.stat().st_size > 15_000, path
     return path
@@ -76,7 +92,7 @@ def capture_android() -> list[Path]:
     options.new_command_timeout = 180
     options.set_capability("appium:chromedriverExecutable", str(CHROMEDRIVER.resolve()))
     options.set_capability("appium:autoGrantPermissions", True)
-    options.set_capability("appium:nativeWebScreenshot", True)
+    options.set_capability("appium:nativeWebScreenshot", False)
     options.set_capability(
         "appium:chromeOptions",
         {
@@ -84,7 +100,8 @@ def capture_android() -> list[Path]:
                 "--disable-fre",
                 "--no-first-run",
                 "--no-default-browser-check",
-                "--disable-gpu",
+                "--disable-features=PasswordLeakDetection,PasswordManagerOnboarding,AutofillServerCommunication",
+                "--password-store=basic",
             ]
         },
     )

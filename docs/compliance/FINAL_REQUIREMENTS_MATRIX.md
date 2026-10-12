@@ -38,7 +38,7 @@ Status values: PASS | PARTIAL | FAIL | BLOCKED | NOT RUN | PENDING
 | 08 | R08-02 | Allure HTML attachments | yes | allure-report artifacts | — | KT08.docx | PASS | — |
 | 09 | R09-01 | BASIC multi-OS public web (auto) | Win+Android | xp + DOM W01–W10 | Win 2P; Android DOM **11 PASS / 36.91s** | KT09.docx | PASS | Auto only |
 | 09 | R09-02 | Manual testing | checklist + guide | kt09-manual-*.md | — | KT09.docx | **PENDING** | Human verification required |
-| 09 | R09-03 | Screenshots + comparison | auto yes / manual no | platform-comparison.md | DOM screenshots | KT09.docx | PARTIAL | Manual screenshots empty |
+| 09 | R09-03 | Screenshots + comparison | auto yes / manual no | platform-comparison.md | `automated/windows`+`automated/android` 8×2 (nativeWebScreenshot=false) | KT09.docx | PASS (auto) | Manual still PENDING; corrupted crossplatform/ archived |
 | 09 | R09-04 | Gestures (suppl.) | Android | test_kt09_gestures.py | 5 PASS / 54.93s | KT09.docx | PASS | — |
 | 10 | R10-01 | Responsive multi-browser | Sauce matrix | test_kt10_responsive.py | 6 PASS / 42.73s | KT10.docx | PASS | — |
 | 10 | R10-02 | Desktop/tablet/phone | yes | 36 rows | overflow none | KT10.docx | PASS | — |

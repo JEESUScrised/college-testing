@@ -126,13 +126,16 @@ def build() -> Path:
     add_para(
         doc,
         "Android: эмулятор emulator-5554 (Android 16 / API 36), Chrome 134.0.6998.135, "
-        "ChromeDriver 134.0.6998.165, Appium 3.8. Скриншоты — "
-        "screenshots/kt09/automated/android/ (тоже 8). Их снимал DOM-suite TC09-W* "
-        "плюс отдельный захват checkout-complete.",
+        "ChromeDriver 134.0.6998.165, Appium 3.8. Визуальные кадры — "
+        "screenshots/kt09/automated/android/ (8 шт.), сняты через ChromeDriver "
+        "с appium:nativeWebScreenshot=false (скрипт capture_kt09_android_visual.py). "
+        "Это снимок веб-контента страницы, без полной native-рамки Android UI.",
     )
     add_para(
         doc,
-        "Важно: все скриншоты в отчёте — AUTOMATED evidence. "
+        "Важно: все скриншоты сравнения в отчёте — AUTOMATED evidence. "
+        "Старые PNG из screenshots/kt09/crossplatform/ (GPU-glitch / Chrome-диалоги) "
+        "в отчёт не входят — вынесены в archive/unusable-visual/. "
         "Manual verification: PENDING HUMAN VERIFICATION.",
         bold=True,
     )

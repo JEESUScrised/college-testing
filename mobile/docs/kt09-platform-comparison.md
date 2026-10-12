@@ -23,4 +23,4 @@ Evidence type: **AUTOMATED** (not manual)
 
 **Manual human comparison:** PENDING HUMAN VERIFICATION  
 **Functional defects:** none confirmed.  
-**Capture method:** Android visual set via `scripts/capture_kt09_android_visual.py` (ChromeDriver web screenshot, emulator `-gpu swiftshader_indirect`). Older GPU-glitched frames discarded.
+**Capture method:** Android visual set via `scripts/capture_kt09_android_visual.py` — ChromeDriver web screenshot (`appium:nativeWebScreenshot=false`). Shows page content, not full native Android chrome. Older GPU-glitched / dialog frames moved to `screenshots/kt09/archive/unusable-visual/`.

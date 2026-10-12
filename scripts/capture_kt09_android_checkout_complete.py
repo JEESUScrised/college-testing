@@ -27,10 +27,18 @@ def main() -> None:
     options.new_command_timeout = 180
     options.set_capability("appium:chromedriverExecutable", str(CHROMEDRIVER.resolve()))
     options.set_capability("appium:autoGrantPermissions", True)
-    options.set_capability("appium:nativeWebScreenshot", True)
+    options.set_capability("appium:nativeWebScreenshot", False)
     options.set_capability(
         "appium:chromeOptions",
-        {"args": ["--disable-fre", "--no-first-run", "--no-default-browser-check"]},
+        {
+            "args": [
+                "--disable-fre",
+                "--no-first-run",
+                "--no-default-browser-check",
+                "--disable-features=PasswordLeakDetection,PasswordManagerOnboarding",
+                "--password-store=basic",
+            ]
+        },
     )
     drv = webdriver.Remote("http://127.0.0.1:4723", options=options)
     try:
