@@ -7,7 +7,7 @@ Device: `emulator-5554` / Chrome 134.0.6998.135
 **Result 2026-10-11:** **11 passed in 36.91s** (DOM assertions)
 
 Screenshot capability for future DOM re-runs: `appium:nativeWebScreenshot=false`  
-(Previous `true` produced GPU-corrupted PNGs — archived under `screenshots/kt09/archive/unusable-visual/`.)
+(Previous `true` produced GPU-corrupted PNGs — removed from the tracked tree; not used as evidence.)
 
 | ID | Case | Expected | Actual | Status |
 |---|---|---|---|---|

@@ -1,0 +1,175 @@
+{
+  "docx": {
+    "generated_at": "2026-10-12T20:04:51.853707+00:00",
+    "all_pass": true,
+    "reports": [
+      {
+        "file": "KT01.docx",
+        "size": 301601,
+        "pictures": 1,
+        "broken_pictures": 0,
+        "has_student": true,
+        "has_group": true,
+        "has_teacher_field": false,
+        "opens": true,
+        "paragraphs": 82,
+        "pass": true
+      },
+      {
+        "file": "KT02.docx",
+        "size": 830856,
+        "pictures": 14,
+        "broken_pictures": 0,
+        "has_student": true,
+        "has_group": true,
+        "has_teacher_field": false,
+        "opens": true,
+        "paragraphs": 75,
+        "pass": true
+      },
+      {
+        "file": "KT03.docx",
+        "size": 566369,
+        "pictures": 10,
+        "broken_pictures": 0,
+        "has_student": true,
+        "has_group": true,
+        "has_teacher_field": false,
+        "opens": true,
+        "paragraphs": 51,
+        "pass": true
+      },
+      {
+        "file": "KT04.docx",
+        "size": 663761,
+        "pictures": 12,
+        "broken_pictures": 0,
+        "has_student": true,
+        "has_group": true,
+        "has_teacher_field": false,
+        "opens": true,
+        "paragraphs": 61,
+        "pass": true
+      },
+      {
+        "file": "KT05.docx",
+        "size": 5549673,
+        "pictures": 8,
+        "broken_pictures": 0,
+        "has_student": true,
+        "has_group": true,
+        "has_teacher_field": false,
+        "opens": true,
+        "paragraphs": 62,
+        "pass": true
+      },
+      {
+        "file": "KT06.docx",
+        "size": 827585,
+        "pictures": 10,
+        "broken_pictures": 0,
+        "has_student": true,
+        "has_group": true,
+        "has_teacher_field": false,
+        "opens": true,
+        "paragraphs": 61,
+        "pass": true
+      },
+      {
+        "file": "KT07.docx",
+        "size": 175042,
+        "pictures": 12,
+        "broken_pictures": 0,
+        "has_student": true,
+        "has_group": true,
+        "has_teacher_field": false,
+        "opens": true,
+        "paragraphs": 64,
+        "pass": true
+      },
+      {
+        "file": "KT08.docx",
+        "size": 803609,
+        "pictures": 8,
+        "broken_pictures": 0,
+        "has_student": true,
+        "has_group": true,
+        "has_teacher_field": false,
+        "opens": true,
+        "paragraphs": 42,
+        "pass": true
+      },
+      {
+        "file": "KT09.docx",
+        "size": 2732904,
+        "pictures": 16,
+        "broken_pictures": 0,
+        "has_student": true,
+        "has_group": true,
+        "has_teacher_field": false,
+        "opens": true,
+        "paragraphs": 88,
+        "pass": true
+      },
+      {
+        "file": "KT10.docx",
+        "size": 404632,
+        "pictures": 6,
+        "broken_pictures": 0,
+        "has_student": true,
+        "has_group": true,
+        "has_teacher_field": false,
+        "opens": true,
+        "paragraphs": 28,
+        "pass": true
+      },
+      {
+        "file": "KT11.docx",
+        "size": 321848,
+        "pictures": 12,
+        "broken_pictures": 0,
+        "has_student": true,
+        "has_group": true,
+        "has_teacher_field": false,
+        "opens": true,
+        "paragraphs": 54,
+        "pass": true
+      },
+      {
+        "file": "KT12.docx",
+        "size": 99625,
+        "pictures": 1,
+        "broken_pictures": 0,
+        "has_student": true,
+        "has_group": true,
+        "has_teacher_field": false,
+        "opens": true,
+        "paragraphs": 60,
+        "pass": true
+      }
+    ],
+    "note": "Final cleanup audit 2026-10-12."
+  },
+  "allure": {
+    "allure_01_overview.png": {
+      "size": 56155,
+      "wh": [
+        1384,
+        849
+      ],
+      "ok_size": true
+    },
+    "allure_02_suites.png": {
+      "size": 25813,
+      "wh": [
+        1384,
+        849
+      ],
+      "ok_size": true
+    }
+  },
+  "security": {
+    "hits": [],
+    "clean": true
+  }
+}

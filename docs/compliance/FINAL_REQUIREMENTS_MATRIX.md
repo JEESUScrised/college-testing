@@ -1,12 +1,12 @@
 # FINAL REQUIREMENTS MATRIX — KT01–KT12
 
-Date: **2026-10-11** | Remote Jira verification: **DONE** (KAN-4/5/6)
+Date: **2026-10-12** | Student: **Прилепов Никита Алексеевич** / **4P1.23**
 
 Status values: PASS | PARTIAL | FAIL | BLOCKED | NOT RUN | PENDING
 
 | KT | Req ID | Teacher requirement | Implemented | Source | Execution evidence | Report | Status | Remaining |
 |---|---|---|---|---|---|---|---|---|
-| 01 | R01-01 | Selenium Chrome opens ya.ru | yes | `selenium/tests/test_kt01_ya_ru.py` | historical PASS | KT01.docx | PASS | Fill personal title-page fields |
+| 01 | R01-01 | Selenium Chrome opens ya.ru | yes | `selenium/tests/test_kt01_ya_ru.py` | historical PASS | KT01.docx | PASS | — |
 | 02 | R02-01 | Public website | Sauce Demo | `test_kt02_sauce_public.py` | 11 PASS / 49.34s | KT02.docx | PASS | — |
 | 02 | R02-02 | Positive / negative / boundary | yes | same | same | KT02.docx | PASS | — |
 | 02 | R02-03 | Windows / iframe / cookies | local+public | windows/iframe + public | hist 6 PASS + public | KT02.docx | PASS | — |
@@ -35,10 +35,10 @@ Status values: PASS | PARTIAL | FAIL | BLOCKED | NOT RUN | PENDING
 | 07 | R07-02 | Different browsers | Chrome+Firefox | test_kt07_multi_node.py | 4 PASS / 7.72s | KT07.docx | PASS | — |
 | 07 | R07-03 | Parallel overlap | yes | run_kt07_parallel_proof.py | overlap=true | KT07.docx | PASS | — |
 | 08 | R08-01 | Public site screenshots | Sauce + Allure | test_kt08_public_allure.py | 9 PASS / 34.64s | KT08.docx | PASS | — |
-| 08 | R08-02 | Allure HTML attachments | yes | allure-report artifacts | — | KT08.docx | PASS | — |
+| 08 | R08-02 | Allure HTML attachments | yes | allure-report artifacts + HTTP screenshots | overview/suites 9/9 | KT08.docx | PASS | — |
 | 09 | R09-01 | BASIC multi-OS public web (auto) | Win+Android | xp + DOM W01–W10 | Win 2P; Android DOM **11 PASS / 36.91s** | KT09.docx | PASS | Auto only |
 | 09 | R09-02 | Manual testing | checklist + guide | kt09-manual-*.md | — | KT09.docx | **PENDING** | Human verification required |
-| 09 | R09-03 | Screenshots + comparison | auto yes / manual no | platform-comparison.md | `automated/windows`+`automated/android` 8×2 (nativeWebScreenshot=false) | KT09.docx | PASS (auto) | Manual still PENDING; corrupted crossplatform/ archived |
+| 09 | R09-03 | Screenshots + comparison | auto yes / manual no | platform-comparison.md | `automated/windows`+`automated/android` 8×2 | KT09.docx | PASS (auto) | Manual PENDING; corrupt PNGs removed from tree |
 | 09 | R09-04 | Gestures (suppl.) | Android | test_kt09_gestures.py | 5 PASS / 54.93s | KT09.docx | PASS | — |
 | 10 | R10-01 | Responsive multi-browser | Sauce matrix | test_kt10_responsive.py | 6 PASS / 42.73s | KT10.docx | PASS | — |
 | 10 | R10-02 | Desktop/tablet/phone | yes | 36 rows | overflow none | KT10.docx | PASS | — |
@@ -49,11 +49,13 @@ Status values: PASS | PARTIAL | FAIL | BLOCKED | NOT RUN | PENDING
 
 1. **KT09 manual** — `PENDING HUMAN VERIFICATION` (`mobile/docs/kt09-manual-execution-guide.md`).
 2. **KT04 Components** — **PARTIAL / UNAVAILABLE** on team-managed KAN (POST 405); labels substitute; project not migrated.
-3. **Personal DOCX fields** — fill `reports/report_metadata.json` (do not invent).
-4. **KT09 iOS** — NOT RUN.
-5. **KT07** — multi-node on one host (not multi-machine).
+3. **KT09 iOS** — NOT RUN.
+4. **KT07** — multi-node on one host (not multi-machine).
 
 ## Title-page personal metadata
 
-Shared config: `reports/report_metadata.json` (+ `reports/report_title.py`).  
-Empty fields render as underscore placeholders. **Do not invent** student/group/teacher.
+Shared config: `reports/report_metadata.json` (+ `reports/report_title.py`).
+
+- Student: **Прилепов Никита Алексеевич**
+- Group: **4P1.23**
+- Teacher field: **absent** (removed from all reports)

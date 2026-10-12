@@ -1,8 +1,11 @@
 # Screenshot visual audit (KT01–KT12, excluding KT09)
 
-Date: 2026-10-12
+Date: 2026-10-12 (final cleanup sync)
 
-KT09 excluded — separate remediation commit `cb50cf1`.
+KT09 visual rewrite was handled in `cb50cf1`. Corrupt captures under
+`screenshots/kt09/archive/unusable-visual/` were **removed from the tracked tree**
+in the final cleanup commit so they cannot appear as successful evidence.
+Canonical KT09 visuals: `screenshots/kt09/automated/windows|android` plus gesture PNGs.
 
 ## Summary
 
@@ -14,6 +17,9 @@ KT09 excluded — separate remediation commit `cb50cf1`.
 | INTENTIONAL_BLANK | 3 |
 
 **Total audited (excl. KT09):** 173
+
+Counts remain consistent after cleanup (removed files were KT09-only and were
+never part of this excl.-KT09 inventory).
 
 ## Confirmed root causes
 

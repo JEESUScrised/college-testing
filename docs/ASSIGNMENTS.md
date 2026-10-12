@@ -33,11 +33,13 @@
 
 Пример преподавателя для КТ05: https://github.com/sa-teach/selenium-tests/tree/main
 
-## Актуальный compliance (2026-10-10)
+## Актуальный compliance (2026-10-12)
 
 Полная матрица: `docs/compliance/FINAL_REQUIREMENTS_MATRIX.md`.  
-Критические gaps: **КТ09 manual PENDING HUMAN VERIFICATION**.  
-КТ04 Jira: project KAN + KAN-4/5/6 Done (remote verified); Components/reporting **PARTIAL** (labels / gadget UI).
+Скриншотный аудит: `docs/compliance/SCREENSHOT_VISUAL_AUDIT.md`.  
+Персональные поля DOCX: Прилепов Никита Алексеевич / 4P1.23.  
+Критические gaps: **КТ09 manual PENDING HUMAN VERIFICATION**; iOS NOT RUN.  
+КТ04 Jira: project KAN + KAN-4/5/6 Done (remote verified); Components **UNAVAILABLE** (405) / labels.
 
 ## Оговорки
 - В КТ02, 04–07, 09–10 указано «Выполнить задание из презентации» или «Задание» без полного текста, поэтому детали нельзя считать полностью выясненными.

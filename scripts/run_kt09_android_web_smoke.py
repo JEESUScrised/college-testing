@@ -5,7 +5,7 @@ Does NOT write submission screenshots — those live in
 screenshots/kt09/automated/android/ (ChromeDriver web capture).
 
 Historical adb screencaps (Chrome dialogs / GPU issues) were archived under
-screenshots/kt09/archive/unusable-visual/.
+screenshots/kt09/automated/ (corrupt captures were removed from the tree).
 """
 
 from __future__ import annotations

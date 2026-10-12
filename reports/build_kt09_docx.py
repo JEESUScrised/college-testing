@@ -133,10 +133,10 @@ def build() -> Path:
     )
     add_para(
         doc,
-        "Важно: все скриншоты сравнения в отчёте — AUTOMATED evidence. "
-        "Старые PNG из screenshots/kt09/crossplatform/ (GPU-glitch / Chrome-диалоги) "
-        "в отчёт не входят — вынесены в archive/unusable-visual/. "
-        "Manual verification: PENDING HUMAN VERIFICATION.",
+        "Важно: все скриншоты сравнения в отчёте — AUTOMATED evidence "
+        "(screenshots/kt09/automated/windows|android). "
+        "Старые GPU/dialog PNG из crossplatform/ в отчёт не входят и из "
+        "репозитория удалены. Manual verification: PENDING HUMAN VERIFICATION.",
         bold=True,
     )
 

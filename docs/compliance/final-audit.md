@@ -1,25 +1,27 @@
-# Final audit (updated 2026-10-12)
+# Final audit (2026-10-12)
 
-## Screenshot remediation
+## Cleanup
 
-- Visual audit: `docs/compliance/SCREENSHOT_VISUAL_AUDIT.md`
-- Contact sheets: `screenshots/_audit_contact_sheets/` (local inspection aids)
-- Capture helper: `selenium/screenshot_ready.py` + settle wait in `save_screenshot` / KT10 `_shot`
-- Recaptured: KT02/KT03/KT08 public SauceDemo, KT08 Allure (HTTP), KT05 VDNH (images on), KT10 responsive matrix
-- KT09: **not modified** in this pass — remediations remain on `cb50cf1`
+- Removed tracked `screenshots/kt09/archive/unusable-visual/` (local backup outside repo).
+- Removed obsolete archives: `KT01-KT12_final_evidence_20261011.zip`,
+  `KT01-KT12_submission_20261011_jira_blocked.zip`, `KT01-KT12_verified_evidence.zip`.
+- Kept single archive: `submission/KT01-KT12_READY_FOR_SUBMISSION.zip`.
+- Left untouched: untracked `KT01-KT12_reports.zip`, `screenshots/_diag/`.
+
+## Screenshot remediation (prior commits)
+
+- Capture helper: `selenium/screenshot_ready.py`
+- Recaptured: KT02/KT03/KT08 public SauceDemo, KT08 Allure (HTTP), KT05 VDNH, KT10 responsive
+- Audit: `docs/compliance/SCREENSHOT_VISUAL_AUDIT.md` — **170 GOOD**, **3 INTENTIONAL_BLANK**
 
 ## DOCX
 
-Regenerated and hash-checked embeds: KT02, KT03, KT05, KT08, KT10.
-Student metadata preserved: Прилепов Никита Алексеевич / 4P1.23.
+All twelve reports: student Прилепов Никита Алексеевич / 4P1.23; no teacher fields.
 Machine audit: `docs/compliance/docx-audit.json`.
 
-## Submission archive
+## Limitations preserved
 
-`submission/KT01-KT12_READY_FOR_SUBMISSION.zip` rebuilt (excludes `screenshots/kt09/archive/unusable-visual/` and contact-sheet helpers).
-
-Untracked preserved: `KT01-KT12_reports.zip`
-
-## Push
-
-Not performed — wait for explicit user request.
+- KT04 Jira Components UNAVAILABLE (team-managed, HTTP 405)
+- KT09 manual PENDING; iOS NOT RUN
+- KT07 multi-node on one computer
+- Push only on explicit request

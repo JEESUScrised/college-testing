@@ -51,4 +51,8 @@ Python, pytest, Selenium 4, Appium, Android Emulator, Selenium Grid, Robot Frame
 
 Готовые Word-отчёты: каталог [reports/](reports/) (`KT01.docx` … `KT12.docx`).
 
-Архив для сдачи и релизы: [GitHub Releases](https://github.com/JEESUScrised/college-testing/releases).
+Единый архив сдачи: [submission/KT01-KT12_READY_FOR_SUBMISSION.zip](submission/KT01-KT12_READY_FOR_SUBMISSION.zip).
+
+Статус и compliance: [docs/STATUS.md](docs/STATUS.md), [docs/SUBMISSION_CHECKLIST.md](docs/SUBMISSION_CHECKLIST.md), [docs/compliance/FINAL_REQUIREMENTS_MATRIX.md](docs/compliance/FINAL_REQUIREMENTS_MATRIX.md), [docs/compliance/SCREENSHOT_VISUAL_AUDIT.md](docs/compliance/SCREENSHOT_VISUAL_AUDIT.md).
+
+Публикация в GitHub — только после явного подтверждения (локальные remediation-коммиты уже есть поверх ранее запушенного README).

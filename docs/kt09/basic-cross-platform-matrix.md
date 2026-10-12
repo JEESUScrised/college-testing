@@ -15,7 +15,7 @@ Public app: https://www.saucedemo.com/
 
 Do **not** use `screenshots/kt09/crossplatform/` or `crossplatform/dom/` for submission visuals.
 Those frames were produced with `nativeWebScreenshot=true` (GPU corruption) or Chrome dialogs / partial loads.
-Archived under `screenshots/kt09/archive/unusable-visual/`.
+Removed from the tracked tree on 2026-10-12 (local backup only, outside the repo). Canonical visuals: `screenshots/kt09/automated/`.
 
 ## ChromeDriver pin
 
