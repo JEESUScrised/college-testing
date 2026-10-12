@@ -3,7 +3,7 @@
 **Студент:** Прилепов Никита Алексеевич  
 **Группа:** 4P1.23
 
-Практические работы по автоматизации тестирования: веб, мобильные сценарии, учёт дефектов в Jira и проверка gRPC-сервиса. Все двенадцать контрольных точек выполнены; отчёты лежат в `reports/`.
+Практические работы по автоматизации тестирования: веб, мобильные сценарии, учёт дефектов в Jira и проверка gRPC-сервиса. Отчёты лежат в `reports/`.
 
 ## Контрольные точки
 
@@ -54,5 +54,3 @@ Python, pytest, Selenium 4, Appium, Android Emulator, Selenium Grid, Robot Frame
 Единый архив сдачи: [submission/KT01-KT12_READY_FOR_SUBMISSION.zip](submission/KT01-KT12_READY_FOR_SUBMISSION.zip).
 
 Статус и compliance: [docs/STATUS.md](docs/STATUS.md), [docs/SUBMISSION_CHECKLIST.md](docs/SUBMISSION_CHECKLIST.md), [docs/compliance/FINAL_REQUIREMENTS_MATRIX.md](docs/compliance/FINAL_REQUIREMENTS_MATRIX.md), [docs/compliance/SCREENSHOT_VISUAL_AUDIT.md](docs/compliance/SCREENSHOT_VISUAL_AUDIT.md).
-
-Публикация в GitHub — только после явного подтверждения (локальные remediation-коммиты уже есть поверх ранее запушенного README).
