@@ -93,8 +93,12 @@ def driver(browser_name: str, page_load_strategy: str):
         options = ChromeOptions()
         options.add_argument("--window-size=1400,1000")
         options.add_argument("--disable-notifications")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--force-device-scale-factor=1")
         options.page_load_strategy = page_load_strategy
-        if page_load_strategy == "none":
+        # imagesEnabled=false speeds heavy sites but breaks screenshot evidence;
+        # only apply when explicitly requested via env for non-visual runs.
+        if page_load_strategy == "none" and os.environ.get("KT_DISABLE_IMAGES") == "1":
             options.add_argument("--blink-settings=imagesEnabled=false")
         chrome_service = resolve_chrome_service()
         drv = (
@@ -141,12 +145,15 @@ def fixture_url():
 
 @pytest.fixture
 def save_screenshot(driver):
-    """Save a PNG screenshot under screenshots/<kt>/."""
+    """Save a PNG screenshot under screenshots/<kt>/ after visual settle."""
 
     def _save(kt: str, name: str) -> Path:
+        from screenshot_ready import wait_visually_ready
+
         target_dir = SCREENSHOTS_ROOT / kt
         target_dir.mkdir(parents=True, exist_ok=True)
         path = target_dir / f"{name}.png"
+        wait_visually_ready(driver)
         assert driver.save_screenshot(str(path)), f"Failed to save screenshot: {path}"
         return path
 

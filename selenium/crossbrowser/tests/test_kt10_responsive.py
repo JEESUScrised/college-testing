@@ -51,6 +51,8 @@ def _build(browser: str, width: int, height: int, mode: str):
     if browser == "chrome":
         opts = ChromeOptions()
         opts.add_argument("--disable-notifications")
+        opts.add_argument("--disable-gpu")
+        opts.add_argument("--force-device-scale-factor=1")
         opts.page_load_strategy = "eager"
         if mode == "window":
             opts.add_argument(f"--window-size={width},{height}")
@@ -93,8 +95,11 @@ def _record(row: dict) -> None:
 
 
 def _shot(driver, browser: str, profile: str, name: str) -> Path:
+    from screenshot_ready import wait_visually_ready
+
     SHOTS.mkdir(parents=True, exist_ok=True)
     path = SHOTS / f"{browser}_{profile}_{name}.png"
+    wait_visually_ready(driver)
     assert driver.save_screenshot(str(path)), path
     assert path.stat().st_size > 0
     return path
